@@ -1,0 +1,12 @@
+Package: RcppMeCab
+Title: `Rcpp` wrapper for `MeCab`
+Version: 0.0.1.0
+Authors: Junhewk Kim(junhewk.kim@gmail.com)
+Description: Rcpp wrapper for MeCab library. Supports CJK.
+Depends: R (>= 3.5.0)
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+LinkingTo: Rcpp
+Imports: Rcpp
+RoxygenNote: 6.0.1

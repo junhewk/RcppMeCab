@@ -1,0 +1,7 @@
+ifeq "$(WIN)" "64" 
+PKG_LIBS=-L../inst/mecab/x64 -llibmecab 
+else 
+PKG_LIBS=-L../inst/mecab/x32 -llibmecab 
+endif 
+
+PKG_CXXFLAGS = -DDLL_IMPORT -I.
