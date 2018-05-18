@@ -21,11 +21,11 @@ devtools::install_github("junhewk/RcppMeCab")
 
 ### Windows
 
-`RcppMeCab` in Windows supports Korean yet. Install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) up to your 32-bit or 64-bit Windows version in `C:\mecab`. I think it'll work in Japanese too if [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc) is installed in `C:\mecab`, but I can't test it because I can't use Japanese version Windows. Welcome always for the contribution of Japanese user.
+`RcppMeCab` in Windows supports Korean (Japanese support will be added ASAP). Install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) up to your 32-bit or 64-bit Windows version in `C:\mecab`. I think it'll work in Japanese too if [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc) is installed in `C:\mecab`, but I can't test it because I can't use Japanese version Windows. Always welcome of the contribution of Japanese user.
 
 ```
 # install.packages("devtools")
-options(devtools.install.args = "--no-multiarch" # To avoid an error on installation; would be solved in later version
+options(devtools.install.args = "--no-multiarch") # To avoid an error on installation; would be solved in later version
 devtools::install_github("junhewk/RcppMecab")
 ```
 
