@@ -21,13 +21,27 @@ devtools::install_github("junhewk/RcppMeCab")
 
 ### Windows
 
-`RcppMeCab` in Windows supports Korean (Japanese support will be added ASAP). Install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) up to your 32-bit or 64-bit Windows version in `C:\mecab`. I think it'll work in Japanese too if [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc) is installed in `C:\mecab`, but I can't test it because I can't use Japanese version Windows. Always welcome of the contribution of Japanese user.
+You should download DLLs applicable for your language.
+
++ [mecab_ko.zip](https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_ko.zip) (for Korean)
++ [mecab_jp.zip](https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_jp.zip) (for Japanese and other languages)
+
+Uncompress DLLs in `~\\mecab` (for example, `C:\\Users\\User\\mecab`). And, install `RcppMeCab` package from Github.
 
 ```
 # install.packages("devtools")
-options(devtools.install.args = "--no-multiarch") # To avoid an error on installation; would be solved in later version
 devtools::install_github("junhewk/RcppMecab")
 ```
+
+For analyzing, you need a MeCab dictionary.
+
+For Korean:
+
+Install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) up to your 32-bit or 64-bit Windows version in `C:\mecab`. Provide directory location to `RcppMeCab` function.
+
+For Japanese:
+
+Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc). Provide directory location to `RcppMeCab` function. For example: `pos(sentence, "C:\\PROGRA~2\\mecab\\dic\\ipadic")`
 
 ## Usage
 
@@ -38,7 +52,14 @@ pos(sentence, dict)
 ```
 
 + sentence: a text for analyzing
-+ dict: a directory in which `mecabrc` is located, default value is ""
++ dict: a directory in which `mecabrc` or `dicrc` file is located, default value is ""
+
+## TODOs
+
++ Test multilanguage support
++ Support `lattice` function to use parallel computing
++ Provide other useful functions
++ Provide multilanguage manuals for international support
 
 ## Author
 

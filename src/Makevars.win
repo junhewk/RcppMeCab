@@ -1,7 +1,12 @@
+# MECAB_LIB_DIR=c:\mecab\lib
+# PKG_LIBS=-L$(MECAB_DIR) -L$(MECAB_LIB_DIR) -llibmecab
+
+MECAB_DIR=~/mecab
+
 ifeq "$(WIN)" "64" 
-PKG_LIBS=-L../inst/mecab/x64 -llibmecab 
+PKG_LIBS=-L$(MECAB_DIR)/x64 -llibmecab 
 else 
-PKG_LIBS=-L../inst/mecab/x32 -llibmecab 
-endif 
+PKG_LIBS=-L$(MECAB_DIR)/i386 -llibmecab 
+endif
 
 PKG_CXXFLAGS = -DDLL_IMPORT -I.

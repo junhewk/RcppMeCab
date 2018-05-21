@@ -13,6 +13,7 @@ StringVector posRcpp(StringVector text, StringVector dict) {
   // basic MeCab tagger
 
   std::string input = as<std::string>(text);
+
   mecab_t* mecab;
   const mecab_node_t* node;
 
