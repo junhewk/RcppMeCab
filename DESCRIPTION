@@ -1,12 +1,13 @@
 Package: RcppMeCab
 Title: `Rcpp` wrapper for `MeCab`
-Version: 0.0.1.0
+Version: 0.0.1.1
 Authors: Junhewk Kim(junhewk.kim@gmail.com)
-Description: Rcpp wrapper for MeCab library. Supports CJK.
+Description: Rcpp wrapper for MeCab library. Supports CJK and parallelization to provide super fast and stable text analyzing result.
 Depends: R (>= 3.5.0)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-LinkingTo: Rcpp
-Imports: Rcpp
+LinkingTo: Rcpp, RcppParallel
+Imports: Rcpp, RcppParallel
+SystemRequirements: GNU make
 RoxygenNote: 6.0.1

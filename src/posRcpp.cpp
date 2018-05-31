@@ -45,4 +45,3 @@ StringVector posRcpp(StringVector text, StringVector dict) {
   mecab_destroy(mecab);
   return result;
 }
-

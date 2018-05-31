@@ -1,10 +1,15 @@
-#' part-of-speech tagger
+#' parallel version of part-of-speech tagger
 #'
-#' \code{pos} returns part-of-speech (POS) tagged morpheme of the sentence.
+#' \code{posParallel} returns part-of-speech (POS) tagged morpheme of the sentence.
 #'
-#' This is a basic function for MeCab part-of-speech tagger. The function gets a
-#' character vector of any length, and runs a loop inside C++ to provide faster
+#' This is a parallelized version of MeCab part-of-speech tagger. The function gets a
+#' character vector of any length, and runs a loop inside C++ with Intel TBB to provide faster
 #' processing.
+#'
+#' Parallelizing over a character vector is not supported by \code{RcppParallel}.
+#' Thus, this function makes duplicates of the input and the output.
+#' Therefore, if your data volume is large, use \code{pos} or divide the vector to
+#' several sub-vectors.
 #'
 #' If you want to get a morpheme only, use join = False to put tag names on the attribute.
 #' Basically the function will return a list of character vectors with (morpheme)/(tag) elements.
@@ -18,19 +23,15 @@
 #' @examples
 #' \dontrun{
 #' sentence <- c(#some UTF-8 texts)
-#' pos(sentence)
-#' pos(sentence, join = FALSE)
+#' posParallel(sentence)
+#' posParallel(sentence, join = FALSE)
 #' }
 #'
 #' @export
-pos <- function(sentence, join = TRUE, dict = "") {
+posParallel <- function(sentence, join = TRUE, dict = "") {
   if (typeof(sentence) != "character") stop("The function gets a character vector only.")
 
-  if (length(sentence) > 1) {
-    result <- posloopRcpp(sentence, dict)
-  } else {
-    result <- posRcpp(sentence, dict)
-  }
+  result <- posParallelRcpp(sentence, dict)
 
   return(result)
 }

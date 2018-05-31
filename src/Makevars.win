@@ -9,4 +9,9 @@ else
 PKG_LIBS=-L$(MECAB_DIR)/i386 -llibmecab 
 endif
 
-PKG_CXXFLAGS = -DDLL_IMPORT -I.
+PKG_CPPFLAGS = -DDLL_IMPORT -I.
+
+CXX_STD = CXX11
+PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1
+
+PKG_LIBS += $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppParallel::RcppParallelLibs()")
