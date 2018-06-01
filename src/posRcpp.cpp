@@ -1,6 +1,10 @@
+// [[Rcpp::depends(BH)]]
+
 #include <Rcpp.h>
 #include <string>
+#include <boost/algorithm/string.hpp>
 #include "mecab.h"
+
 using namespace Rcpp;
 
 #define CHECK(eval) if (! eval) {                                   \
@@ -9,7 +13,7 @@ mecab_destroy(mecab);                                               \
 return R_NilValue; }
 
 // [[Rcpp::export]]
-StringVector posRcpp(StringVector text, StringVector dict) {
+StringVector posRcpp(StringVector text, std::string sys_dic, std::string user_dic) {
   // basic MeCab tagger
 
   std::string input = as<std::string>(text);
@@ -17,8 +21,17 @@ StringVector posRcpp(StringVector text, StringVector dict) {
   mecab_t* mecab;
   const mecab_node_t* node;
 
+  char arg0[] = "-d";
+  char arg1[sys_dic.length() + 1];
+  strcpy(arg1, sys_dic.c_str());
+  char arg2[] = "-u";
+  char arg3[user_dic.length() + 1];
+  strcpy(arg3, user_dic.c_str());
+  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
+  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+
   // Create MeCab object
-  mecab = mecab_new2(as<const char *>(dict));
+  mecab = mecab_new(argc_model, argv_model);
   CHECK(mecab);
 
   // Create Node object
@@ -36,8 +49,9 @@ StringVector posRcpp(StringVector text, StringVector dict) {
     else {
       String parsed_morph = std::string(node->surface).substr(0, node->length);
       parsed_morph.set_encoding(CE_UTF8); // Set Encoding with Rcpp module
-      std::string feature_result = node->feature;
-      String parsed_tag = feature_result.substr(0, feature_result.find(","));
+      std::vector<std::string> features;
+      boost::split(features, node->feature, boost::is_any_of(","));
+      String parsed_tag = features[0];
       parsed_tag.set_encoding(CE_UTF8);
       result.push_back(parsed_morph);
       tags.push_back(parsed_tag);
@@ -51,7 +65,7 @@ StringVector posRcpp(StringVector text, StringVector dict) {
 }
 
 // [[Rcpp::export]]
-StringVector posJoinRcpp(StringVector text, StringVector dict) {
+StringVector posJoinRcpp(StringVector text, std::string sys_dic, std::string user_dic) {
   // basic MeCab tagger
 
   std::string input = as<std::string>(text);
@@ -59,8 +73,17 @@ StringVector posJoinRcpp(StringVector text, StringVector dict) {
   mecab_t* mecab;
   const mecab_node_t* node;
 
+  char arg0[] = "-d";
+  char arg1[sys_dic.length() + 1];
+  strcpy(arg1, sys_dic.c_str());
+  char arg2[] = "-u";
+  char arg3[user_dic.length() + 1];
+  strcpy(arg3, user_dic.c_str());
+  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
+  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+
   // Create MeCab object
-  mecab = mecab_new2(as<const char *>(dict));
+  mecab = mecab_new(argc_model, argv_model);
   CHECK(mecab);
 
   // Create Node object
@@ -77,8 +100,9 @@ StringVector posJoinRcpp(StringVector text, StringVector dict) {
     else {
       String parsed_morph = std::string(node->surface).substr(0, node->length);
       parsed_morph.push_back("/");
-      std::string feature_result = node->feature;
-      parsed_morph.push_back(feature_result.substr(0, feature_result.find(",")));
+      std::vector<std::string> features;
+      boost::split(features, node->feature, boost::is_any_of(","));
+      parsed_morph.push_back(features[0]);
       parsed_morph.set_encoding(CE_UTF8); // Set Encoding with Rcpp module
       result.push_back(parsed_morph);
     }

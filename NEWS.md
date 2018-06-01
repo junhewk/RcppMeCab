@@ -3,6 +3,7 @@
 + `posParallel` function is added to support parallelization
 + `join` parameter is added to yield a output of morphemes only
 + `RcppParallel` dependency
++ `user_dic` parameter is added to support user dictionary usage
 
 # RcppMeCab 0.0.1.0
 

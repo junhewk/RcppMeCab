@@ -6,11 +6,15 @@
 #' character vector of any length, and runs a loop inside C++ to provide faster
 #' processing.
 #'
+#' You can add user dictionary to \code{user_dic}. It should be compiled by
+#' \code{mecab-dict-index}. You can find a compile example in the \url{https://github.com/junhewk/RcppMeCab}.
+#'
 #' If you want to get a morpheme only, use join = False to put tag names on the attribute.
 #' Basically the function will return a list of character vectors with (morpheme)/(tag) elements.
 #'
 #' @param sentence A character vector of any length. For analyzing multiple sentences, put them in one character vector.
-#' @param dict A location of user-specific MeCab dictionary. The default value is "".
+#' @param sys_dic A location of system MeCab dictionary. The default value is "".
+#' @param user_dic A location of user-specific MeCab dictionary. The default value is "".
 #' @param join A bool to decide the output format. The default value is TRUE. If FALSE, the function will return morphemes only, and tags put in the attribute.
 #' @return A string vector of POS tagged morpheme will be returned in conjoined character
 #'  vecter form. Element name of the list are original phrases
@@ -20,23 +24,24 @@
 #' sentence <- c(#some UTF-8 texts)
 #' pos(sentence)
 #' pos(sentence, join = FALSE)
+#' pos(sentence, user_dic = "~/user_dic.dic")
 #' }
 #'
 #' @export
-pos <- function(sentence, join = TRUE, dict = "") {
+pos <- function(sentence, join = TRUE, sys_dic = "", user_dic = "") {
   if (typeof(sentence) != "character") stop("The function gets a character vector only.")
 
   if (join == TRUE) {
     if (length(sentence) > 1) {
-      result <- posLoopJoinRcpp(sentence, dict)
+      result <- posLoopJoinRcpp(sentence, sys_dic, user_dic)
     } else {
-      result <- posJoinRcpp(sentence, dict)
+      result <- posJoinRcpp(sentence, sys_dic, user_dic)
     }
   } else {
     if (length(sentence) > 1) {
-      result <- posLoopRcpp(sentence, dict)
+      result <- posLoopRcpp(sentence, sys_dic, user_dic)
     } else {
-      result <- posRcpp(sentence, dict)
+      result <- posRcpp(sentence, sys_dic, user_dic)
     }
   }
 

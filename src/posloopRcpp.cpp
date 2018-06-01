@@ -1,11 +1,14 @@
+// [[Rcpp::depends(BH)]]
+
 #include <Rcpp.h>
 #include <string>
+#include <boost/algorithm/string.hpp>
 #include "mecab.h"
 
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List posLoopRcpp(std::vector< std::string > text, std::string dict) {
+List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {
 
   // lattice model
 
@@ -21,8 +24,17 @@ List posLoopRcpp(std::vector< std::string > text, std::string dict) {
   StringVector parsed_tagset;
   List result;
 
+  char arg0[] = "-d";
+  char arg1[sys_dic.length() + 1];
+  strcpy(arg1, sys_dic.c_str());
+  char arg2[] = "-u";
+  char arg3[user_dic.length() + 1];
+  strcpy(arg3, user_dic.c_str());
+  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
+  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+
   // Create MeCab model
-  model = mecab_model_new2( dict.c_str() );
+  model = mecab_model_new(argc_model, argv_model);
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -43,11 +55,12 @@ List posLoopRcpp(std::vector< std::string > text, std::string dict) {
       else if (node->stat == MECAB_EOS_NODE)
         ;
       else {
-        f = node->feature;
         parsed_morph = std::string(node->surface).substr(0, node->length);
         parsed_morph.set_encoding(CE_UTF8);
 
-        parsed_tag = f.substr(0, f.find(","));
+        std::vector<std::string> features;
+        boost::split(features, node->feature, boost::is_any_of(","));
+        String parsed_tag = features[0];
         parsed_tag.set_encoding(CE_UTF8);
 
         parsed_string.push_back(parsed_morph);
@@ -68,7 +81,7 @@ List posLoopRcpp(std::vector< std::string > text, std::string dict) {
 }
 
 // [[Rcpp::export]]
-List posLoopJoinRcpp(std::vector< std::string > text, std::string dict) {
+List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {
 
   // lattice model
 
@@ -82,8 +95,17 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string dict) {
   StringVector parsed_string;
   List result;
 
+  char arg0[] = "-d";
+  char arg1[sys_dic.length() + 1];
+  strcpy(arg1, sys_dic.c_str());
+  char arg2[] = "-u";
+  char arg3[user_dic.length() + 1];
+  strcpy(arg3, user_dic.c_str());
+  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
+  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+
   // Create MeCab model
-  model = mecab_model_new2( dict.c_str() );
+  model = mecab_model_new(argc_model, argv_model);
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -104,10 +126,11 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string dict) {
       else if (node->stat == MECAB_EOS_NODE)
         ;
       else {
-        f = node->feature;
         parsed_morph = std::string(node->surface).substr(0, node->length);
         parsed_morph.push_back("/");
-        parsed_morph.push_back(f.substr(0, f.find(",")));
+        std::vector<std::string> features;
+        boost::split(features, node->feature, boost::is_any_of(","));
+        parsed_morph.push_back(features[0]);
         parsed_morph.set_encoding(CE_UTF8);
         parsed_string.push_back(parsed_morph);
       }

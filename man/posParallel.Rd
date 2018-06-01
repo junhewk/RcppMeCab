@@ -4,14 +4,16 @@
 \alias{posParallel}
 \title{parallel version of part-of-speech tagger}
 \usage{
-posParallel(sentence, join = TRUE, dict = "")
+posParallel(sentence, join = TRUE, sys_dic = "", user_dic = "")
 }
 \arguments{
 \item{sentence}{A character vector of any length. For analyzing multiple sentences, put them in one character vector.}
 
 \item{join}{A bool to decide the output format. The default value is TRUE. If FALSE, the function will return morphemes only, and tags put in the attribute.}
 
-\item{dict}{A location of user-specific MeCab dictionary. The default value is "".}
+\item{sys_dic}{A location of system MeCab dictionary. The default value is "".}
+
+\item{user_dic}{A location of user-specific MeCab dictionary. The default value is "".}
 }
 \value{
 A string vector of POS tagged morpheme will be returned in conjoined character
@@ -32,12 +34,16 @@ several sub-vectors.
 
 If you want to get a morpheme only, use join = False to put tag names on the attribute.
 Basically the function will return a list of character vectors with (morpheme)/(tag) elements.
+
+You can add user dictionary to \code{user_dic}. It should be compiled by
+\code{mecab-dict-index}. You can find a compile example in the \url{https://github.com/junhewk/RcppMeCab}.
 }
 \examples{
 \dontrun{
 sentence <- c(#some UTF-8 texts)
 posParallel(sentence)
 posParallel(sentence, join = FALSE)
+posParallel(sentence, user_dic = "~/user_dic.dic")
 }
 
 }

@@ -4,7 +4,7 @@ This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphologica
 
 ## Installation
 
-### Mac OSX, Linux
+### Linux and Mac OSX
 
 First, install `MeCab` of your language-of-choice.
 
@@ -48,14 +48,41 @@ Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1
 This package has `pos` and `posParallel` function.
 
 ```
-pos(sentence, dict)
-pos(sentence, join, dict) # for yield morphemes only (tags will be given on the vector names)
-posParallel(sentence, dict) # parallelized version uses more memory
+pos(sentence)
+pos(sentence, join = FALSE) # for yield morphemes only (tags will be given on the vector names)
+pos(sentence, user_dic) # support a compiled user dictionary 
+posParallel(sentence, user_dic) # parallelized version uses more memory
 ```
 
 + sentence: a text for analyzing
-+ dict: a directory in which `mecabrc` or `dicrc` file is located, default value is ""
++ sys_dic: a directory in which `dicrc` file is located, default value is ""
++ user_dic: a user dictionary file compiled by `mecab_dict_index`
 + join: If it gets TRUE, output form is (morpheme/tag). If it gets FALSE, output form is (morpheme) + tag in attribute.
+
+## Compiling User Dictionary
+
+MeCab API has `DictionaryCompiler`, but it contains `die()`. Hence, calling it in Rcpp crashes down entire R session. This will not be included in `RcppMeCab` functions.
+
+Please refer to [Mecab](http://taku910.github.io/mecab/dic.html) for Japanese.
+
+### Unix and Mac OSX
+
+You should have `model_file` if you want the library to estimate cost automatically. 
+
++ Japanese: [model_file_ipadic](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7bnc5aFZSTE9qNnM)
++ Korean: `model.bin` in [mecab-ko-dic](https://bitbucket.org/eunjeon/mecab-ko-dic)
+
+You need entire `mecab-ko-dic` source if you want to compile Korean user dictionary. User dictionary should also be prepared in CSV file. CSV structure is found in [Japanese](http://taku910.github.io/mecab/dic.html) and [Korean](https://bitbucket.org/eunjeon/mecab-ko-dic/src/e39e16059b8748c2663ab09195a08293c7063a28/final/user-dic/README.md?fileviewer=file-view-default).
+
+Compile:
+
+```
+$ /usr/local/libexec/mecab/mecab-dict-index -m `model_file` -d `mecab_dic_location` -u `user_dictionary_file_name` -f `CSV file charset` -t `original dictionary charset` `target_csv
+
+# example
+
+$ /usr/local/libexec/mecab/mecab-dict-index -m /usr/local/lib/mecab/dic/mecab-ko-dic/model.bin -d ~/mecab-ko-dic-2.0.3-20170922 -u userdic.dic -f utf8 -t utf8 ~/person.csv
+```
 
 ## TODOs
 

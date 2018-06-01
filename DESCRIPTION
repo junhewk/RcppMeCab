@@ -10,7 +10,7 @@ Depends: R (>= 3.5.0)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-LinkingTo: Rcpp, RcppParallel
+LinkingTo: Rcpp, RcppParallel, BH
 Imports: Rcpp, RcppParallel
 SystemRequirements: GNU make
 RoxygenNote: 6.0.1
