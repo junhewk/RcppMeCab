@@ -84,6 +84,13 @@ $ /usr/local/libexec/mecab/mecab-dict-index -m `model_file` -d `mecab_dic_locati
 $ /usr/local/libexec/mecab/mecab-dict-index -m /usr/local/lib/mecab/dic/mecab-ko-dic/model.bin -d ~/mecab-ko-dic-2.0.3-20170922 -u userdic.dic -f utf8 -t utf8 ~/person.csv
 ```
 
+### Windows
+
++ Korean: `mecab-ko-msvc` has `mecab-dict-index.exe`.
++ Japanese: `MeCab` binary version has `mecab-dict-index.exe`.
+
+You can use it in the same way Linux compiles the dictionary.
+
 ## TODOs
 
 + Test multilanguage support
