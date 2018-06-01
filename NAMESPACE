@@ -3,5 +3,5 @@
 export(pos)
 export(posParallel)
 import(Rcpp)
-importFrom(RcppParallel, RcppParallelLibs)
+importFrom(RcppParallel,RcppParallelLibs)
 useDynLib(RcppMeCab)

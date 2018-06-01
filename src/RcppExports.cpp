@@ -17,6 +17,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// posLoopJoinRcpp
+List posLoopJoinRcpp(std::vector< std::string > text, std::string dict);
+RcppExport SEXP _RcppMeCab_posLoopJoinRcpp(SEXP textSEXP, SEXP dictSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector< std::string > >::type text(textSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dict(dictSEXP);
+    rcpp_result_gen = Rcpp::wrap(posLoopJoinRcpp(text, dict));
+    return rcpp_result_gen;
+END_RCPP
+}
+// posParallelJoinRcpp
+List posParallelJoinRcpp(std::vector<std::string> text, std::string dict);
+RcppExport SEXP _RcppMeCab_posParallelJoinRcpp(SEXP textSEXP, SEXP dictSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type text(textSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dict(dictSEXP);
+    rcpp_result_gen = Rcpp::wrap(posParallelJoinRcpp(text, dict));
+    return rcpp_result_gen;
+END_RCPP
+}
 // posParallelRcpp
 List posParallelRcpp(std::vector<std::string> text, std::string dict);
 RcppExport SEXP _RcppMeCab_posParallelRcpp(SEXP textSEXP, SEXP dictSEXP) {
@@ -41,11 +65,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// posJoinRcpp
+StringVector posJoinRcpp(StringVector text, StringVector dict);
+RcppExport SEXP _RcppMeCab_posJoinRcpp(SEXP textSEXP, SEXP dictSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< StringVector >::type text(textSEXP);
+    Rcpp::traits::input_parameter< StringVector >::type dict(dictSEXP);
+    rcpp_result_gen = Rcpp::wrap(posJoinRcpp(text, dict));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RcppMeCab_posLoopRcpp", (DL_FUNC) &_RcppMeCab_posLoopRcpp, 2},
+    {"_RcppMeCab_posLoopJoinRcpp", (DL_FUNC) &_RcppMeCab_posLoopJoinRcpp, 2},
+    {"_RcppMeCab_posParallelJoinRcpp", (DL_FUNC) &_RcppMeCab_posParallelJoinRcpp, 2},
     {"_RcppMeCab_posParallelRcpp", (DL_FUNC) &_RcppMeCab_posParallelRcpp, 2},
     {"_RcppMeCab_posRcpp", (DL_FUNC) &_RcppMeCab_posRcpp, 2},
+    {"_RcppMeCab_posJoinRcpp", (DL_FUNC) &_RcppMeCab_posJoinRcpp, 2},
     {NULL, NULL, 0}
 };
 

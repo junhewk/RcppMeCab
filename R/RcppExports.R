@@ -5,11 +5,23 @@ posLoopRcpp <- function(text, dict) {
     .Call('_RcppMeCab_posLoopRcpp', PACKAGE = 'RcppMeCab', text, dict)
 }
 
+posLoopJoinRcpp <- function(text, dict) {
+    .Call('_RcppMeCab_posLoopJoinRcpp', PACKAGE = 'RcppMeCab', text, dict)
+}
+
+posParallelJoinRcpp <- function(text, dict) {
+    .Call('_RcppMeCab_posParallelJoinRcpp', PACKAGE = 'RcppMeCab', text, dict)
+}
+
 posParallelRcpp <- function(text, dict) {
     .Call('_RcppMeCab_posParallelRcpp', PACKAGE = 'RcppMeCab', text, dict)
 }
 
 posRcpp <- function(text, dict) {
     .Call('_RcppMeCab_posRcpp', PACKAGE = 'RcppMeCab', text, dict)
+}
+
+posJoinRcpp <- function(text, dict) {
+    .Call('_RcppMeCab_posJoinRcpp', PACKAGE = 'RcppMeCab', text, dict)
 }
 

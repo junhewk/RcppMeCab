@@ -26,6 +26,48 @@ StringVector posRcpp(StringVector text, StringVector dict) {
   CHECK(node);
 
   StringVector result;
+  StringVector tags;
+
+  for (; node; node = node->next) {
+    if (node->stat == MECAB_BOS_NODE)
+      ;
+    else if (node->stat == MECAB_EOS_NODE)
+      ;
+    else {
+      String parsed_morph = std::string(node->surface).substr(0, node->length);
+      parsed_morph.set_encoding(CE_UTF8); // Set Encoding with Rcpp module
+      std::string feature_result = node->feature;
+      String parsed_tag = feature_result.substr(0, feature_result.find(","));
+      parsed_tag.set_encoding(CE_UTF8);
+      result.push_back(parsed_morph);
+      tags.push_back(parsed_tag);
+    }
+  }
+
+  result.names() = tags;
+
+  mecab_destroy(mecab);
+  return result;
+}
+
+// [[Rcpp::export]]
+StringVector posJoinRcpp(StringVector text, StringVector dict) {
+  // basic MeCab tagger
+
+  std::string input = as<std::string>(text);
+
+  mecab_t* mecab;
+  const mecab_node_t* node;
+
+  // Create MeCab object
+  mecab = mecab_new2(as<const char *>(dict));
+  CHECK(mecab);
+
+  // Create Node object
+  node = mecab_sparse_tonode(mecab, input.c_str());
+  CHECK(node);
+
+  StringVector result;
 
   for (; node; node = node->next) {
     if (node->stat == MECAB_BOS_NODE)

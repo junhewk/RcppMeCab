@@ -1,7 +1,10 @@
 Package: RcppMeCab
 Title: `Rcpp` wrapper for `MeCab`
 Version: 0.0.1.1
-Authors: Junhewk Kim(junhewk.kim@gmail.com)
+Authors@R: c(person("Junhewk", "Kim", role = "cre",
+                    email = "junhewk.kim@gmail.com"))
+Author: Junhewk Kim [cre]
+Maintainer: Junhewk Kim <junhewk.kim@gmail.com>
 Description: Rcpp wrapper for MeCab library. Supports CJK and parallelization to provide super fast and stable text analyzing result.
 Depends: R (>= 3.5.0)
 License: GPL-3 + file LICENSE

@@ -27,11 +27,16 @@
 #' posParallel(sentence, join = FALSE)
 #' }
 #'
+#' @importFrom RcppParallel RcppParallelLibs
 #' @export
 posParallel <- function(sentence, join = TRUE, dict = "") {
   if (typeof(sentence) != "character") stop("The function gets a character vector only.")
 
-  result <- posParallelRcpp(sentence, dict)
+  if (join == TRUE) {
+    result <- posParallelJoinRcpp(sentence, dict)
+  } else {
+    result <- posParallelRcpp(sentence, dict)
+  }
 
   return(result)
 }

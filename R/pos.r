@@ -26,11 +26,20 @@
 pos <- function(sentence, join = TRUE, dict = "") {
   if (typeof(sentence) != "character") stop("The function gets a character vector only.")
 
-  if (length(sentence) > 1) {
-    result <- posloopRcpp(sentence, dict)
+  if (join == TRUE) {
+    if (length(sentence) > 1) {
+      result <- posLoopJoinRcpp(sentence, dict)
+    } else {
+      result <- posJoinRcpp(sentence, dict)
+    }
   } else {
-    result <- posRcpp(sentence, dict)
+    if (length(sentence) > 1) {
+      result <- posLoopRcpp(sentence, dict)
+    } else {
+      result <- posRcpp(sentence, dict)
+    }
   }
+
 
   return(result)
 }
