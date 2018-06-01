@@ -49,9 +49,9 @@ This package has `pos` and `posParallel` function.
 
 ```
 pos(sentence)
-pos(sentence, join = FALSE) # for yield morphemes only (tags will be given on the vector names)
+pos(sentence, join = FALSE) # for yielding morphemes only (tags will be given on the vector names)
 pos(sentence, user_dic) # gets a compiled user dictionary 
-posParallel(sentence, user_dic) # parallelized version uses more memory
+posParallel(sentence, user_dic) # parallelized version uses more memory, but much faster than the loop in single threading
 ```
 
 + sentence: a text for analyzing
