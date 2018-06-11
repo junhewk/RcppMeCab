@@ -2,7 +2,7 @@
 # Author:	Junhewk Kim
 # Date:		11 June 2018
 
-ifeq "$(MECAB_LANG)" ""
+ifeq "${MECAB_LANG}" ""
 MECAB_LANG = KO
 
 # Download MeCab DLL
@@ -19,9 +19,9 @@ mecab_${MECAB_LANG}/configure: mecab_${MECAB_LANG}.tar.gz
 	rm -rf mecab_${MECAB_LANG}.tar.gz
 
 ifeq "$(WIN)" "64"
-PKG_LIBS += -Lmecab_$(MECAB_LANG)/x64 -llibmecab 
+PKG_LIBS += -Lmecab_${MECAB_LANG}/x64 -llibmecab 
 else 
-PKG_LIBS += -Lmecab_$(MECAB_LANG)/i386 -llibmecab 
+PKG_LIBS += -Lmecab_${MECAB_LANG}/i386 -llibmecab 
 endif
 
 PKG_CPPFLAGS = -DDLL_IMPORT -I.
