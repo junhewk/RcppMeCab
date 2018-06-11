@@ -1,15 +1,18 @@
 Package: RcppMeCab
-Title: `Rcpp` wrapper for `MeCab`
+Title: `rcpp` wrapper for `mecab` library
 Version: 0.0.1.1
-Authors@R: c(person("Junhewk", "Kim", role = "cre",
+Authors@R: c(person("Junhewk", "Kim", role = c("aut", "cre"),
                     email = "junhewk.kim@gmail.com"))
 Author: Junhewk Kim [cre]
 Maintainer: Junhewk Kim <junhewk.kim@gmail.com>
-Description: Rcpp wrapper for MeCab library. Supports CJK and parallelization to provide super fast and stable text analyzing result.
+Description: R package based on `Rcpp` for `MeCab` Yet Another Part-of-Speech and Morphological Analyzer. 
+	The purpose of this package is providing a seamless developing and analyzing environment for CJK texts.
+	This package utilizes parallelizing functions for providing highly efficient text preprocessing.
 Depends: R (>= 3.5.0)
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
+BugReports: https://github.com/junhewk/RcppMeCab/issues
 LinkingTo: Rcpp, RcppParallel, BH
 Imports: Rcpp, RcppParallel
 SystemRequirements: GNU make

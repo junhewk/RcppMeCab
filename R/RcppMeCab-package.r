@@ -2,13 +2,16 @@
 #'
 #' R package based on \code{Rcpp} for \code{MeCab}: Yet Another Part-of-Speech and
 #' Morphological Analyzer (\url{http://taku910.github.io/mecab/}). The purpose of
-#' this package is providing a seemless developing and analyzing environment for
-#' CJK users.
+#' this package is providing a seamless developing and analyzing environment for
+#' CJK texts. This package utilizes parallelizing functions for providing
+#' highly efficient text preprocessing.
+#' 
 #'
 #' @name RcppMeCab
 #' @docType package
 #' @author Junhewk Kim
 #' @import Rcpp
+#' @importFrom RcppParallel RcppParallelLibs
 #' @useDynLib RcppMeCab
 #'
 #' @details
@@ -23,3 +26,7 @@
 #'
 #' @keywords MeCab part-of-speech morpheme nlp Korean Japanese Chinese
 NULL
+
+.onUnload <- function (libpath) {
+  library.dynam.unload("RcppMeCab", libpath)
+}

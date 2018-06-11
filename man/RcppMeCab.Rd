@@ -8,8 +8,9 @@
 \description{
 R package based on \code{Rcpp} for \code{MeCab}: Yet Another Part-of-Speech and
 Morphological Analyzer (\url{http://taku910.github.io/mecab/}). The purpose of
-this package is providing a seemless developing and analyzing environment for
-CJK users.
+this package is providing a seamless developing and analyzing environment for
+CJK texts. This package utilizes parallelizing functions for providing
+highly efficient text preprocessing.
 }
 \details{
 This package utilizes \code{MeCab} C API and \code{Rcpp} codes.

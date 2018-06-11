@@ -104,10 +104,10 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   List result;
 
   char arg0[] = "-d";
-  char arg1[sys_dic.length() + 1];
+  char *arg1 = new char[sys_dic.length() + 1];
   strcpy(arg1, sys_dic.c_str());
   char arg2[] = "-u";
-  char arg3[user_dic.length() + 1];
+  char *arg3 = new char[user_dic.length() + 1];
   strcpy(arg3, user_dic.c_str());
   char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
   int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
@@ -123,6 +123,9 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   // RcppParallel doesn't get CharacterVector as input and output
   auto func = TextParseJoin(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
+
+  delete[] arg1;
+  delete[] arg3;
 
   mecab_model_destroy(model);
 
@@ -148,10 +151,10 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   List result;
 
   char arg0[] = "-d";
-  char arg1[sys_dic.length() + 1];
+  char *arg1 = new char[sys_dic.length() + 1];
   strcpy(arg1, sys_dic.c_str());
   char arg2[] = "-u";
-  char arg3[user_dic.length() + 1];
+  char *arg3 = new char[user_dic.length() + 1];
   strcpy(arg3, user_dic.c_str());
   char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
   int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
@@ -167,6 +170,9 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   // RcppParallel doesn't get CharacterVector as input and output
   auto func = TextParse(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
+
+  delete[] arg1;
+  delete[] arg3;
 
   mecab_model_destroy(model);
 

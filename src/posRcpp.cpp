@@ -22,10 +22,10 @@ StringVector posRcpp(StringVector text, std::string sys_dic, std::string user_di
   const mecab_node_t* node;
 
   char arg0[] = "-d";
-  char arg1[sys_dic.length() + 1];
+  char *arg1 = new char[sys_dic.length() + 1];
   strcpy(arg1, sys_dic.c_str());
   char arg2[] = "-u";
-  char arg3[user_dic.length() + 1];
+  char *arg3 = new char[user_dic.length() + 1];
   strcpy(arg3, user_dic.c_str());
   char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
   int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
@@ -60,6 +60,8 @@ StringVector posRcpp(StringVector text, std::string sys_dic, std::string user_di
 
   result.names() = tags;
 
+  delete[] arg1;
+  delete[] arg3;
   mecab_destroy(mecab);
   return result;
 }
@@ -74,10 +76,10 @@ StringVector posJoinRcpp(StringVector text, std::string sys_dic, std::string use
   const mecab_node_t* node;
 
   char arg0[] = "-d";
-  char arg1[sys_dic.length() + 1];
+  char *arg1 = new char[sys_dic.length() + 1];
   strcpy(arg1, sys_dic.c_str());
   char arg2[] = "-u";
-  char arg3[user_dic.length() + 1];
+  char *arg3 = new char[user_dic.length() + 1];
   strcpy(arg3, user_dic.c_str());
   char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
   int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
@@ -108,6 +110,8 @@ StringVector posJoinRcpp(StringVector text, std::string sys_dic, std::string use
     }
   }
 
+  delete[] arg1;
+  delete[] arg3;
   mecab_destroy(mecab);
   return result;
 }

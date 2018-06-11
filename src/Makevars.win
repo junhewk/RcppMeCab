@@ -1,12 +1,27 @@
-# MECAB_LIB_DIR=c:\mecab\lib
-# PKG_LIBS=-L$(MECAB_DIR) -L$(MECAB_LIB_DIR) -llibmecab
+# File:		Makevars
+# Author:	Junhewk Kim
+# Date:		11 June 2018
 
-MECAB_DIR=~/mecab
+ifeq "$(MECAB_LANG)" ""
+MECAB_LANG = KO
 
-ifeq "$(WIN)" "64" 
-PKG_LIBS=-L$(MECAB_DIR)/x64 -llibmecab 
+# Download MeCab DLL
+# curl -O https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_${MECAB_LANG}.tar.gz
+
+mecab-${MECAB_LANG}.tar.gz:
+ 	`"${R_HOME}/bin/Rscript" --vanilla -e "download.file(url='https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_${MECAB_LANG}.tar.gz', destfile='mecab_${MECAB_LANG}.tar.gz')"`
+
+# Extract MeCab DLL and remove .tar.gz
+# tar -xzvf mecab_${MECAB_LANG}.tar.gz
+
+mecab_${MECAB_LANG}/configure: mecab_${MECAB_LANG}.tar.gz
+	`"${R_HOME}/bin/Rscript" --vanilla -e "untar(tarfile='mecab_${MECAB_LANG}.tar.gz')"`
+	rm -rf mecab_${MECAB_LANG}.tar.gz
+
+ifeq "$(WIN)" "64"
+PKG_LIBS += -Lmecab_$(MECAB_LANG)/x64 -llibmecab 
 else 
-PKG_LIBS=-L$(MECAB_DIR)/i386 -llibmecab 
+PKG_LIBS += -Lmecab_$(MECAB_LANG)/i386 -llibmecab 
 endif
 
 PKG_CPPFLAGS = -DDLL_IMPORT -I.
@@ -15,3 +30,8 @@ CXX_STD = CXX11
 PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1
 
 PKG_LIBS += $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppParallel::RcppParallelLibs()")
+
+clean:
+	rm -rf *.so
+	rm -rf *.o
+	rm -rf mecab_${MECAB_LANG}

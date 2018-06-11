@@ -41,7 +41,7 @@ Install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-d
 
 For Japanese:
 
-Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc). Provide directory location to `RcppMeCab` function. For example: `pos(sentence, "C:/PROGRA~2/mecab/dic/ipadic")`
+Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc). Provide directory location to `RcppMeCab` function. For example: `pos(sentence, sys_dic = "C:/PROGRA~2/mecab/dic/ipadic")`
 
 ## Usage
 
@@ -89,7 +89,7 @@ $ /usr/local/libexec/mecab/mecab-dict-index -m /usr/local/lib/mecab/dic/mecab-ko
 + Korean: `mecab-ko-msvc` has `mecab-dict-index.exe`.
 + Japanese: `MeCab` binary version has `mecab-dict-index.exe`.
 
-You can use it in the same way Linux compiles the dictionary.
+You can use it in the same way the Linux binary compiles the dictionary.
 
 ## TODOs
 
