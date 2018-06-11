@@ -2,7 +2,7 @@
 # Author:	Junhewk Kim
 # Date:		11 June 2018
 
-"$(MECAB_LANG)" ""
+ifeq ($(MECAB_LANG),)
 MECAB_LANG = ko
 endif
 
