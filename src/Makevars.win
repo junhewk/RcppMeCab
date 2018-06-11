@@ -4,6 +4,7 @@
 
 ifeq "$(MECAB_LANG)" ""
 MECAB_LANG = ko
+endif
 
 # Download MeCab DLL
 # curl -O https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_$(MECAB_LANG).tar.gz
