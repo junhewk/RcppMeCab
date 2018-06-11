@@ -9,15 +9,16 @@ endif
 # Download MeCab DLL
 # curl -O https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_$(MECAB_LANG).tar.gz
 
-mecab-$(MECAB_LANG).tar.gz:
-	`"$(R_HOME)/bin/Rscript" --vanilla -e "download.file(url='https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_$(MECAB_LANG).tar.gz', destfile='mecab_$(MECAB_LANG).tar.gz')"`
+# mecab-$(MECAB_LANG).tar.gz:
+"$(R_HOME)/bin/Rscript" --vanilla -e "download.file(url='https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_$(MECAB_LANG).tar.gz', destfile='mecab_$(MECAB_LANG).tar.gz')"
 
 # Extract MeCab DLL and remove .tar.gz
 # tar -xzvf mecab_$(MECAB_LANG).tar.gz
 
-mecab_$(MECAB_LANG)/configure: mecab_$(MECAB_LANG).tar.gz
-	`"$(R_HOME)/bin/Rscript" --vanilla -e "untar(tarfile='mecab_$(MECAB_LANG).tar.gz')"`
-	rm -rf mecab_$(MECAB_LANG).tar.gz
+# mecab_$(MECAB_LANG)/configure: mecab_$(MECAB_LANG).tar.gz
+	
+"$(R_HOME)/bin/Rscript" --vanilla -e "untar(tarfile='mecab_$(MECAB_LANG).tar.gz')"`
+rm -rf mecab_$(MECAB_LANG).tar.gz
 
 ifeq "$(WIN)" "64"
 PKG_LIBS += -Lmecab_$(MECAB_LANG)/x64 -llibmecab 
