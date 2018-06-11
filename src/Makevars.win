@@ -2,7 +2,7 @@
 # Author:	Junhewk Kim
 # Date:		11 June 2018
 
-ifeq "$(MECAB_LANG)" ""
+"$(MECAB_LANG)" ""
 MECAB_LANG = ko
 endif
 
@@ -25,7 +25,7 @@ else
 PKG_LIBS += -Lmecab_$(MECAB_LANG)/i386 -llibmecab 
 endif
 
-PKG_CPPFLAGS = -DDLL_IMPORT -I.
+PKG_CPPFLAGS += -DDLL_IMPORT -I.
 
 CXX_STD = CXX11
 PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1
