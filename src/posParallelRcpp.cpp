@@ -130,9 +130,9 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   mecab_model_destroy(model);
 
   // explicit type conversion
-  for (int k = 0; k < results.size(); ++k) {
+  for (size_t k = 0; k < results.size(); ++k) {
     CharacterVector resultString;
-    for (int l = 0; l < results[k].size(); ++l) {
+    for (size_t l = 0; l < results[k].size(); ++l) {
       Rcpp::String morph_copy; // type conversion to Rcpp::String and set encoding
       morph_copy = results[k][l];
       morph_copy.set_encoding(CE_UTF8);
@@ -177,10 +177,10 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   mecab_model_destroy(model);
 
   // explicit type conversion
-  for (int k = 0; k < results.size(); ++k) {
+  for (size_t k = 0; k < results.size(); ++k) {
     CharacterVector resultString;
     CharacterVector resultTag;
-    for (int l = 0; l < results[k].size(); l += 2) {
+    for (size_t l = 0; l < results[k].size(); l += 2) {
       Rcpp::String morph_copy; // type conversion to Rcpp::String and set encoding
       Rcpp::String tags_copy;
       morph_copy = results[k][l];

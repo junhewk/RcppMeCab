@@ -1,4 +1,4 @@
-# RcppMeCab [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+# RcppMeCab [![License](https://img.shields.io/badge/license-GPL-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl.html) [![CRAN](http://www.r-pkg.org/badges/version/RcppMeCab)](https://cran.r-project.org/package=RcppMeCab) [![Downloads](http://cranlogs.r-pkg.org/badges/RcppMeCab?color=brightgreen)](http://www.r-pkg.org/pkg/RcppMeCab)
 
 This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphological analyzer `MeCab`. It supports native utf-8 encoding in C++ code and CJK (Chinese, Japanese, and Korean) MeCab library. This package fully utilizes the power `Rcpp` brings `R` computation to analyze texts faster.
 
@@ -21,14 +21,11 @@ devtools::install_github("junhewk/RcppMeCab")
 
 ### Windows
 
-You should download DLLs applicable for your language.
-
-+ [mecab_ko.zip](https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_ko.zip) (for Korean)
-+ [mecab_jp.zip](https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_jp.zip) (for Japanese and other languages)
-
-Uncompress DLLs in `~\mecab` (for example, `C:\Users\User\mecab`). And, install `RcppMeCab` package from Github.
+You should set the language you want to use for the analysis with the environment variable `MECAB_LANG`. The default value is `ko` and if you want to analyze Japanese or Chinese, please set it as `jp` before install the package.
 
 ```
+Sys.setenv(MECAB_LANG = 'jp') # for installing Japanese version
+Sys.setenv(MECAB_LANG = 'ko') # for installing Japanese version
 # install.packages("devtools")
 devtools::install_github("junhewk/RcppMecab")
 ```

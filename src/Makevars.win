@@ -1,39 +1,46 @@
-# File:		Makevars
-# Author:	Junhewk Kim
-# Date:		11 June 2018
+## -*- mode: Makefile; tab-width: 8 -*-
+##
+##  Makefile.win 	Windows build system
+##
+##  Author:			Junhewk Kim
+##
+##  This file is part of RcppMeCab
+##
+##  Based on Makefile.win of Rblpapi
+##  https://github.com/Rblp/Rblpapi/blob/master/src/Makevars.win
 
-ifeq ($(MECAB_LANG),)
-MECAB_LANG = ko
-endif
 
-# Download MeCab DLL
-# curl -O https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_$(MECAB_LANG).tar.gz
-
-# mecab-$(MECAB_LANG).tar.gz:
-`"$(R_HOME)/bin/Rscript" --vanilla -e "download.file(url='https://github.com/junhewk/RcppMeCab/releases/download/0.0.1/mecab_$(MECAB_LANG).tar.gz', destfile='mecab_$(MECAB_LANG).tar.gz')"`
-
-# Extract MeCab DLL and remove .tar.gz
-# tar -xzvf mecab_$(MECAB_LANG).tar.gz
-
-# mecab_$(MECAB_LANG)/configure: mecab_$(MECAB_LANG).tar.gz
-	
-`"$(R_HOME)/bin/Rscript" --vanilla -e "untar(tarfile='mecab_$(MECAB_LANG).tar.gz')"`
-rm -rf mecab_$(MECAB_LANG).tar.gz
-
+## Distinguish between 32 and 64 bit windows
 ifeq "$(WIN)" "64"
-PKG_LIBS += -Lmecab_$(MECAB_LANG)/x64 -llibmecab 
-else 
-PKG_LIBS += -Lmecab_$(MECAB_LANG)/i386 -llibmecab 
+    FLV = x64
+else
+    FLV = i386
 endif
 
-PKG_CPPFLAGS += -DDLL_IMPORT -I.
+## Confirm there is a user definition of an environment variable MECAB_LANG
+ifeq ($(MECAB_LANG),)
+    MECAB_LANG = ko
+endif
 
+## Compiler / linker flags with RcppParallel library
 CXX_STD = CXX11
+PKG_CPPFLAGS = -DDLL_IMPORT -I../inst/include -I.
 PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1
+PKG_LIBS = -llibmecab -L$(FLV) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()")
 
-PKG_LIBS += $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()")
+## SHLIB target is built by R, MeCabLibrary is a target we use to expand the tar.gz
+all:    	MeCabLibrary $(SHLIB)
 
-clean:
-	rm -rf *.so
-	rm -rf *.o
-	rm -rf mecab_$(MECAB_LANG)
+## target to ensure tar.gz files get unpacked
+## the opening '@' ensures operations are executed 'quietly'
+## in order to see commands as they happens add a 'v' to the tar and cp commands
+MeCabLibrary:
+		@if [ ! -d ../mecab/win/$(FLV) ]; then mkdir -p ../mecab/win/$(FLV); fi
+		@if [ ! -f ../mecab/win/$(FLV)/MeCabLibrary.tar.gz ]; then `"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='https://github.com/junhewk/RcppMeCab/releases/download/0.0.1.0/mecab$(WIN)_$(MECAB_LANG).tar.gz', destfile='../mecab/win/$(FLV)/mecab$(WIN)_$(MECAB_LANG).tar.gz', quiet=TRUE)"`; tar xfz ../mecab/win/$(FLV)/mecab$(WIN)_$(MECAB_LANG).tar.gz; fi
+		@if [ ! -d $(FLV) ]; then mkdir -p $(FLV); fi
+		@cp libmecab.dll $(FLV)
+		@if [ ! -d ../inst/libs/$(FLV) ]; then mkdir -p ../inst/libs/$(FLV); fi
+		@cp libmecab.dll ../inst/libs/$(FLV)
+
+## Ensure the blpLibrary target is always executed
+.Phony:		MeCabLibrary
