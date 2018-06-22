@@ -12,11 +12,10 @@ First, install `MeCab` of your language-of-choice.
 + Korean: `MeCab-Ko` from [Bitbucket repository](https://bitbucket.org/eunjeon/mecab-ko)
 + Chinese: `MeCab` and `MeCab Chinese Dic` from [MeCab-Chinese](http://www.52nlp.cn/%E7%94%A8mecab%E6%89%93%E9%80%A0%E4%B8%80%E5%A5%97%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E7%B3%BB%E7%BB%9F%E4%B8%89%EF%BC%9Amecab-chinese)
 
-Second, you can install RcppMeCab from github with:
+Second, you can install RcppMeCab from CRAN with:
 
 ```
-# install.packages("devtools")
-devtools::install_github("junhewk/RcppMeCab")
+install.packages("RcppMeCab") # build from source
 ```
 
 ### Windows
@@ -24,13 +23,13 @@ devtools::install_github("junhewk/RcppMeCab")
 You should set the language you want to use for the analysis with the environment variable `MECAB_LANG`. The default value is `ko` and if you want to analyze Japanese or Chinese, please set it as `jp` before install the package.
 
 ```
+install.packages("RcppMeCab") # for installing Korean version
+# or, install for Japanese
 Sys.setenv(MECAB_LANG = 'jp') # for installing Japanese version
-Sys.setenv(MECAB_LANG = 'ko') # for installing Japanese version
-# install.packages("devtools")
-devtools::install_github("junhewk/RcppMecab")
+install.packages("RcppMeCab", type="source") # build from source
 ```
 
-For analyzing, you need a MeCab dictionary.
+For analyzing, you also need MeCab binary and dictionary.
 
 For Korean:
 
