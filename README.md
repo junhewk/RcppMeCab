@@ -28,7 +28,7 @@ You should set the language you want to use for the analysis with the environmen
 install.packages("RcppMeCab") # for installing Korean version
 
 # or, install for Japanese
-Sys.setenv(MECAB_LANG = 'jp') # for installing Japanese version
+Sys.setenv(MECAB_LANG = 'ja') # for installing Japanese version
 install.packages("RcppMeCab", type="source") # build from source
 
 # install.packages("devtools")
