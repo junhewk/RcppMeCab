@@ -19,22 +19,27 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
   std::vector< std::string >::iterator it;
   String parsed_morph;
   String parsed_tag;
-  std::string f;
-  StringVector parsed_string;
-  StringVector parsed_tagset;
   List result;
 
-  char arg0[] = "-d";
-  char *arg1 = new char[sys_dic.length() + 1];
-  strcpy(arg1, sys_dic.c_str());
-  char arg2[] = "-u";
-  char *arg3 = new char[user_dic.length() + 1];
-  strcpy(arg3, user_dic.c_str());
-  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
-  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+  std::vector<std::string> args;
+  args.push_back("mecab");
+  if (sys_dic != "") {
+    args.push_back("-d");
+    args.push_back(sys_dic);
+  }
+  if (user_dic != "") {
+    args.push_back("-u");
+    args.push_back(user_dic);
+  }
+
+  char** argv_model = new char*[args.size()];
+  for(size_t i = 0; i < args.size(); ++i) {
+    argv_model[i] = new char[args[i].size() + 1];
+    std::strcpy(argv_model[i], args[i].c_str());
+  }
 
   // Create MeCab model
-  model = mecab_model_new(argc_model, argv_model);
+  model = mecab_model_new(args.size(), argv_model);
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -44,6 +49,9 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
   lattice = mecab_model_new_lattice(model);
 
   for (it = text.begin(); it != text.end(); ++it) {
+
+    StringVector parsed_string;
+    StringVector parsed_tagset;
 
     mecab_lattice_set_sentence(lattice, (*it).c_str());
     mecab_parse_lattice(tagger, lattice);
@@ -73,9 +81,20 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
 
   }
 
-  delete[] arg1;
-  delete[] arg3;
+  StringVector result_name(text.size());
 
+  for (size_t h = 0; h < text.size(); ++h) {
+    String character_name = text[h];
+    character_name.set_encoding(CE_UTF8);
+    result_name[h] = character_name;
+  }
+
+  result.names() = result_name;
+
+  for(size_t i = 0; i < args.size(); i++){
+    delete [] argv_model[i];
+  }
+  delete [] argv_model;
   mecab_destroy(tagger);
   mecab_lattice_destroy(lattice);
   mecab_model_destroy(model);
@@ -94,21 +113,27 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
   const mecab_node_t* node;
   std::vector< std::string >::iterator it;
   String parsed_morph;
-  std::string f;
-  StringVector parsed_string;
   List result;
 
-  char arg0[] = "-d";
-  char *arg1 = new char[sys_dic.length() + 1];
-  strcpy(arg1, sys_dic.c_str());
-  char arg2[] = "-u";
-  char *arg3 = new char[user_dic.length() + 1];
-  strcpy(arg3, user_dic.c_str());
-  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
-  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+  std::vector<std::string> args;
+  args.push_back("mecab");
+  if (sys_dic != "") {
+    args.push_back("-d");
+    args.push_back(sys_dic);
+  }
+  if (user_dic != "") {
+    args.push_back("-u");
+    args.push_back(user_dic);
+  }
+
+  char** argv_model = new char*[args.size()];
+  for(size_t i = 0; i < args.size(); ++i) {
+    argv_model[i] = new char[args[i].size() + 1];
+    std::strcpy(argv_model[i], args[i].c_str());
+  }
 
   // Create MeCab model
-  model = mecab_model_new(argc_model, argv_model);
+  model = mecab_model_new(args.size(), argv_model);
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -118,6 +143,8 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
   lattice = mecab_model_new_lattice(model);
 
   for (it = text.begin(); it != text.end(); ++it) {
+
+    StringVector parsed_string;
 
     mecab_lattice_set_sentence(lattice, (*it).c_str());
     mecab_parse_lattice(tagger, lattice);
@@ -143,9 +170,20 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
 
   }
 
-  delete[] arg1;
-  delete[] arg3;
+  StringVector result_name(text.size());
 
+  for (size_t h = 0; h < text.size(); ++h) {
+    String character_name = text[h];
+    character_name.set_encoding(CE_UTF8);
+    result_name[h] = character_name;
+  }
+
+  result.names() = result_name;
+
+  for(size_t i = 0; i < args.size(); i++){
+    delete [] argv_model[i];
+  }
+  delete [] argv_model;
   mecab_destroy(tagger);
   mecab_lattice_destroy(lattice);
   mecab_model_destroy(model);

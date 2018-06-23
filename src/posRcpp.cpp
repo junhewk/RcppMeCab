@@ -13,32 +13,40 @@ mecab_destroy(mecab);                                               \
 return R_NilValue; }
 
 // [[Rcpp::export]]
-StringVector posRcpp(StringVector text, std::string sys_dic, std::string user_dic) {
-  // basic MeCab tagger
+List posRcpp(std::string text, std::string sys_dic, std::string user_dic) {
 
-  std::string input = as<std::string>(text);
+  // basic MeCab tagger
 
   mecab_t* mecab;
   const mecab_node_t* node;
 
-  char arg0[] = "-d";
-  char *arg1 = new char[sys_dic.length() + 1];
-  strcpy(arg1, sys_dic.c_str());
-  char arg2[] = "-u";
-  char *arg3 = new char[user_dic.length() + 1];
-  strcpy(arg3, user_dic.c_str());
-  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
-  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+  std::vector<std::string> args;
+  args.push_back("mecab");
+  if (sys_dic != "") {
+    args.push_back("-d");
+    args.push_back(sys_dic);
+  }
+  if (user_dic != "") {
+    args.push_back("-u");
+    args.push_back(user_dic);
+  }
+
+  char** argv_model = new char*[args.size()];
+  for(size_t i = 0; i < args.size(); ++i) {
+    argv_model[i] = new char[args[i].size() + 1];
+    std::strcpy(argv_model[i], args[i].c_str());
+  }
 
   // Create MeCab object
-  mecab = mecab_new(argc_model, argv_model);
+  mecab = mecab_new(args.size(), argv_model);
   CHECK(mecab);
 
   // Create Node object
-  node = mecab_sparse_tonode(mecab, input.c_str());
+  node = mecab_sparse_tonode(mecab, text.c_str());
   CHECK(node);
 
-  StringVector result;
+  List result;
+  StringVector parsed_string;
   StringVector tags;
 
   for (; node; node = node->next) {
@@ -53,46 +61,62 @@ StringVector posRcpp(StringVector text, std::string sys_dic, std::string user_di
       boost::split(features, node->feature, boost::is_any_of(","));
       String parsed_tag = features[0];
       parsed_tag.set_encoding(CE_UTF8);
-      result.push_back(parsed_morph);
+      parsed_string.push_back(parsed_morph);
       tags.push_back(parsed_tag);
     }
   }
 
-  result.names() = tags;
+  parsed_string.names() = tags;
+  result.push_back(parsed_string);
 
-  delete[] arg1;
-  delete[] arg3;
+  String result_name;
+  result_name.push_back(text);
+  result_name.set_encoding(CE_UTF8);
+  result.names() = result_name;
+
+  for(size_t i = 0; i < args.size(); i++){
+    delete [] argv_model[i];
+  }
+  delete [] argv_model;
   mecab_destroy(mecab);
+
   return result;
 }
 
 // [[Rcpp::export]]
-StringVector posJoinRcpp(StringVector text, std::string sys_dic, std::string user_dic) {
+List posJoinRcpp(std::string text, std::string sys_dic, std::string user_dic) {
+
   // basic MeCab tagger
-
-  std::string input = as<std::string>(text);
-
   mecab_t* mecab;
   const mecab_node_t* node;
 
-  char arg0[] = "-d";
-  char *arg1 = new char[sys_dic.length() + 1];
-  strcpy(arg1, sys_dic.c_str());
-  char arg2[] = "-u";
-  char *arg3 = new char[user_dic.length() + 1];
-  strcpy(arg3, user_dic.c_str());
-  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
-  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+  std::vector<std::string> args;
+  args.push_back("mecab");
+  if (sys_dic != "") {
+    args.push_back("-d");
+    args.push_back(sys_dic);
+  }
+  if (user_dic != "") {
+    args.push_back("-u");
+    args.push_back(user_dic);
+  }
+
+  char** argv_model = new char*[args.size()];
+  for(size_t i = 0; i < args.size(); ++i) {
+    argv_model[i] = new char[args[i].size() + 1];
+    std::strcpy(argv_model[i], args[i].c_str());
+  }
 
   // Create MeCab object
-  mecab = mecab_new(argc_model, argv_model);
+  mecab = mecab_new(args.size(), argv_model);
   CHECK(mecab);
 
   // Create Node object
-  node = mecab_sparse_tonode(mecab, input.c_str());
+  node = mecab_sparse_tonode(mecab, text.c_str());
   CHECK(node);
 
-  StringVector result;
+  List result;
+  StringVector parsed_string;
 
   for (; node; node = node->next) {
     if (node->stat == MECAB_BOS_NODE)
@@ -106,12 +130,20 @@ StringVector posJoinRcpp(StringVector text, std::string sys_dic, std::string use
       boost::split(features, node->feature, boost::is_any_of(","));
       parsed_morph.push_back(features[0]);
       parsed_morph.set_encoding(CE_UTF8); // Set Encoding with Rcpp module
-      result.push_back(parsed_morph);
+      parsed_string.push_back(parsed_morph);
     }
   }
 
-  delete[] arg1;
-  delete[] arg3;
+  result.push_back(parsed_string);
+  String result_name = text;
+  result_name.set_encoding(CE_UTF8);
+  result.names() = result_name;
+
+  for(size_t i = 0; i < args.size(); i++){
+    delete [] argv_model[i];
+  }
+  delete [] argv_model;
   mecab_destroy(mecab);
+
   return result;
 }

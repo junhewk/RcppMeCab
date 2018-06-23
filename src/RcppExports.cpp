@@ -58,12 +58,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // posRcpp
-StringVector posRcpp(StringVector text, std::string sys_dic, std::string user_dic);
+List posRcpp(std::string text, std::string sys_dic, std::string user_dic);
 RcppExport SEXP _RcppMeCab_posRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_dicSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< StringVector >::type text(textSEXP);
+    Rcpp::traits::input_parameter< std::string >::type text(textSEXP);
     Rcpp::traits::input_parameter< std::string >::type sys_dic(sys_dicSEXP);
     Rcpp::traits::input_parameter< std::string >::type user_dic(user_dicSEXP);
     rcpp_result_gen = Rcpp::wrap(posRcpp(text, sys_dic, user_dic));
@@ -71,12 +71,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // posJoinRcpp
-StringVector posJoinRcpp(StringVector text, std::string sys_dic, std::string user_dic);
+List posJoinRcpp(std::string text, std::string sys_dic, std::string user_dic);
 RcppExport SEXP _RcppMeCab_posJoinRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_dicSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< StringVector >::type text(textSEXP);
+    Rcpp::traits::input_parameter< std::string >::type text(textSEXP);
     Rcpp::traits::input_parameter< std::string >::type sys_dic(sys_dicSEXP);
     Rcpp::traits::input_parameter< std::string >::type user_dic(user_dicSEXP);
     rcpp_result_gen = Rcpp::wrap(posJoinRcpp(text, sys_dic, user_dic));

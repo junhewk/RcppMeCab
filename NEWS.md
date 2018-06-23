@@ -1,3 +1,11 @@
+# RcppMeCab 0.0.1.2
+
++ loop version of `pos` function is fixed (duplicated result)
++ `sys_dic` is now working properly
++ each function checks `getOption("mecabSysDic")` to get user preference of MeCab system dictionary
++ present input character vecters over the result list attributes (names)
++ a single character vector input in `pos()` will return a list
+
 # RcppMeCab 0.0.1.1
 
 + `posParallel` function is added to support parallelization

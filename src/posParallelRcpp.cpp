@@ -103,17 +103,25 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   std::vector< std::vector < std::string > > results(text.size());
   List result;
 
-  char arg0[] = "-d";
-  char *arg1 = new char[sys_dic.length() + 1];
-  strcpy(arg1, sys_dic.c_str());
-  char arg2[] = "-u";
-  char *arg3 = new char[user_dic.length() + 1];
-  strcpy(arg3, user_dic.c_str());
-  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
-  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+  std::vector<std::string> args;
+  args.push_back("mecab");
+  if (sys_dic != "") {
+    args.push_back("-d");
+    args.push_back(sys_dic);
+  }
+  if (user_dic != "") {
+    args.push_back("-u");
+    args.push_back(user_dic);
+  }
+
+  char** argv_model = new char*[args.size()];
+  for(size_t i = 0; i < args.size(); ++i) {
+    argv_model[i] = new char[args[i].size() + 1];
+    std::strcpy(argv_model[i], args[i].c_str());
+  }
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(argc_model, argv_model);
+  mecab_model_t* model = mecab_model_new(args.size(), argv_model);
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -124,8 +132,10 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   auto func = TextParseJoin(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
 
-  delete[] arg1;
-  delete[] arg3;
+  for(size_t i = 0; i < args.size(); i++){
+    delete [] argv_model[i];
+  }
+  delete [] argv_model;
 
   mecab_model_destroy(model);
 
@@ -141,6 +151,16 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
     result.push_back(resultString);
   }
 
+  StringVector result_name(text.size());
+
+  for (size_t h = 0; h < text.size(); ++h) {
+    String character_name = text[h];
+    character_name.set_encoding(CE_UTF8);
+    result_name[h] = character_name;
+  }
+
+  result.names() = result_name;
+
   return result;
 }
 
@@ -150,17 +170,25 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   std::vector< std::vector < std::string > > results(text.size());
   List result;
 
-  char arg0[] = "-d";
-  char *arg1 = new char[sys_dic.length() + 1];
-  strcpy(arg1, sys_dic.c_str());
-  char arg2[] = "-u";
-  char *arg3 = new char[user_dic.length() + 1];
-  strcpy(arg3, user_dic.c_str());
-  char* argv_model[] = { &arg0[0], &arg1[0], &arg2[0], &arg3[0], NULL };
-  int argc_model = (int)(sizeof(argv_model) / sizeof(argv_model[0])) - 1;
+  std::vector<std::string> args;
+  args.push_back("mecab");
+  if (sys_dic != "") {
+    args.push_back("-d");
+    args.push_back(sys_dic);
+  }
+  if (user_dic != "") {
+    args.push_back("-u");
+    args.push_back(user_dic);
+  }
+
+  char** argv_model = new char*[args.size()];
+  for(size_t i = 0; i < args.size(); ++i) {
+    argv_model[i] = new char[args[i].size() + 1];
+    std::strcpy(argv_model[i], args[i].c_str());
+  }
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(argc_model, argv_model);
+  mecab_model_t* model = mecab_model_new(args.size(), argv_model);
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -171,8 +199,10 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   auto func = TextParse(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
 
-  delete[] arg1;
-  delete[] arg3;
+  for(size_t i = 0; i < args.size(); i++){
+    delete [] argv_model[i];
+  }
+  delete [] argv_model;
 
   mecab_model_destroy(model);
 
@@ -193,6 +223,16 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
     resultString.names() = resultTag;
     result.push_back(resultString);
   }
+
+  StringVector result_name(text.size());
+
+  for (size_t h = 0; h < text.size(); ++h) {
+    String character_name = text[h];
+    character_name.set_encoding(CE_UTF8);
+    result_name[h] = character_name;
+  }
+
+  result.names() = result_name;
 
   return result;
 }

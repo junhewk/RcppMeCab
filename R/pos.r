@@ -12,7 +12,8 @@
 #'
 #' You can also set a system dictionary especially if you are using multiple
 #' dictionaries (for example, using both IPA and Juman dictionary at the same time in Japanese)
-#' in \code{sys_dic}.
+#' in \code{sys_dic}. Using \code{options(mecabSysDic=)}, you can set your
+#' prefered system dictionary to the R terminal.
 #'
 #' If you want to get a morpheme only, use \code{join = False} to put tag names on the attribute.
 #' Basically, the function will return a list of character vectors with (morpheme)/(tag) elements.
@@ -43,6 +44,8 @@ pos <- function(sentence, join = TRUE, sys_dic = "", user_dic = "") {
       stop("The function gets a character vector only.")
     }
   }
+
+  if (!is.null(getOption("mecabSysDic")) && !sys_dic == "") sys_dic = getOption("mecabSysDic")
 
   if (join == TRUE) {
     if (length(sentence) > 1) {
