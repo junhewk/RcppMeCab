@@ -18,7 +18,7 @@ else
 endif
 
 ## Confirm there is a user definition of an environment variable MECAB_LANG
-ifeq ($(MECAB_LANG),)
+ifneq "$(MECAB_LANG)" "ja"
     MECAB_LANG = ko
 endif
 
