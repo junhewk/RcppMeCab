@@ -5,6 +5,7 @@
 + each function checks `getOption("mecabSysDic")` to get user preference of MeCab system dictionary
 + present input character vecters over the result list attributes (names)
 + a single character vector input in `pos()` will return a list
++ an option for result type is added: with arg `format="data.frame"`
 
 # RcppMeCab 0.0.1.1
 

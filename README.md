@@ -28,7 +28,6 @@ You should set the language you want to use for the analysis with the environmen
 install.packages("RcppMeCab") # for installing Korean version
 
 # or, install for Japanese
-SyS.setenv(MECAB_LANG = 'jp') # for installing Japanese CRAN version
 Sys.setenv(MECAB_LANG = 'ja') # for installing Japanese developmental version
 install.packages("RcppMeCab", type="source") # build from source
 
@@ -53,14 +52,16 @@ This package has `pos` and `posParallel` function.
 ```
 pos(sentence) # returns list, sentence will present on the names of the list
 pos(sentence, join = FALSE) # for yielding morphemes only (tags will be given on the vector names)
+pos(sentence, format = "data.frame") # the result will returned as a data frame format
 pos(sentence, user_dic) # gets a compiled user dictionary 
 posParallel(sentence, user_dic) # parallelized version uses more memory, but much faster than the loop in single threading
 ```
 
 + sentence: a text for analyzing
++ join: If it gets TRUE, output form is (morpheme/tag). If it gets FALSE, output form is (morpheme) + tag in attribute.
++ format: The default is a list. If you set this as `"data.frame", the function will return the result in a data frame format.
 + sys_dic: a directory in which `dicrc` file is located, default value is "" or you can set your default value using `options(mecabSysDic = "")` 
 + user_dic: a user dictionary file compiled by `mecab_dict_index`, default value is also ""
-+ join: If it gets TRUE, output form is (morpheme/tag). If it gets FALSE, output form is (morpheme) + tag in attribute.
 
 ## Compiling User Dictionary
 

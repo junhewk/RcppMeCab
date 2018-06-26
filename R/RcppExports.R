@@ -9,8 +9,16 @@ posLoopJoinRcpp <- function(text, sys_dic, user_dic) {
     .Call('_RcppMeCab_posLoopJoinRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
 }
 
+posDFRcpp <- function(text, sys_dic, user_dic) {
+    .Call('_RcppMeCab_posDFRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+}
+
 posParallelJoinRcpp <- function(text, sys_dic, user_dic) {
     .Call('_RcppMeCab_posParallelJoinRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+}
+
+posParallelDFRcpp <- function(text, sys_dic, user_dic) {
+    .Call('_RcppMeCab_posParallelDFRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
 }
 
 posParallelRcpp <- function(text, sys_dic, user_dic) {
