@@ -49,6 +49,8 @@ Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1
 
 This package has `pos` and `posParallel` function.
 
+**`pos` has a malfunction on its loop. 0.0.1.2 (Github version) fixed it.**
+
 ```
 pos(sentence) # returns list, sentence will present on the names of the list
 pos(sentence, join = FALSE) # for yielding morphemes only (tags will be given on the vector names)
