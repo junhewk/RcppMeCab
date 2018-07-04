@@ -1,0 +1,3 @@
+RcppMeCab               RcppMeCab: Rcpp Wrapper for MeCab Library
+pos                     part-of-speech tagger
+posParallel             parallel version of part-of-speech tagger

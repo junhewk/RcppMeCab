@@ -49,8 +49,6 @@ Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1
 
 This package has `pos` and `posParallel` function.
 
-**`pos` has a malfunction on its loop. 0.0.1.2 (Github version) fixed it.**
-
 ```
 pos(sentence) # returns list, sentence will present on the names of the list
 pos(sentence, join = FALSE) # for yielding morphemes only (tags will be given on the vector names)
@@ -61,7 +59,7 @@ posParallel(sentence, user_dic) # parallelized version uses more memory, but muc
 
 + sentence: a text for analyzing
 + join: If it gets TRUE, output form is (morpheme/tag). If it gets FALSE, output form is (morpheme) + tag in attribute.
-+ format: The default is a list. If you set this as `"data.frame", the function will return the result in a data frame format.
++ format: The default is a list. If you set this as `"data.frame"`, the function will return the result in a data frame format.
 + sys_dic: a directory in which `dicrc` file is located, default value is "" or you can set your default value using `options(mecabSysDic = "")` 
 + user_dic: a user dictionary file compiled by `mecab_dict_index`, default value is also ""
 
