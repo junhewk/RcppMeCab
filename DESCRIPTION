@@ -18,6 +18,6 @@ Encoding: UTF-8
 LazyData: true
 BugReports: https://github.com/junhewk/RcppMeCab/issues
 LinkingTo: Rcpp, RcppParallel, BH
-Imports: Rcpp, RcppParallel
+Imports: Rcpp, RcppParallel, jsonlite
 SystemRequirements: MeCab 0.996 (or mecab-ko 0.9.2) or higher, GNU make
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
