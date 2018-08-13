@@ -4,7 +4,7 @@
 \alias{installMecabKoDicForWindows}
 \title{install mecab-ko-dic for windows}
 \usage{
-installMecabKoDicForWindows(path = "c:\\\\mecab", cleanup = TRUE)
+installMecabKoDicForWindows(path = "c://mecab", cleanup = TRUE)
 }
 \arguments{
 \item{path}{the path to download a file and unzip. The default is "c:/mecab" and Default path is strongly recommended.}

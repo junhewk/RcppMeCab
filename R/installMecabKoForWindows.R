@@ -12,7 +12,7 @@
 #' }
 #'
 #' @export
-installMecabKoForWindows <- function(path = "c:\\mecab",
+installMecabKoForWindows <- function(path = "c://mecab",
                                      release = "auto",
                                      cleanup = TRUE){
   installForWindows(github_repo = "Pusnow/mecab-ko-msvc",
@@ -34,7 +34,7 @@ installMecabKoForWindows <- function(path = "c:\\mecab",
 #' }
 #'
 #' @export
-installMecabKoDicForWindows <- function(path = "c:\\mecab",
+installMecabKoDicForWindows <- function(path = "c://mecab",
                                         cleanup = TRUE){
   installForWindows(github_repo = "Pusnow/mecab-ko-dic-msvc",
                     path = path,

@@ -4,7 +4,7 @@
 \alias{installMecabKoForWindows}
 \title{install mecab-ko for windows}
 \usage{
-installMecabKoForWindows(path = "c:\\\\mecab", release = "auto",
+installMecabKoForWindows(path = "c://mecab", release = "auto",
   cleanup = TRUE)
 }
 \arguments{
