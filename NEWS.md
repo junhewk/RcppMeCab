@@ -1,3 +1,7 @@
+# RcppMeCab 0.0.1.3
+
++ Add analytic forms of conjugated morphemes when format == "data.frame"
+
 # RcppMeCab 0.0.1.2
 
 + loop version of `pos` function is fixed (duplicated result)
