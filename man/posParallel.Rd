@@ -4,8 +4,13 @@
 \alias{posParallel}
 \title{parallel version of part-of-speech tagger}
 \usage{
-posParallel(sentence, join = TRUE, format = c("list", "data.frame"),
-  sys_dic = "", user_dic = "")
+posParallel(
+  sentence,
+  join = TRUE,
+  format = c("list", "data.frame"),
+  sys_dic = "",
+  user_dic = ""
+)
 }
 \arguments{
 \item{sentence}{A character vector of any length. For analyzing multiple sentences, put them in one character vector.}

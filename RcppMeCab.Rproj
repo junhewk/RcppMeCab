@@ -14,9 +14,11 @@ LaTeX: pdfLaTeX
 
 AutoAppendNewline: Yes
 StripTrailingWhitespace: Yes
-LineEndingConversion: Posix
 
 BuildType: Package
 PackageUseDevtools: Yes
-PackageInstallArgs: --no-multiarch --with-keep.source
+PackageInstallArgs: --no-multiarch
+PackageBuildArgs: --no-build-vignettes --no-manual
+PackageBuildBinaryArgs: --no-build-vignettes --no-manual
+PackageCheckArgs: --no-build-vignettes --no-manual
 PackageRoxygenize: rd,collate,namespace

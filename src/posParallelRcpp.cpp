@@ -4,7 +4,7 @@
 #include <Rcpp.h>
 #include <RcppParallel.h>
 #include <boost/algorithm/string.hpp>
-#include "mecab.h"
+#include "../inst/include/mecab.h"
 
 using namespace Rcpp;
 
@@ -144,6 +144,7 @@ struct TextParse
   mecab_model_t* model_;
 };
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, std::string user_dic ) {
 
@@ -211,6 +212,7 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   return result;
 }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string user_dic ) {
 
@@ -331,6 +333,7 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
   return DataFrame::create(_["doc_id"]=doc_id, _["sentence_id"]=sentence_id, _["token_id"]=token_id, _["token"]=token, _["pos"]=pos, _["subtype"]=subtype, _["analytic"]=analytic);
 }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::string user_dic ) {
 

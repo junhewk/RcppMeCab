@@ -3,10 +3,11 @@
 #include <Rcpp.h>
 #include <string>
 #include <boost/algorithm/string.hpp>
-#include "mecab.h"
+#include "../inst/include/mecab.h"
 
 using namespace Rcpp;
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {
 
@@ -102,6 +103,7 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
   return result;
 }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {
 
@@ -191,6 +193,7 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
   return result;
 }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic) {
 

@@ -3,7 +3,7 @@
 #include <Rcpp.h>
 #include <string>
 #include <boost/algorithm/string.hpp>
-#include "mecab.h"
+#include "../inst/include/mecab.h"
 
 using namespace Rcpp;
 
@@ -12,6 +12,7 @@ Rcpp::Rcerr << "Exception: " << mecab_strerror(mecab) << std::endl; \
 mecab_destroy(mecab);                                               \
 return R_NilValue; }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posRcpp(std::string text, std::string sys_dic, std::string user_dic) {
 
@@ -83,6 +84,7 @@ List posRcpp(std::string text, std::string sys_dic, std::string user_dic) {
   return result;
 }
 
+// [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posJoinRcpp(std::string text, std::string sys_dic, std::string user_dic) {
 
