@@ -2,6 +2,9 @@
 
 language: r
 
+os: linux
+dist: bionic
+
 warnings_are_errors: false
 
 git:
@@ -9,21 +12,41 @@ git:
 
 jobs:
   include:
-  - os: linux
-    dist: bionic
-    addons:
-      apt:
-        packages:
-          - mecab
-          - libmecab-dev
-          - mecab-ipadic-utf8
-env:
-  global:
-    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-    - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"  ## do not build vignettes or manual
-    - _R_CHECK_TIMINGS_="0"  ## get the timing information for the examples for all of your functions
+  - r:
+      - release
+    env:
+      global:
+        - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+        - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
+        - _R_CHECK_TIMINGS_="0"
+        - MECAB_LANG="ja" ## Japanese
+    before_install:
+      - sudo apt install mecab
+      - sudo apt install libmecab-dev
+      - sudo apt install mecab-ipadic-utf8
+  - r:
+      - release
+    env:
+      global:
+        - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+        - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
+        - _R_CHECK_TIMINGS_="0"
+        ## - MECAB_LANG="" ## Korean
+    before_install:
+      - wget "https://bitbucket.org/eunjeon/mecab-ko/downloads/mecab-0.996-ko-0.9.2.tar.gz" -O mecab-0.996-ko-0.9.2.tar.gz
+      - tar zxfv mecab-0.996-ko-0.9.2.tar.gz
+      - ./configure
+      - make
+      - make check
+      - sudo make install
+      - wget "https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/mecab-ko-dic-2.1.1-20180720.tar.gz" -O mecab-ko-dic-2.1.1-20180720.tar.gz
+      - tar zxfv mecab-ko-dic-2.1.1-20180720.tar.gz
+      - cd mecab-ko-dic-2.1.1-20180720
+      - ./configure
+      - make
+      - sudo make install
+      - cd ../
 
-# do not build vignettes...takes too long and times out on travis
 r_build_args: --no-build-vignettes --no-manual
 r_check_args: --no-build-vignettes --no-manual --timings
 
