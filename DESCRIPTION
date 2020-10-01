@@ -4,14 +4,14 @@ Version: 0.0.1.3
 Authors@R: c(person("Junhewk", "Kim", role = c("aut", "cre"),
                     email = "junhewk.kim@gmail.com"),
              person("Taku", "Kudo", role = c("aut"),
-             		email = "taku@chasen.org"))
+                    email = "taku@chasen.org"))
 Author: Junhewk Kim [aut, cre],
-	Taku Kudo [aut]
+    Taku Kudo [aut]
 Maintainer: Junhewk Kim <junhewk.kim@gmail.com>
 Description: R package based on 'Rcpp' for 'MeCab': Yet Another Part-of-Speech and Morphological Analyzer. 
-	The purpose of this package is providing a seamless developing and analyzing environment for CJK texts.
-	This package utilizes parallel programming for providing highly efficient text preprocessing 'posParallel()' function.
-	For installation, please refer to README.md file.
+    The purpose of this package is providing a seamless developing and analyzing environment for CJK texts.
+    This package utilizes parallel programming for providing highly efficient text preprocessing 'posParallel()' function.
+    For installation, please refer to README.md file.
 Depends: R (>= 3.4.0)
 License: GPL
 Encoding: UTF-8
