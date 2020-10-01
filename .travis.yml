@@ -34,13 +34,15 @@ jobs:
         ## - MECAB_LANG="" ## Korean
     before_install:
       - wget "https://bitbucket.org/eunjeon/mecab-ko/downloads/mecab-0.996-ko-0.9.2.tar.gz" -O mecab-0.996-ko-0.9.2.tar.gz
-      - tar zxfv mecab-0.996-ko-0.9.2.tar.gz
+      - tar zxfv mecab-0.996-ko-0.9.2.tar.gz mecab-0.996-ko-0.9.2/
+      - cd mecab-0.996-ko-0.9.2/
       - ./configure
       - make
       - make check
       - sudo make install
+      - cd ../
       - wget "https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/mecab-ko-dic-2.1.1-20180720.tar.gz" -O mecab-ko-dic-2.1.1-20180720.tar.gz
-      - tar zxfv mecab-ko-dic-2.1.1-20180720.tar.gz
+      - tar zxfv mecab-ko-dic-2.1.1-20180720.tar.gz mecab-ko-dic-2.1.1-20180720/
       - cd mecab-ko-dic-2.1.1-20180720
       - ./configure
       - make

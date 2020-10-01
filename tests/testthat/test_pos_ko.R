@@ -1,4 +1,4 @@
-if (Sys.getenv("MECAB_LANG") == "") {
+if (Sys.getenv("MECAB_LANG") != "ja") {
   test_that("Test pos tagger works", {
     expect_equal(
       pos(
