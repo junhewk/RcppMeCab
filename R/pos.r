@@ -7,13 +7,13 @@
 #' processing.
 #'
 #' You can add a user dictionary to \code{user_dic}. It should be compiled by
-#' \code{mecab-dict-index}. You can find an explatation about compiling a user
+#' \code{mecab-dict-index}. You can find an explanation about compiling a user
 #' dictionary in the \url{https://github.com/junhewk/RcppMeCab}.
 #'
 #' You can also set a system dictionary especially if you are using multiple
 #' dictionaries (for example, using both IPA and Juman dictionary at the same time in Japanese)
 #' in \code{sys_dic}. Using \code{options(mecabSysDic=)}, you can set your
-#' prefered system dictionary to the R terminal.
+#' preferred system dictionary to the R terminal.
 #'
 #' If you want to get a morpheme only, use \code{join = False} to put tag names on the attribute.
 #' Basically, the function will return a list of character vectors with (morpheme)/(tag) elements.
@@ -24,7 +24,7 @@
 #' @param sys_dic A location of system MeCab dictionary. The default value is "".
 #' @param user_dic A location of user-specific MeCab dictionary. The default value is "".
 #' @return A string vector of POS tagged morpheme will be returned in conjoined character
-#'  vecter form. Element name of the list are original phrases
+#'  vector form. Element name of the list are original phrases
 #'
 #' @examples
 #' \dontrun{

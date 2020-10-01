@@ -31,14 +31,14 @@
 #' @param pkgname pkgname
 .onLoad <- function(libname, pkgname) {
   library.dynam("RcppMeCab",
-                pkgname,
-                .libPaths(),
-                DLLpath = system.file("libs", package = pkgname)
+    pkgname,
+    .libPaths(),
+    DLLpath = system.file("libs", package = pkgname)
   )
 }
 
 #' @noRd
 #' @param libpath libpath
-.onUnload <- function (libpath) {
+.onUnload <- function(libpath) {
   library.dynam.unload("RcppMeCab", libpath)
 }
