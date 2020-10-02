@@ -4,6 +4,13 @@ language: r
 
 os: linux
 dist: bionic
+r:
+  - release
+env:
+  global:
+    - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+    - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
+    - _R_CHECK_TIMINGS_="0"
 
 warnings_are_errors: false
 
@@ -12,25 +19,14 @@ git:
 
 jobs:
   include:
-  - r:
-      - release
-    env:
-      global:
-        - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-        - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
-        - _R_CHECK_TIMINGS_="0"
-        - MECAB_LANG="ja" ## Japanese
+  - env:
+     - MECAB_LANG="ja"
     before_install:
       - sudo apt install mecab
       - sudo apt install libmecab-dev
       - sudo apt install mecab-ipadic-utf8
-  - r:
-      - release
-    env:
-      global:
-        - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-        - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
-        - _R_CHECK_TIMINGS_="0"
+  - env:
+     - MECAB_LANG="ko"
     before_install:
       - wget "https://bitbucket.org/eunjeon/mecab-ko/downloads/mecab-0.996-ko-0.9.2.tar.gz" -O mecab-0.996-ko-0.9.2.tar.gz
       - tar zxfv mecab-0.996-ko-0.9.2.tar.gz mecab-0.996-ko-0.9.2/
@@ -44,7 +40,7 @@ jobs:
       - tar zxfv mecab-ko-dic-2.1.1-20180720.tar.gz mecab-ko-dic-2.1.1-20180720/
       - cd mecab-ko-dic-2.1.1-20180720/
       - ./autogen.sh
-      - configure
+      - ./configure
       - make
       - sudo make install
       - cd ../
