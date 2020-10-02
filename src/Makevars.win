@@ -22,8 +22,8 @@ ifeq "$(RELEASE_URL)" ""
 endif
 
 ## Confirm there is a user definition of an environment variable MECAB_LANG
-ifneq "$(MECAB_LANG)" "ko"
-    MECAB_LANG = ja
+ifneq "$(MECAB_LANG)" "ja"
+    MECAB_LANG = ko
 endif
 
 ## Compiler / linker flags with RcppParallel library
