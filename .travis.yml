@@ -25,6 +25,7 @@ jobs:
       - sudo apt install mecab
       - sudo apt install libmecab-dev
       - sudo apt install mecab-ipadic-utf8
+      - sudo ldconfig
   - env:
      - MECAB_LANG="ko"
     before_install:
@@ -35,6 +36,7 @@ jobs:
       - make
       - make check
       - sudo make install
+      - sudo ldconfig
       - cd ../
       - wget "https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/mecab-ko-dic-2.1.1-20180720.tar.gz" -O mecab-ko-dic-2.1.1-20180720.tar.gz
       - tar zxfv mecab-ko-dic-2.1.1-20180720.tar.gz mecab-ko-dic-2.1.1-20180720/
