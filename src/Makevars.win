@@ -1,20 +1,24 @@
 ## -*- mode: Makefile; tab-width: 8 -*-
 ##
-##  Makefile.win 	Windows build system
+##  Makefile.win Windows build system
 ##
-##  Author:			Junhewk Kim
+##  Author: Junhewk Kim
 ##
 ##  This file is part of RcppMeCab
 ##
 ##  Based on Makefile.win of Rblpapi
 ##  https://github.com/Rblp/Rblpapi/blob/master/src/Makevars.win
 
-
 ## Distinguish between 32 and 64 bit windows
 ifeq "$(WIN)" "64"
     FLV = x64
 else
     FLV = i386
+endif
+
+## TODO: replace me
+ifeq "$(RELEASE_URL)" ""
+    RELEASE_URL = https://github.com/paithiov909/RcppMeCab/releases/download/v0.0.1.0-1/mecab
 endif
 
 ## Confirm there is a user definition of an environment variable MECAB_LANG
@@ -24,23 +28,22 @@ endif
 
 ## Compiler / linker flags with RcppParallel library
 CXX_STD = CXX11
-PKG_CPPFLAGS = -DDLL_IMPORT -I../inst/include -I.
-PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1
-PKG_LIBS = -llibmecab -L$(FLV) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()")
+PKG_CPPFLAGS += -I../inst/include -I.
+PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DDLL_IMPORT -DSTRICT_R_HEADERS
+PKG_LIBS += -L../inst/libs/$(FLV) -lm -llibmecab $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()")
 
 ## SHLIB target is built by R, MeCabLibrary is a target we use to expand the tar.gz
-all:    	MeCabLibrary $(SHLIB)
+.PHONY: all
+
+all: $(SHLIB)
+$(SHLIB): MeCabLibrary
 
 ## target to ensure tar.gz files get unpacked
 ## the opening '@' ensures operations are executed 'quietly'
 ## in order to see commands as they happens add a 'v' to the tar and cp commands
 MeCabLibrary:
 		@if [ ! -d ../mecab/win/$(FLV) ]; then mkdir -p ../mecab/win/$(FLV); fi
-		@if [ ! -f ../mecab/win/$(FLV)/MeCabLibrary.tar.gz ]; then `"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='https://github.com/junhewk/RcppMeCab/releases/download/0.0.1.0/mecab$(WIN)_$(MECAB_LANG).tar.gz', destfile='../mecab/win/$(FLV)/mecab$(WIN)_$(MECAB_LANG).tar.gz', quiet=TRUE)"`; tar xfz ../mecab/win/$(FLV)/mecab$(WIN)_$(MECAB_LANG).tar.gz; fi
-		@if [ ! -d $(FLV) ]; then mkdir -p $(FLV); fi
-		@cp libmecab.dll $(FLV)
+		@if [ ! -f ../mecab/win/$(FLV)/MeCabLibrary.tar.gz ]; then `"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='$(RELEASE_URL)$(WIN)_$(MECAB_LANG).tar.gz', destfile='../mecab/win/$(FLV)/mecab$(WIN)_$(MECAB_LANG).tar.gz', quiet=TRUE)"`; tar xfz ../mecab/win/$(FLV)/mecab$(WIN)_$(MECAB_LANG).tar.gz; fi
 		@if [ ! -d ../inst/libs/$(FLV) ]; then mkdir -p ../inst/libs/$(FLV); fi
-		@cp libmecab.dll ../inst/libs/$(FLV)
+		@cp libmecab$(SHLIB_EXT) ../inst/libs/$(FLV)
 
-## Ensure the blpLibrary target is always executed
-.Phony:		MeCabLibrary

@@ -4,8 +4,13 @@
 \alias{posParallel}
 \title{parallel version of part-of-speech tagger}
 \usage{
-posParallel(sentence, join = TRUE, format = c("list", "data.frame"),
-  sys_dic = "", user_dic = "")
+posParallel(
+  sentence,
+  join = TRUE,
+  format = c("list", "data.frame"),
+  sys_dic = "",
+  user_dic = ""
+)
 }
 \arguments{
 \item{sentence}{A character vector of any length. For analyzing multiple sentences, put them in one character vector.}
@@ -36,13 +41,13 @@ Therefore, if your data volume is large, use \code{pos} or divide the vector to
 several sub-vectors.
 
 You can add a user dictionary to \code{user_dic}. It should be compiled by
-\code{mecab-dict-index}. You can find an explatation about compiling a user
+\code{mecab-dict-index}. You can find an explanation about compiling a user
 dictionary in the \url{https://github.com/junhewk/RcppMeCab}.
 
 You can also set a system dictionary especially if you are using multiple
 dictionaries (for example, using both IPA and Juman dictionary at the same time in Japanese)
 in \code{sys_dic}. Using \code{options(mecabSysDic=)}, you can set your
-prefered system dictionary to the R terminal.
+preferred system dictionary to the R terminal.
 
 If you want to get a morpheme only, use \code{join = False} to put tag names on the attribute.
 Basically, the function will return a list of character vectors with (morpheme)/(tag) elements.
