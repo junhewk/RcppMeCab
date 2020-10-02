@@ -26,7 +26,7 @@ install_github("junhewk/RcppMeCab") # install developmental version
 
 ### Windows
 
-You should set the language you want to use for the analysis with the environment variable `MECAB_LANG`. The default value is `ko` and if you want to analyze Japanese or Chinese, please set it as `jp` before install the package.
+You should set the language you want to use for the analysis with the environment variable `MECAB_LANG`. The default value is `ko` and if you want to analyze Japanese or Chinese, please set it as `ja` before install the package.
 
 ```
 install.packages("RcppMeCab") # for installing Korean version
