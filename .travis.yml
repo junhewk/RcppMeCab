@@ -31,7 +31,6 @@ jobs:
         - R_BUILD_ARGS="--no-build-vignettes --no-manual"
         - R_CHECK_ARGS="--no-build-vignettes --no-manual --timings"
         - _R_CHECK_TIMINGS_="0"
-        ## - MECAB_LANG="" ## Korean
     before_install:
       - wget "https://bitbucket.org/eunjeon/mecab-ko/downloads/mecab-0.996-ko-0.9.2.tar.gz" -O mecab-0.996-ko-0.9.2.tar.gz
       - tar zxfv mecab-0.996-ko-0.9.2.tar.gz mecab-0.996-ko-0.9.2/
@@ -43,8 +42,9 @@ jobs:
       - cd ../
       - wget "https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/mecab-ko-dic-2.1.1-20180720.tar.gz" -O mecab-ko-dic-2.1.1-20180720.tar.gz
       - tar zxfv mecab-ko-dic-2.1.1-20180720.tar.gz mecab-ko-dic-2.1.1-20180720/
-      - cd mecab-ko-dic-2.1.1-20180720
-      - ./configure
+      - cd mecab-ko-dic-2.1.1-20180720/
+      - ./autogen.sh
+      - configure
       - make
       - sudo make install
       - cd ../
