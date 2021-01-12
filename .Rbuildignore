@@ -1,7 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^cran-comments\.md$
 ^mecab$
-^mecab-0\.996-ko-0\.9\.2$
-^mecab-ko-dic-2\.1\.1-20180720$
+^cran-comments\.md$
 ^\.travis\.yml$
