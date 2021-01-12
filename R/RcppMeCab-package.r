@@ -12,7 +12,6 @@
 #' @author Junhewk Kim Taku Kudo
 #' @import Rcpp
 #' @importFrom RcppParallel RcppParallelLibs
-#'
 #' @details
 #' This package utilizes \code{MeCab} C API and \code{Rcpp} codes.
 #'
@@ -25,20 +24,3 @@
 #'
 #' @keywords MeCab part-of-speech morpheme nlp Korean Japanese Chinese
 "_PACKAGE"
-
-#' @noRd
-#' @param libname libname
-#' @param pkgname pkgname
-.onLoad <- function(libname, pkgname) {
-  library.dynam("RcppMeCab",
-    pkgname,
-    .libPaths(),
-    DLLpath = system.file("libs", package = pkgname)
-  )
-}
-
-#' @noRd
-#' @param libpath libpath
-.onUnload <- function(libpath) {
-  library.dynam.unload("RcppMeCab", libpath)
-}
