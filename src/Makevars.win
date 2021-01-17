@@ -13,7 +13,6 @@ ifeq "$(MECAB_LIBS)" ""
 	MECAB_LIBS = ../inst/libs$(R_ARCH)
 endif
 
-
 ## Confirm there is a user definition of an environment variable MECAB_LANG
 ifneq "$(MECAB_LANG)" "ja"
 	MECAB_LANG = ko
@@ -25,13 +24,13 @@ PKG_CPPFLAGS += -I../inst/include
 PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DDLL_IMPORT -DSTRICT_R_HEADERS
 PKG_LIBS += -L$(MECAB_LIBS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm -llibmecab
 
-all: $(SHLIB)
-$(SHLIB): libmecab
+all: libmecab $(SHLIB)
 
 ## target to ensure tar.gz files get unpacked
 ## the opening '@' ensures operations are executed 'quietly'
 ## in order to see commands as they happens add a 'v' to the tar and cp commands
 libmecab:
+	@if [ ! -f ../mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz ]; then `"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='https://raw.githack.com/junhewk/RcppMeCab/master/mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz', destfile='../mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz', quiet=TRUE)"`; fi
 	@tar xfz ../mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz
 	@if [ ! -d ../inst/libs$(R_ARCH) ]; then mkdir -p ../inst/libs$(R_ARCH); fi
 	@cp libmecab$(SHLIB_EXT) ../inst/libs$(R_ARCH)

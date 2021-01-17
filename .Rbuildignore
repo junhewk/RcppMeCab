@@ -1,5 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^renv$
+^renv\.lock$
 ^mecab$
 ^cran-comments\.md$
 ^\.travis\.yml$
