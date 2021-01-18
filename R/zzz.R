@@ -6,7 +6,7 @@
     pkgname,
     pkgname,
     lib.loc = .libPaths(),
-    DLLInfo = system.file("libs", package = pkgname)
+    DLLpath = system.file("libs", package = pkgname)
   )
 }
 
