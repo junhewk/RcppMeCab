@@ -1,4 +1,3 @@
-// [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::depends(BH, RcppParallel)]]
 
 #include <Rcpp.h>
