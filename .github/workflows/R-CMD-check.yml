@@ -15,7 +15,7 @@ jobs:
       matrix:
         mecab_lang: ['ja', 'ko']
         platform: [ubuntu-latest, windows-latest]
-        r-version: ['4.0.0']
+        r-version: ['3.4.0']
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v2
