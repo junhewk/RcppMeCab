@@ -10,7 +10,7 @@
 ##  https://github.com/Rblp/Rblpapi/blob/master/src/Makevars.win
 
 ifeq "$(MECAB_LIBS)" ""
-	MECAB_LIBS =  ../inst/mecab$(R_ARCH)
+	MECAB_LIBS = ../inst/mecab$(R_ARCH)
 endif
 
 ## Confirm there is a user definition of an environment variable MECAB_LANG
