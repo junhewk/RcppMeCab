@@ -5,7 +5,7 @@ Authors@R: c(person("Junhewk", "Kim", role = c("aut", "cre"),
                     email = "junhewk.kim@gmail.com"),
              person("Taku", "Kudo", role = c("aut"),
                     email = "taku@chasen.org"),
-             person("Akiru", "Kato", role = c("aut")))
+             person("Akiru", "Kato", role = c("ctb")))
 Author: Junhewk Kim [aut, cre],
     Taku Kudo [aut]
 Maintainer: Junhewk Kim <junhewk.kim@gmail.com>

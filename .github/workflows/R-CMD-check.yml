@@ -1,0 +1,63 @@
+name: R-CMD-check
+
+on:
+  push:
+    branches:
+      - ${{ default-branch }}
+      - dev
+  pull_request:
+    branches:
+      - ${{ default-branch }}
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        mecab_lang: ['ja', 'ko']
+        platform: [ubuntu-latest, windows-latest]
+        r-version: ['4.0.0']
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up R ${{ matrix.r-version }}
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.r-version }}
+      - name: Install MeCab for Japanese
+        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.mecab_lang == 'ja' }}
+        run: |
+          sudo apt install mecab
+          sudo apt install libmecab-dev
+          sudo apt install mecab-ipadic-utf8
+          sudo ldconfig
+      - name: Install MeCab for Korean
+        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.mecab_lang == 'ko' }}
+        run: |
+          cd mecab
+          wget "https://bitbucket.org/eunjeon/mecab-ko/downloads/mecab-0.996-ko-0.9.2.tar.gz" -O mecab-0.996-ko-0.9.2.tar.gz
+          tar zxfv mecab-0.996-ko-0.9.2.tar.gz mecab-0.996-ko-0.9.2/
+          cd mecab-0.996-ko-0.9.2/
+          ./configure
+          make
+          make check
+          sudo make install
+          sudo ldconfig
+          cd ../
+          wget "https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/mecab-ko-dic-2.1.1-20180720.tar.gz" -O mecab-ko-dic-2.1.1-20180720.tar.gz
+          tar zxfv mecab-ko-dic-2.1.1-20180720.tar.gz mecab-ko-dic-2.1.1-20180720/
+          cd mecab-ko-dic-2.1.1-20180720/
+          ./autogen.sh
+          ./configure
+          make
+          sudo make install
+          cd ../../
+      - name: Install dependencies
+        run: |
+          install.packages(c("remotes", "rcmdcheck", "renv"))
+          remotes::install_deps(dependencies = TRUE)
+        shell: Rscript {0}
+      - name: Check
+        env:
+          MECAB_LANG: ${{ matrix.MECAB_LANG }}
+        run: rcmdcheck::rcmdcheck(args = c("--no-multiarch", "--as-cran"), build_args = c("--no-build-vignettes"), error_on = "error")
+        shell: Rscript {0}
