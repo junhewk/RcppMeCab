@@ -53,11 +53,11 @@ jobs:
           cd ../../
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck", "renv"))
+          install.packages(c("remotes", "rcmdcheck"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       - name: Check
         env:
           MECAB_LANG: ${{ matrix.MECAB_LANG }}
-        run: rcmdcheck::rcmdcheck(args = c("--no-multiarch", "--as-cran"), build_args = c("--no-build-vignettes"), error_on = "error")
+        run: rcmdcheck::rcmdcheck(args = c("--no-multiarch", "--no-manual", "--as-cran"), build_args = c("--no-manual", "--no-build-vignettes"), error_on = "error")
         shell: Rscript {0}
