@@ -2,35 +2,35 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 posParallelJoinRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posParallelJoinRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posParallelJoinRcpp`, text, sys_dic, user_dic)
 }
 
 posParallelDFRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posParallelDFRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posParallelDFRcpp`, text, sys_dic, user_dic)
 }
 
 posParallelRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posParallelRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posParallelRcpp`, text, sys_dic, user_dic)
 }
 
 posRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posRcpp`, text, sys_dic, user_dic)
 }
 
 posJoinRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posJoinRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posJoinRcpp`, text, sys_dic, user_dic)
 }
 
 posLoopRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posLoopRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posLoopRcpp`, text, sys_dic, user_dic)
 }
 
 posLoopJoinRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posLoopJoinRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posLoopJoinRcpp`, text, sys_dic, user_dic)
 }
 
 posDFRcpp <- function(text, sys_dic, user_dic) {
-    .Call('_RcppMeCab_posDFRcpp', PACKAGE = 'RcppMeCab', text, sys_dic, user_dic)
+    .Call(`_RcppMeCab_posDFRcpp`, text, sys_dic, user_dic)
 }
 
 # Register entry points for exported C++ functions

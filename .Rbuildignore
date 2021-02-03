@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github$
 ^mecab$
 ^cran-comments\.md$

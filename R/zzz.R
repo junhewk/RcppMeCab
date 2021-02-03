@@ -1,14 +1,9 @@
 #' @noRd
-#' @param libname libname
-#' @param pkgname pkgname
-.onLoad <- function(libname, pkgname) {
-  library.dynam(
-    pkgname,
-    pkgname,
-    lib.loc = .libPaths(),
-    DLLpath = system.file("libs", package = pkgname)
-  )
-}
+## usethis namespace: start
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib RcppMeCab, .registration=TRUE
+## usethis namespace: end
+NULL
 
 #' @noRd
 #' @param libpath libpath
