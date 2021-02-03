@@ -58,6 +58,6 @@ jobs:
         shell: Rscript {0}
       - name: Check
         env:
-          MECAB_LANG: ${{ matrix.MECAB_LANG }}
+          MECAB_LANG: ${{ matrix.mecab_lang }}
         run: rcmdcheck::rcmdcheck(args = c("--no-multiarch", "--no-manual", "--as-cran"), build_args = c("--no-manual", "--no-build-vignettes"), error_on = "error")
         shell: Rscript {0}
