@@ -81,7 +81,12 @@ struct TextParseDF
           parsed.push_back(parsed_morph);
           parsed.push_back(features[0]);
           parsed.push_back(features[1]);
-          parsed.push_back(features[7]);
+          // For parsing unk-feature when using Japanese MeCab and IPA-dict.
+          if (features.size() > 7) {
+            parsed.push_back(features[7]);
+          } else {
+            parsed.push_back("");
+          }
         }
       }
 
