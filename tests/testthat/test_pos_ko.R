@@ -1,4 +1,5 @@
 test_that("Test pos tagger works on ko", {
+  skip_if(.Platform$OS.type == "windows", "Skip testing on Windows")
   skip_if(Sys.getenv("MECAB_LANG") == "ja", "Skip testing on Korean")
   expect_equal(
     pos(

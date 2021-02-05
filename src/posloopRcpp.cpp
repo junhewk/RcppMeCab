@@ -251,7 +251,6 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
   }
-
   tagger = mecab_model_new_tagger(model);
   lattice = mecab_model_new_lattice(model);
 
@@ -273,7 +272,12 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
         token_t = std::string(node->surface).substr(0, node->length);
         pos_t = features[0];
         subtype_t = features[1];
-        analytic_t = features[7];
+        // For parsing unk-feature when using Japanese MeCab and IPA-dict.
+        if (features.size() > 7) {
+          analytic_t = features[7];
+        } else {
+          analytic_t = "";
+        }
 
         if (subtype_t == "*") {
           subtype_t = "";
