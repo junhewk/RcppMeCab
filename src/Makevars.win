@@ -33,7 +33,7 @@ libmecab:
 	@if [ ! -d ../mecab/win$(R_ARCH) ]; then mkdir -p ../mecab/win$(R_ARCH); fi
 	@if [ ! -f ../mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz ]; then `"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='https://raw.githack.com/junhewk/RcppMeCab/master/mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz', destfile='../mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz', quiet=TRUE)"`; fi
 	@tar xfz ../mecab/win$(R_ARCH)/mecab$(WIN)_$(MECAB_LANG).tar.gz
-	@if [ ! -d ../inst/libs$(R_ARCH) ]; then mkdir -p ../inst/mecab$(R_ARCH); fi
+	@if [ ! -d ../inst/mecab$(R_ARCH) ]; then mkdir -p ../inst/mecab$(R_ARCH); fi
 	@cp libmecab$(SHLIB_EXT) ../inst/mecab$(R_ARCH)
 	@rm libmecab$(SHLIB_EXT)
 
