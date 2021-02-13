@@ -52,7 +52,7 @@ posParallel(enc2utf8(c("안녕하세요", "반갑습니다.", "많은 이용 부
 
 함수에 네 가지 옵션을 추가할 수 있습니다.
 
-+ join: `join = FALSE`로 설정하면, 분석된 형태소를 출력하고 품사는 특성(attribute)으로 붙습니다(`pos("안녕하세요.", join = TRUE)`). 기본은 `join = TRUE`로, "형태소/품사" 형태로 결과값을 반환합니다.
++ join: `join = FALSE`로 설정하면, 분석된 형태소를 출력하고 품사는 특성(attribute)으로 붙습니다(`pos("안녕하세요.", join = FALSE)`). 기본은 `join = TRUE`로, "형태소/품사" 형태로 결과값을 반환합니다.
 + format: 출력 형식을 지정합니다. 기본형은 리스트입니다. 형식을 data.frame으로 설정하실 수 있습니다.(`pos("안녕하세요.", format = "data.frame"`)
 + sys_dic: `mecabrc` 파일과 `mecab-ko-dic` 디렉토리가 위치한 곳을 설정해 주실 수 있습니다.(`pos("안녕하세요.", sys_dic = "c:/mecab-dict"`)
 + user_dic: 사용자 사전을 `.dic`의 형태로 만들어서 사용하실 수 있습니다(R 외부에서 작업해야 합니다). 사용자 사전 제작법은 아래를 참조해 주십시오.(`pos("안녕하세요.", user_dic = "c:/mecab/user.dic"`)
@@ -63,7 +63,9 @@ posParallel(enc2utf8(c("안녕하세요", "반갑습니다.", "많은 이용 부
 
 `c:\mecab`에 `mecab-dict-index.exe` 파일이 있습니다. 이 파일을 사용하여 제작한 `.csv` 파일을 컴파일해야 합니다. `mecab-ko-dic`의 `model_file`이 필요하므로, 위에서 설명한 위치로 `mecab`과 `mecab-ko-dic`을 설치하는 것을 권장합니다.
 
-`.csv` 파일(예, `sample.csv`)을 만들어 원하는 사용자 사전을 제작합니다. 사용자 사전의 구조는 다음과 같습니다. [사용자 사전 추가](https://bitbucket.org/eunjeon/mecab-ko-dic/src/e39e16059b8748c2663ab09195a08293c7063a28/final/user-dic/README.md)
+`.csv` 파일(예, `sample.csv`)을 만들어 원하는 사용자 사전을 제작합니다. 사용자 사전의 구조는 다음과 같습니다.
+
+[CSV 파일 구조](https://docs.google.com/spreadsheets/d/1-9blXKjtjeKZqsf4NzHeYJCrr49-nXeRF6D80udfcwY/edit#gid=1718487366)
 
 + 고유명사
 `대우,,,,NNP,*,F,대우,*,*,*,*`
@@ -74,7 +76,7 @@ posParallel(enc2utf8(c("안녕하세요", "반갑습니다.", "많은 이용 부
 + 지명
 `세종,,,,NNP,지명,T,세종,*,*,*,*`
 
-위에서 추가하고 싶은 어휘의 형태에 따라 첫 칸과 여덟 번째 칸의 어휘를 바꿉니다.
+위에서 추가하고 싶은 어휘의 형태에 따라 첫 칸과 여덟 번째 칸의 어휘를 바꿉니다. 아홉 번째 칸은 종성 유무입니다(종성으로 끝나면 T, 아니면 F).
 
 명사(NNP)가 아닌 다른 품사도 가능합니다. 품사 변경의 경우 [품사태그표](https://docs.google.com/spreadsheet/ccc?key=0ApcJghR6UMXxdEdURGY2YzIwb3dSZ290RFpSaUkzZ0E&usp=sharing#gid=4)를 참조해주십시오.
 
@@ -90,7 +92,9 @@ mecab-dict-index.exe -m c:\mecab\dic\mecab-ko-dic\model.bin -d c:\mecab\dic\meca
 
 `mecab`과 `mecab-ko-dic`이 설치되어 있음을 가정합니다. 
 
-`.csv` 파일(예, `sample.csv`)을 만들어 원하는 사용자 사전을 제작합니다. 사용자 사전의 구조는 다음과 같습니다. [사용자 사전 추가](https://bitbucket.org/eunjeon/mecab-ko-dic/src/e39e16059b8748c2663ab09195a08293c7063a28/final/user-dic/README.md)
+`.csv` 파일(예, `sample.csv`)을 만들어 원하는 사용자 사전을 제작합니다. 사용자 사전의 구조는 다음과 같습니다.
+
+[CSV 파일 구조](https://docs.google.com/spreadsheets/d/1-9blXKjtjeKZqsf4NzHeYJCrr49-nXeRF6D80udfcwY/edit#gid=1718487366)
 
 + 고유명사
 `대우,,,,NNP,*,F,대우,*,*,*,*`
@@ -101,7 +105,7 @@ mecab-dict-index.exe -m c:\mecab\dic\mecab-ko-dic\model.bin -d c:\mecab\dic\meca
 + 지명
 `세종,,,,NNP,지명,T,세종,*,*,*,*`
 
-위에서 추가하고 싶은 어휘의 형태에 따라 첫 칸과 여덟 번째 칸의 어휘를 바꿉니다.
+위에서 추가하고 싶은 어휘의 형태에 따라 첫 칸과 여덟 번째 칸의 어휘를 바꿉니다. 아홉 번째 칸은 종성 유무입니다(종성으로 끝나면 T, 아니면 F).
 
 명사(NNP)가 아닌 다른 품사도 가능합니다. 품사 변경의 경우 [품사태그표](https://docs.google.com/spreadsheet/ccc?key=0ApcJghR6UMXxdEdURGY2YzIwb3dSZ290RFpSaUkzZ0E&usp=sharing#gid=4)를 참조해주십시오.
 
