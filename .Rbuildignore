@@ -3,4 +3,4 @@
 ^\.github$
 ^mecab$
 ^cran-comments\.md$
-README_kr.Rmd
+README_kr.md
