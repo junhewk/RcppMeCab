@@ -29,9 +29,7 @@ MeCab 사전: [mecab-ko-dic-2.1.1-20180720-msvc-2](https://github.com/Pusnow/mec
 
 ### 리눅스, 맥
 
-`MeCab`을 먼저 설치합니다. 다음 설치 페이지를 참고하십시오.
-
-[은전한닢 프로젝트](https://bitbucket.org/eunjeon/mecab-ko/src/master/README.md)
+`MeCab`을 먼저 설치합니다. 다음 설치 페이지 [은전한닢 프로젝트](https://bitbucket.org/eunjeon/mecab-ko/src/master/README.md) 를 참조 부탁드립니다.
 
 다음, `RcppMeCab`을 설치합니다.
 
@@ -55,9 +53,9 @@ posParallel(enc2utf8(c("안녕하세요", "반갑습니다.", "많은 이용 부
 함수에 네 가지 옵션을 추가할 수 있습니다.
 
 + join: `join = FALSE`로 설정하면, 분석된 형태소를 출력하고 품사는 특성(attribute)으로 붙습니다(`pos("안녕하세요.", join = TRUE)`). 기본은 `join = TRUE`로, "형태소/품사" 형태로 결과값을 반환합니다.
-+ format: 출력 형식을 지정합니다. 기본형은 리스트입니다. 형식을 data.frame으로 설정하실 수 있습니다.(`pos("안녕하세요.", format = "data.frame")
-+ sys_dic: `mecabrc` 파일과 `mecab-ko-dic` 디렉토리가 위치한 곳을 설정해 주실 수 있습니다.(`pos("안녕하세요.", sys_dic = "c:/mecab-dict")
-+ user_dic: 사용자 사전을 `.dic`의 형태로 만들어서 사용하실 수 있습니다(R 외부에서 작업해야 합니다). 사용자 사전 제작법은 아래를 참조해 주십시오.(`pos("안녕하세요.", user_dic = "c:/mecab/user.dic")
++ format: 출력 형식을 지정합니다. 기본형은 리스트입니다. 형식을 data.frame으로 설정하실 수 있습니다.(`pos("안녕하세요.", format = "data.frame"`)
++ sys_dic: `mecabrc` 파일과 `mecab-ko-dic` 디렉토리가 위치한 곳을 설정해 주실 수 있습니다.(`pos("안녕하세요.", sys_dic = "c:/mecab-dict"`)
++ user_dic: 사용자 사전을 `.dic`의 형태로 만들어서 사용하실 수 있습니다(R 외부에서 작업해야 합니다). 사용자 사전 제작법은 아래를 참조해 주십시오.(`pos("안녕하세요.", user_dic = "c:/mecab/user.dic"`)
 
 ## 사용자 사전 제작
 
