@@ -83,7 +83,7 @@ posParallel(enc2utf8(c("안녕하세요", "반갑습니다.", "많은 이용 부
 csv 파일을 `c:\mecab`에 저장한 후, 다음 명령어를 커맨드 창(cmd)에서 실행합니다.
 
 ```
-mecab-dict-index.exe -m c:\mecab\dic\mecab-ko-dic\model.bin -d c:\mecab\dic\mecab-ko-dic -u userdic.dic -f utf8 -t utf8 c:\mecab\sample.csv
+mecab-dict-index.exe -m c:\mecab\mecab-ko-dic\model.bin -d c:\mecab\mecab-ko-dic -u userdic.dic -f utf8 -t utf8 c:\mecab\sample.csv
 ```
 
 위 명령어의 경우 `c:\mecab`에 `userdic.dic` 파일로 사용자 사전을 제작합니다. 다른 이름으로 저장하실 경우 `userdic.dic`을 변경하십시오. 다음, `pos` 함수의 `user_dic`에 위에 만든 사용자 사전을 넣으면 됩니다.(`pos("안녕하세요.", user_dic = "c:/mecab/userdic.dic")`)
