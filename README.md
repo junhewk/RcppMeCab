@@ -1,10 +1,13 @@
 # RcppMeCab
 
 [![License](https://img.shields.io/badge/license-GPL-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl.html)
+![R](https://img.shields.io/github/r-package/v/junhewk/RcppMeCab)
 [![CRAN](http://www.r-pkg.org/badges/version/RcppMeCab)](https://cran.r-project.org/package=RcppMeCab)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RcppMeCab?color=brightgreen)](http://www.r-pkg.org/pkg/RcppMeCab)
 
 This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphological analyzer `MeCab`. It supports native utf-8 encoding in C++ code and CJK (Chinese, Japanese, and Korean) MeCab library. This package fully utilizes the power `Rcpp` brings `R` computation to analyze texts faster.
+
+Please see [this](README.Kmd) for easy installation and usage examples in Korean.
 
 ## Installation
 
@@ -101,10 +104,12 @@ You can use it in the same way the Linux binary compiles the dictionary.
 
 ## TODOs
 
-+ Test multilanguage support
-+ Provide other useful functions
 + Provide multilanguage manuals for international support
 
 ## Author
 
 Junhewk Kim (junhewk.kim@gmail.com)
+
+## Contributor
+
+Kato Akiru
