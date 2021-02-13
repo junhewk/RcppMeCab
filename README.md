@@ -7,7 +7,7 @@
 
 This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphological analyzer `MeCab`. It supports native utf-8 encoding in C++ code and CJK (Chinese, Japanese, and Korean) MeCab library. This package fully utilizes the power `Rcpp` brings `R` computation to analyze texts faster.
 
-Please see [this](README.Kmd) for easy installation and usage examples in Korean.
+__Please see [this](README_kr.Rmd) for easy installation and usage examples in Korean.__
 
 ## Installation
 
