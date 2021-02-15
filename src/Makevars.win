@@ -20,7 +20,7 @@ endif
 
 ## Compiler / linker flags with RcppParallel library
 CXX_STD = CXX11
-PKG_CPPFLAGS += -I../inst/include
+PKG_CPPFLAGS += -I../inst/include -DBOOST_NO_AUTO_PTR
 PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DDLL_IMPORT -DSTRICT_R_HEADERS
 PKG_LIBS += -L$(MECAB_LIBS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm -llibmecab
 
