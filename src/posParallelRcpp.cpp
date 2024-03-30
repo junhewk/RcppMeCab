@@ -9,21 +9,20 @@ using namespace Rcpp;
 
 struct TextParseJoin
 {
-  TextParseJoin(const std::vector<std::string>* sentences, std::vector< std::vector < std::string > >& result, mecab_model_t* model)
+  TextParseJoin(const std::vector<std::string>* sentences, std::vector< std::vector < std::string > >& result, MeCab::Model * model)
     : sentences_(sentences), result_(result), model_(model)
   {}
 
   void operator()(const tbb::blocked_range<size_t>& range) const
   {
-    mecab_t* tagger = mecab_model_new_tagger(model_);
-    mecab_lattice_t* lattice = mecab_model_new_lattice(model_);
-    const mecab_node_t* node;
+    MeCab::Tagger * tagger = model_->createTagger();
+    MeCab::Lattice * lattice = model_->createLattice();
 
     for (size_t i = range.begin(); i < range.end(); ++i) {
       std::vector< std::string > parsed;
-      mecab_lattice_set_sentence(lattice, (*sentences_)[i].c_str());
-      mecab_parse_lattice(tagger, lattice);
-      node = mecab_lattice_get_bos_node(lattice);
+      lattice->set_sentence((*sentences_)[i].c_str());
+      tagger->parse(lattice);
+      const MeCab::Node * node = lattice->bos_node();
 
       for (; node; node = node->next) {
         if (node->stat == MECAB_BOS_NODE)
@@ -41,33 +40,32 @@ struct TextParseJoin
       result_[i] = parsed; // mutex is not needed
     }
 
-    mecab_lattice_destroy(lattice);
-    mecab_destroy(tagger);
+    delete lattice;
+    delete tagger;
   }
 
   const std::vector<std::string>* sentences_;
   std::vector< std::vector < std::string > >& result_;
-  mecab_model_t* model_;
+  MeCab::Model * model_;
 };
 
 struct TextParseDF
 {
-  TextParseDF(const std::vector<std::string>* sentences, std::vector< std::vector < std::string > >& result, mecab_model_t* model)
+  TextParseDF(const std::vector<std::string>* sentences, std::vector< std::vector < std::string > >& result, MeCab::Model * model)
     : sentences_(sentences), result_(result), model_(model)
   {}
 
   void operator()(const tbb::blocked_range<size_t>& range) const
   {
-    mecab_t* tagger = mecab_model_new_tagger(model_);
-    mecab_lattice_t* lattice = mecab_model_new_lattice(model_);
-    const mecab_node_t* node;
+    MeCab::Tagger * tagger = model_->createTagger();
+    MeCab::Lattice * lattice = model_->createLattice();
 
     for (size_t i = range.begin(); i < range.end(); ++i) {
       std::vector< std::string > parsed;
 
-      mecab_lattice_set_sentence(lattice, (*sentences_)[i].c_str());
-      mecab_parse_lattice(tagger, lattice);
-      node = mecab_lattice_get_bos_node(lattice);
+      lattice->set_sentence((*sentences_)[i].c_str());
+      tagger->parse(lattice);
+      const MeCab::Node * node = lattice->bos_node();
 
       for (; node; node = node->next) {
         if (node->stat == MECAB_BOS_NODE)
@@ -93,33 +91,33 @@ struct TextParseDF
       result_[i] = parsed; // mutex is not needed
     }
 
-    mecab_lattice_destroy(lattice);
-    mecab_destroy(tagger);
+    delete lattice;
+    delete tagger;
   }
 
   const std::vector<std::string>* sentences_;
   std::vector< std::vector < std::string > >& result_;
-  mecab_model_t* model_;
+  MeCab::Model * model_;
+
 };
 
 struct TextParse
 {
-  TextParse(const std::vector<std::string>* sentences, std::vector< std::vector < std::string > >& result, mecab_model_t* model)
+  TextParse(const std::vector<std::string>* sentences, std::vector< std::vector < std::string > >& result, MeCab::Model * model)
     : sentences_(sentences), result_(result), model_(model)
   {}
 
   void operator()(const tbb::blocked_range<size_t>& range) const
   {
-    mecab_t* tagger = mecab_model_new_tagger(model_);
-    mecab_lattice_t* lattice = mecab_model_new_lattice(model_);
-    const mecab_node_t* node;
+    MeCab::Tagger * tagger = model_->createTagger();
+    MeCab::Lattice * lattice = model_->createLattice();
 
     for (size_t i = range.begin(); i < range.end(); ++i) {
       std::vector< std::string > parsed;
 
-      mecab_lattice_set_sentence(lattice, (*sentences_)[i].c_str());
-      mecab_parse_lattice(tagger, lattice);
-      node = mecab_lattice_get_bos_node(lattice);
+      lattice->set_sentence((*sentences_)[i].c_str());
+      tagger->parse(lattice);
+      const MeCab::Node * node = lattice->bos_node();
 
       for (; node; node = node->next) {
         if (node->stat == MECAB_BOS_NODE)
@@ -139,13 +137,13 @@ struct TextParse
       result_[i] = parsed; // mutex is not needed
     }
 
-    mecab_lattice_destroy(lattice);
-    mecab_destroy(tagger);
+    delete lattice;
+    delete tagger;
   }
 
   const std::vector<std::string>* sentences_;
   std::vector< std::vector < std::string > >& result_;
-  mecab_model_t* model_;
+  MeCab::Model * model_;
 };
 
 // [[Rcpp::interfaces(r, cpp)]]
@@ -163,7 +161,7 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   argv.push_back(nullptr);
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(argv.size() - 1, argv.data());
+  MeCab::Model * model = MeCab::createModel(argv.size() - 1 , argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -174,7 +172,7 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   TextParseJoin func = TextParseJoin(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
 
-  mecab_model_destroy(model);
+  delete model;
 
   // explicit type conversion
   for (size_t k = 0; k < results.size(); ++k) {
@@ -230,7 +228,7 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
   argv.push_back(nullptr);
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(argv.size() - 1, argv.data());
+  MeCab::Model * model = MeCab::createModel(argv.size() - 1 , argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -241,7 +239,7 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
   TextParseDF func = TextParseDF(&input, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, input.size()), func);
 
-  mecab_model_destroy(model);
+  delete model;
 
   // explicit type conversion
   for (size_t k = 0; k < results.size(); ++k) {
@@ -312,7 +310,7 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   argv.push_back(nullptr);
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(argv.size() - 1, argv.data());
+  MeCab::Model * model = MeCab::createModel(argv.size() - 1 , argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -323,7 +321,7 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   TextParse func = TextParse(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
 
-  mecab_model_destroy(model);
+  delete model;
 
   // explicit type conversion
   for (size_t k = 0; k < results.size(); ++k) {

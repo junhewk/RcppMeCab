@@ -7,21 +7,11 @@
 
 using namespace Rcpp;
 
-#define CHECK(eval) if (! eval) {                  \
-Rcpp::Rcerr << mecab_strerror(tagger) << std::endl; \
-mecab_destroy(tagger);                              \
-return R_NilValue; }
-
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {
 
   // lattice model
-
-  mecab_model_t* model;
-  mecab_t* tagger;
-  mecab_lattice_t* lattice;
-  const mecab_node_t* node;
   std::vector< std::string >::iterator it;
   String parsed_morph;
   String parsed_tag;
@@ -35,25 +25,24 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
   argv.push_back(nullptr);
 
   // Create MeCab model
-  model = mecab_model_new(argv.size() - 1, argv.data());
+  MeCab::Model * model = MeCab::createModel(argv.size() - 1 , argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
   }
 
-  tagger = mecab_model_new_tagger(model);
-  CHECK(tagger);
-  lattice = mecab_model_new_lattice(model);
-  CHECK(lattice);
+  MeCab::Tagger * tagger = model->createTagger();
+  MeCab::Lattice * lattice = model->createLattice();
 
   for (it = text.begin(); it != text.end(); ++it) {
 
     StringVector parsed_string;
     StringVector parsed_tagset;
 
-    mecab_lattice_set_sentence(lattice, (*it).c_str());
-    mecab_parse_lattice(tagger, lattice);
-    node = mecab_lattice_get_bos_node(lattice);
+    // Gets tagged result in string
+    lattice->set_sentence((*it).c_str());
+    tagger->parse(lattice);
+    const MeCab::Node * node = lattice->bos_node();
 
     for (; node; node = node->next) {
       if (node->stat == MECAB_BOS_NODE)
@@ -79,9 +68,9 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
 
   }
 
-  mecab_destroy(tagger);
-  mecab_lattice_destroy(lattice);
-  mecab_model_destroy(model);
+  delete lattice;
+  delete tagger;
+  delete model;
 
   return result;
 }
@@ -91,11 +80,6 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
 List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {
 
   // lattice model
-
-  mecab_model_t* model;
-  mecab_t* tagger;
-  mecab_lattice_t* lattice;
-  const mecab_node_t* node;
   std::vector< std::string >::iterator it;
   String parsed_morph;
   List result;
@@ -108,24 +92,23 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
   argv.push_back(nullptr);
 
   // Create MeCab model
-  model = mecab_model_new(argv.size() - 1, argv.data());
+  MeCab::Model * model = MeCab::createModel(argv.size() - 1 , argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
   }
 
-  tagger = mecab_model_new_tagger(model);
-  CHECK(tagger);
-  lattice = mecab_model_new_lattice(model);
-  CHECK(lattice);
+  MeCab::Tagger * tagger = model->createTagger();
+  MeCab::Lattice * lattice = model->createLattice();
 
   for (it = text.begin(); it != text.end(); ++it) {
 
     StringVector parsed_string;
 
-    mecab_lattice_set_sentence(lattice, (*it).c_str());
-    mecab_parse_lattice(tagger, lattice);
-    node = mecab_lattice_get_bos_node(lattice);
+    // Gets tagged result in string
+    lattice->set_sentence((*it).c_str());
+    tagger->parse(lattice);
+    const MeCab::Node * node = lattice->bos_node();
 
     for (; node; node = node->next) {
       if (node->stat == MECAB_BOS_NODE)
@@ -147,9 +130,9 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
 
   }
 
-  mecab_destroy(tagger);
-  mecab_lattice_destroy(lattice);
-  mecab_model_destroy(model);
+  delete lattice;
+  delete tagger;
+  delete model;
 
   return result;
 }
@@ -159,11 +142,6 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
 DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic) {
 
   // lattice model
-
-  mecab_model_t* model;
-  mecab_t* tagger;
-  mecab_lattice_t* lattice;
-  const mecab_node_t* node;
   StringVector::iterator it;
 
   StringVector doc_id;
@@ -197,22 +175,21 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
   argv.push_back(nullptr);
 
   // Create MeCab model
-  model = mecab_model_new(argv.size() - 1, argv.data());
+  MeCab::Model * model = MeCab::createModel(argv.size() - 1 , argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
   }
 
-  tagger = mecab_model_new_tagger(model);
-  CHECK(tagger);
-  lattice = mecab_model_new_lattice(model);
-  CHECK(lattice);
+  MeCab::Tagger * tagger = model->createTagger();
+  MeCab::Lattice * lattice = model->createLattice();
 
   for (it = text.begin(); it != text.end(); ++it) {
 
-    mecab_lattice_set_sentence(lattice, as<const char*>(*it));
-    mecab_parse_lattice(tagger, lattice);
-    node = mecab_lattice_get_bos_node(lattice);
+    // Gets tagged result in string
+    lattice->set_sentence(as<const char*>(*it));
+    tagger->parse(lattice);
+    const MeCab::Node * node = lattice->bos_node();
 
     for (; node; node = node->next) {
       if (node->stat == MECAB_BOS_NODE)
@@ -278,9 +255,9 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
   }
 
   // gc
-  mecab_destroy(tagger);
-  mecab_lattice_destroy(lattice);
-  mecab_model_destroy(model);
+  delete lattice;
+  delete tagger;
+  delete model;
 
   return DataFrame::create(_["doc_id"]=doc_id, _["sentence_id"]=sentence_id, _["token_id"]=token_id, _["token"]=token, _["pos"]=pos, _["subtype"]=subtype, _["analytic"]=analytic);
 }

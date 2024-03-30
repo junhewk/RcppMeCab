@@ -7,11 +7,6 @@
 
 using namespace Rcpp;
 
-#define CHECK(eval) if (! eval) { \
-  Rcpp::Rcerr << mecab_strerror(mecab) << std::endl; \
-  mecab_destroy(mecab); \
-  return R_NilValue; }
-
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 CharacterVector posRcpp(std::string text, std::string sys_dic, std::string user_dic) {
@@ -24,12 +19,15 @@ CharacterVector posRcpp(std::string text, std::string sys_dic, std::string user_
   argv.push_back(nullptr);
 
   // Create MeCab tagger
-  mecab_t * mecab = mecab_new(argv.size() - 1, argv.data());
-  CHECK(mecab);
+  MeCab::Tagger *tagger = MeCab::createTagger(argv.size() - 1, argv.data());
+  if (!tagger) {
+    Rcerr << "model is NULL" << std::endl;
+    delete tagger;
+    return R_NilValue;
+  }
 
   // Create Node object
-  const mecab_node_t * node = mecab_sparse_tonode(mecab, text.c_str());
-  CHECK(node);
+  const MeCab::Node* node = tagger->parseToNode(text.c_str());
 
   List result;
   StringVector parsed_string;
@@ -54,7 +52,8 @@ CharacterVector posRcpp(std::string text, std::string sys_dic, std::string user_
 
   parsed_string.names() = tags;
 
-  mecab_destroy(mecab);
+  delete tagger;
+
   return parsed_string;
 }
 
@@ -70,12 +69,15 @@ StringVector posJoinRcpp(std::string text, std::string sys_dic, std::string user
   argv.push_back(nullptr);
 
   // Create MeCab tagger
-  mecab_t * mecab = mecab_new(argv.size() - 1, argv.data());
-  CHECK(mecab);
+  MeCab::Tagger *tagger = MeCab::createTagger(argv.size() - 1, argv.data());
+  if (!tagger) {
+    Rcerr << "model is NULL" << std::endl;
+    delete tagger;
+    return R_NilValue;
+  }
 
   // Create Node object
-  const mecab_node_t * node = mecab_sparse_tonode(mecab, text.c_str());
-  CHECK(node);
+  const MeCab::Node* node = tagger->parseToNode(text.c_str());
 
   StringVector parsed_string;
 
@@ -95,7 +97,7 @@ StringVector posJoinRcpp(std::string text, std::string sys_dic, std::string user
     }
   }
 
-  mecab_destroy(mecab);
+  delete tagger;
 
   return parsed_string;
 }
