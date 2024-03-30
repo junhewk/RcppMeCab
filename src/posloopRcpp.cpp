@@ -7,6 +7,11 @@
 
 using namespace Rcpp;
 
+#define CHECK(eval) if (! eval) {                  \
+Rcpp::Rcerr << mecab_strerror(tagger) << std::endl; \
+mecab_destroy(tagger);                              \
+return R_NilValue; }
+
 // [[Rcpp::interfaces(r, cpp)]]
 // [[Rcpp::export]]
 List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {
@@ -22,32 +27,24 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
   String parsed_tag;
   List result;
 
-  std::vector<std::string> args;
-  args.push_back("mecab");
-  if (sys_dic != "") {
-    args.push_back("-d");
-    args.push_back(sys_dic);
-  }
-  if (user_dic != "") {
-    args.push_back("-u");
-    args.push_back(user_dic);
-  }
+  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
-  char** argv_model = new char*[args.size()];
-  for(size_t i = 0; i < args.size(); ++i) {
-    argv_model[i] = new char[args[i].size() + 1];
-    std::strcpy(argv_model[i], args[i].c_str());
-  }
+  std::vector<char*> argv;
+  for (const auto& arg : arguments)
+    argv.push_back((char*)arg.data());
+  argv.push_back(nullptr);
 
   // Create MeCab model
-  model = mecab_model_new(args.size(), argv_model);
+  model = mecab_model_new(argv.size() - 1, argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
   }
 
   tagger = mecab_model_new_tagger(model);
+  CHECK(tagger);
   lattice = mecab_model_new_lattice(model);
+  CHECK(lattice);
 
   for (it = text.begin(); it != text.end(); ++it) {
 
@@ -82,20 +79,6 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
 
   }
 
-  StringVector result_name(text.size());
-
-  for (size_t h = 0; h < text.size(); ++h) {
-    String character_name = text[h];
-    character_name.set_encoding(CE_UTF8);
-    result_name[h] = character_name;
-  }
-
-  result.names() = result_name;
-
-  for(size_t i = 0; i < args.size(); i++){
-    delete [] argv_model[i];
-  }
-  delete [] argv_model;
   mecab_destroy(tagger);
   mecab_lattice_destroy(lattice);
   mecab_model_destroy(model);
@@ -117,32 +100,24 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
   String parsed_morph;
   List result;
 
-  std::vector<std::string> args;
-  args.push_back("mecab");
-  if (sys_dic != "") {
-    args.push_back("-d");
-    args.push_back(sys_dic);
-  }
-  if (user_dic != "") {
-    args.push_back("-u");
-    args.push_back(user_dic);
-  }
+  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
-  char** argv_model = new char*[args.size()];
-  for(size_t i = 0; i < args.size(); ++i) {
-    argv_model[i] = new char[args[i].size() + 1];
-    std::strcpy(argv_model[i], args[i].c_str());
-  }
+  std::vector<char*> argv;
+  for (const auto& arg : arguments)
+    argv.push_back((char*)arg.data());
+  argv.push_back(nullptr);
 
   // Create MeCab model
-  model = mecab_model_new(args.size(), argv_model);
+  model = mecab_model_new(argv.size() - 1, argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
   }
 
   tagger = mecab_model_new_tagger(model);
+  CHECK(tagger);
   lattice = mecab_model_new_lattice(model);
+  CHECK(lattice);
 
   for (it = text.begin(); it != text.end(); ++it) {
 
@@ -172,20 +147,6 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
 
   }
 
-  StringVector result_name(text.size());
-
-  for (size_t h = 0; h < text.size(); ++h) {
-    String character_name = text[h];
-    character_name.set_encoding(CE_UTF8);
-    result_name[h] = character_name;
-  }
-
-  result.names() = result_name;
-
-  for(size_t i = 0; i < args.size(); i++){
-    delete [] argv_model[i];
-  }
-  delete [] argv_model;
   mecab_destroy(tagger);
   mecab_lattice_destroy(lattice);
   mecab_model_destroy(model);
@@ -228,31 +189,24 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
     text_names = text.names();
   }
 
-  std::vector<std::string> args;
-  args.push_back("mecab");
-  if (sys_dic != "") {
-    args.push_back("-d");
-    args.push_back(sys_dic);
-  }
-  if (user_dic != "") {
-    args.push_back("-u");
-    args.push_back(user_dic);
-  }
+  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
-  char** argv_model = new char*[args.size()];
-  for(size_t i = 0; i < args.size(); ++i) {
-    argv_model[i] = new char[args[i].size() + 1];
-    std::strcpy(argv_model[i], args[i].c_str());
-  }
+  std::vector<char*> argv;
+  for (const auto& arg : arguments)
+    argv.push_back((char*)arg.data());
+  argv.push_back(nullptr);
 
   // Create MeCab model
-  model = mecab_model_new(args.size(), argv_model);
+  model = mecab_model_new(argv.size() - 1, argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
   }
+
   tagger = mecab_model_new_tagger(model);
+  CHECK(tagger);
   lattice = mecab_model_new_lattice(model);
+  CHECK(lattice);
 
   for (it = text.begin(); it != text.end(); ++it) {
 
@@ -324,10 +278,6 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
   }
 
   // gc
-  for(size_t i = 0; i < args.size(); i++){
-    delete [] argv_model[i];
-  }
-  delete [] argv_model;
   mecab_destroy(tagger);
   mecab_lattice_destroy(lattice);
   mecab_model_destroy(model);

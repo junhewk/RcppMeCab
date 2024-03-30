@@ -9,6 +9,11 @@ This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphologica
 
 __Please see [this](README_kr.md) for easy installation and usage examples in Korean.__
 
+## Changes in 0.0.1.3-3
++ Single character vector input in `pos()` will return a character vector, not a list.
++ `pos()` and `posParallel()` return lists, not named lists. We decided to remove original texts in results, since it does not fit to R way.
++ Some typos in code and explanations are revised.
+
 ## Installation
 
 ### Linux and Mac OSX
@@ -48,6 +53,10 @@ For Korean:
 
 Install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) up to your 32-bit or 64-bit Windows version in `C:\mecab`. Provide directory location to `RcppMeCab` function.
 
+#### Version Information for Korean
+
+Current `mecab-ko-msvc` is not working in R. Please use `mecab-ko-msvc` 0.9.2 or lower.
+
 For Japanese:
 
 Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc). Provide directory location to `RcppMeCab` function. For example: `pos(sentence, sys_dic = "C:/PROGRA~2/mecab/dic/ipadic")`
@@ -64,11 +73,15 @@ pos(sentence, user_dic) # gets a compiled user dictionary
 posParallel(sentence, user_dic) # parallelized version uses more memory, but much faster than the loop in single threading
 ```
 
-+ sentence: a text for analyzing
++ sentence: a text for being analyzed
 + join: If it gets TRUE, output form is (morpheme/tag). If it gets FALSE, output form is (morpheme) + tag in attribute.
 + format: The default is a list. If you set this as `"data.frame"`, the function will return the result in a data frame format.
-+ sys_dic: a directory in which `dicrc` file is located, default value is "" or you can set your default value using `options(mecabSysDic = "")` 
++ sys_dic: a directory in which `dicrc`, `model.bin`, and other files are located, default value is "" or you can set your default value using `options(mecabSysDic = "")` 
 + user_dic: a user dictionary file compiled by `mecab_dict_index`, default value is also ""
+
+### Notification for the dictionary
+
+You should not use simplified dictionary entry, e.g. tilde expression (~/). Please provide full path name in `sys_dic` and `user_dic`.
 
 ## Compiling User Dictionary
 

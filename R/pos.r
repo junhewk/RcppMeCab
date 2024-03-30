@@ -23,8 +23,8 @@
 #' @param format A data type for the result. The default value is "list". You can set this to "data.frame" to get a result as data frame format.
 #' @param sys_dic A location of system MeCab dictionary. The default value is "".
 #' @param user_dic A location of user-specific MeCab dictionary. The default value is "".
-#' @return A string vector of POS tagged morpheme will be returned in conjoined character
-#'  vector form. Element name of the list are original phrases
+#' @return A string vector or a list of POS tagged morpheme will be returned in conjoined character
+#'  vector form.
 #'
 #' @examples
 #' \dontrun{
@@ -32,7 +32,7 @@
 #' pos(sentence)
 #' pos(sentence, join = FALSE)
 #' pos(sentence, format = "data.frame")
-#' pos(sentence, user_dic = "~/user_dic.dic")
+#' pos(sentence, user_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/user-dic/user_dic.dic") # exact location should be provided (do not use tilde expression or other simplified notation)
 #' # System dictionary example: in case of using mecab-ipadic-NEologd
 #' pos(sentence, sys_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/")
 #' }

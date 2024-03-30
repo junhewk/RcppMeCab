@@ -5,7 +5,13 @@
 [![CRAN](http://www.r-pkg.org/badges/version/RcppMeCab)](https://cran.r-project.org/package=RcppMeCab)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RcppMeCab?color=brightgreen)](http://www.r-pkg.org/pkg/RcppMeCab)
 
-RcppMeCab은 형태소 분석기인 `MeCab`을 R 환경에서 매끄럽게 사용할 수 있도록 한 패키지입니다. `Rcpp` 패키지를 사용하여 C++에서 직접 연산을 수행하므로 현재 R에서 제공되는 어떤 형태소 분석기보다 빠릅니다. 제공되는 분산 처리 함수를 활용하여 다중 스레드 처리 또한 제공하므로, 대량의 자료를 빠르게 분석하기 원하시는 경우(예, 실시간으로 형태소 분석 처리를 통해 결과값을 제공해야 할 때) 적합한 패키지입니다. 또한, 원하시는 경우 일본어와 중국어도 분석할 수 있습니다(단, 동시에 분석할 수는 없고 별도의 설치 과정을 필요로 합니다).
+RcppMeCab은 형태소 분석기인 `MeCab`을 R 환경에서 매끄럽게 사용할 수 있도록 한 패키지입니다. `Rcpp` 패키지를 사용하여 C++에서 직접 연산을 수행하므로 현재 R에서 제공되는 어떤 형태소 분석기보다 빠르며, 현존하는 `Python`과 `R` 라이브러리 중 가장 빠르고 효율적으로 형태소 분석을 수행할 수 있도록 라이브러리를 구성하였습니다. 제공되는 분산 처리 함수를 활용하여 다중 스레드 처리 또한 제공하므로, 대량의 자료를 빠르게 분석하기 원하시는 경우(예, 실시간으로 형태소 분석 처리를 통해 결과값을 제공해야 할 때) 적합한 패키지입니다. 또한, 원하시는 경우 일본어와 중국어도 분석할 수 있습니다(단, 동시에 분석할 수는 없고 `mecab`과 사전의 별도 설치 과정을 필요로 합니다).
+
+## 0.0.1.3-3의 변경점
+
++ `pos()`에 단일 스트링을 넣으면 리스트가 아닌 캐릭터 벡터가 출력됩니다. 다른 라이브러리에서 tokenizer로 활용할 수 있도록 변경하였습니다.
++ `pos()`와 `posParallel()`은 이제 input 값을 vector name에 보존하지 않습니다. R way에 맞지 않는 표현이자 메모리 사용량을 줄이기 위하여 단순 list 또는 character vector로 결괏값을 되돌리도록 설정하였습니다.
++ 코드와 설명의 오류를 보정하였습니다. 특히, `sys_dic`과 `user_dic`에 full directory path를 입력해야 하는 점을 유념하여 주십시오.
 
 ## 설치
 
@@ -21,11 +27,15 @@ install_github("junhewk/RcppMeCab")
 
 다음, `MeCab` 프로그램과 사전을 설치하셔야 합니다.
 
-MeCab 프로그램: [mecab-ko-0.9.2-msvc-3](https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.9.2-msvc-3/mecab-ko-msvc-x64.zip)
+MeCab 프로그램: [mecab-ko-0.9.2-msvc-4](https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.9.2-msvc-4/mecab-ko-msvc-x64.zip)
 
 MeCab 사전: [mecab-ko-dic-2.1.1-20180720-msvc-2](https://github.com/Pusnow/mecab-ko-dic-msvc/releases/download/mecab-ko-dic-2.1.1-20180720-msvc-2/mecab-ko-dic-msvc.zip)
 
 두 압축파일을 받아 `C:\mecab`에 압축해제합니다. 이때, 서브디렉토리를 생성하지 않고 바로 압축을 풉니다. `C:\mecab`에 `mecabrc` 파일과 `mecab-ko-dic` 디렉토리가 있어야 합니다.
+
+#### 버전 관련 공지
+
+현재의 `mecab-ko-msvc` 버전(0.999)는 안타깝게도 R이 지원하지 않습니다. 0.9.2 이하 버전으로 설치하여 주십시오.
 
 ### 리눅스, 맥
 
@@ -38,6 +48,10 @@ install.packages(devtools) # 현재 CRAN 버전은 Rcpp 지원이 늦어 버전�
 library(devtools)
 install_github("junhewk/RcppMeCab")
 ```
+
+#### 버전 관련 공지
+
+현재의 `mecab-ko-msvc` 버전(0.999)는 안타깝게도 R이 지원하지 않습니다. `mecab-ko` 기존 버전으로 설치하셔야 합니다. `mecab-ko-dic`은 최신 버전으로 다운로드하신 다음, 해당 디렉토리를 `sys_dic`으로 지정하시면 지원합니다.
 
 ## 사용법
 
@@ -54,7 +68,7 @@ posParallel(enc2utf8(c("안녕하세요", "반갑습니다.", "많은 이용 부
 
 + join: `join = FALSE`로 설정하면, 분석된 형태소를 출력하고 품사는 특성(attribute)으로 붙습니다(`pos("안녕하세요.", join = FALSE)`). 기본은 `join = TRUE`로, "형태소/품사" 형태로 결과값을 반환합니다.
 + format: 출력 형식을 지정합니다. 기본형은 리스트입니다. 형식을 data.frame으로 설정하실 수 있습니다.(`pos("안녕하세요.", format = "data.frame"`)
-+ sys_dic: `mecabrc` 파일과 `mecab-ko-dic` 디렉토리가 위치한 곳을 설정해 주실 수 있습니다.(`pos("안녕하세요.", sys_dic = "c:/mecab-dict"`)
++ sys_dic: `mecabrc` 파일과 `mecab-ko-dic` 디렉토리가 위치한 곳을 설정해 주실 수 있습니다.(`pos("안녕하세요.", sys_dic = "c:/mecab-dict"`) # 반드시 완전 경로를 입력하셔야 합니다. 리눅스의 ~/ 와 같은 약식 표현은 `mecab`이 인식하지 못합니다.
 + user_dic: 사용자 사전을 `.dic`의 형태로 만들어서 사용하실 수 있습니다(R 외부에서 작업해야 합니다). 사용자 사전 제작법은 아래를 참조해 주십시오.(`pos("안녕하세요.", user_dic = "c:/mecab/user.dic"`)
 
 ## 사용자 사전 제작
@@ -115,7 +129,7 @@ csv 파일을 원하는 곳에 저장한 후, 다음 명령어를 터미널에�
 $ /usr/local/libexec/mecab/mecab-dict-index -m /usr/local/lib/mecab/dic/mecab-ko-dic/model.bin -d /usr/local/lib/mecab/dic/mecab-ko-dic/ -u ~/userdic.dic -f utf8 -t utf8 ~/sample.csv
 ```
 
-위 명령어의 경우 홈 디렉토리에 `userdic.dic` 파일로 사용자 사전을 제작합니다. 다른 이름으로 저장하실 경우 `userdic.dic`을 변경하십시오. 다음, `pos` 함수의 `user_dic`에 위에 만든 사용자 사전을 넣으면 됩니다.(`pos("안녕하세요.", user_dic = "~/userdic.dic")`)
+위 명령어의 경우 홈 디렉토리에 `userdic.dic` 파일로 사용자 사전을 제작합니다. 다른 이름으로 저장하실 경우 `userdic.dic`을 변경하십시오. 다음, `pos` 함수의 `user_dic`에 위에 만든 사용자 사전을 넣으면 됩니다.(`pos("안녕하세요.", user_dic = "/usr/local/lib/mecab/dic/mecab-ko-dic/user-dic/userdic.dic")`) # 마찬가지로 반드시 완전한 디렉토리 경로를 입력하셔야 합니다.
 
 ## 알려진 문제
 

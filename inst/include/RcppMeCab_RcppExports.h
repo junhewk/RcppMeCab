@@ -87,11 +87,11 @@ namespace RcppMeCab {
         return Rcpp::as<List >(rcpp_result_gen);
     }
 
-    inline List posRcpp(std::string text, std::string sys_dic, std::string user_dic) {
+    inline CharacterVector posRcpp(std::string text, std::string sys_dic, std::string user_dic) {
         typedef SEXP(*Ptr_posRcpp)(SEXP,SEXP,SEXP);
         static Ptr_posRcpp p_posRcpp = NULL;
         if (p_posRcpp == NULL) {
-            validateSignature("List(*posRcpp)(std::string,std::string,std::string)");
+            validateSignature("CharacterVector(*posRcpp)(std::string,std::string,std::string)");
             p_posRcpp = (Ptr_posRcpp)R_GetCCallable("RcppMeCab", "_RcppMeCab_posRcpp");
         }
         RObject rcpp_result_gen;
@@ -105,14 +105,14 @@ namespace RcppMeCab {
             throw Rcpp::LongjumpException(rcpp_result_gen);
         if (rcpp_result_gen.inherits("try-error"))
             throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<List >(rcpp_result_gen);
+        return Rcpp::as<CharacterVector >(rcpp_result_gen);
     }
 
-    inline List posJoinRcpp(std::string text, std::string sys_dic, std::string user_dic) {
+    inline StringVector posJoinRcpp(std::string text, std::string sys_dic, std::string user_dic) {
         typedef SEXP(*Ptr_posJoinRcpp)(SEXP,SEXP,SEXP);
         static Ptr_posJoinRcpp p_posJoinRcpp = NULL;
         if (p_posJoinRcpp == NULL) {
-            validateSignature("List(*posJoinRcpp)(std::string,std::string,std::string)");
+            validateSignature("StringVector(*posJoinRcpp)(std::string,std::string,std::string)");
             p_posJoinRcpp = (Ptr_posJoinRcpp)R_GetCCallable("RcppMeCab", "_RcppMeCab_posJoinRcpp");
         }
         RObject rcpp_result_gen;
@@ -126,7 +126,7 @@ namespace RcppMeCab {
             throw Rcpp::LongjumpException(rcpp_result_gen);
         if (rcpp_result_gen.inherits("try-error"))
             throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<List >(rcpp_result_gen);
+        return Rcpp::as<StringVector >(rcpp_result_gen);
     }
 
     inline List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::string user_dic) {

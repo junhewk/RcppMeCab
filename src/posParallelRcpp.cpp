@@ -155,25 +155,15 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   std::vector< std::vector < std::string > > results(text.size());
   List result;
 
-  std::vector<std::string> args;
-  args.push_back("mecab");
-  if (sys_dic != "") {
-    args.push_back("-d");
-    args.push_back(sys_dic);
-  }
-  if (user_dic != "") {
-    args.push_back("-u");
-    args.push_back(user_dic);
-  }
+  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
-  char** argv_model = new char*[args.size()];
-  for(size_t i = 0; i < args.size(); ++i) {
-    argv_model[i] = new char[args[i].size() + 1];
-    std::strcpy(argv_model[i], args[i].c_str());
-  }
+  std::vector<char*> argv;
+  for (const auto& arg : arguments)
+    argv.push_back((char*)arg.data());
+  argv.push_back(nullptr);
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(args.size(), argv_model);
+  mecab_model_t* model = mecab_model_new(argv.size() - 1, argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -183,11 +173,6 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
   // RcppParallel doesn't get CharacterVector as input and output
   TextParseJoin func = TextParseJoin(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
-
-  for(size_t i = 0; i < args.size(); i++){
-    delete [] argv_model[i];
-  }
-  delete [] argv_model;
 
   mecab_model_destroy(model);
 
@@ -202,16 +187,6 @@ List posParallelJoinRcpp( std::vector<std::string> text, std::string sys_dic, st
     }
     result.push_back(resultString);
   }
-
-  StringVector result_name(text.size());
-
-  for (size_t h = 0; h < text.size(); ++h) {
-    String character_name = text[h];
-    character_name.set_encoding(CE_UTF8);
-    result_name[h] = character_name;
-  }
-
-  result.names() = result_name;
 
   return result;
 }
@@ -247,25 +222,15 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
     text_names = text.names();
   }
 
-  std::vector<std::string> args;
-  args.push_back("mecab");
-  if (sys_dic != "") {
-    args.push_back("-d");
-    args.push_back(sys_dic);
-  }
-  if (user_dic != "") {
-    args.push_back("-u");
-    args.push_back(user_dic);
-  }
+  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
-  char** argv_model = new char*[args.size()];
-  for(size_t i = 0; i < args.size(); ++i) {
-    argv_model[i] = new char[args[i].size() + 1];
-    std::strcpy(argv_model[i], args[i].c_str());
-  }
+  std::vector<char*> argv;
+  for (const auto& arg : arguments)
+    argv.push_back((char*)arg.data());
+  argv.push_back(nullptr);
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(args.size(), argv_model);
+  mecab_model_t* model = mecab_model_new(argv.size() - 1, argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -275,11 +240,6 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
   // RcppParallel doesn't get CharacterVector as input and output
   TextParseDF func = TextParseDF(&input, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, input.size()), func);
-
-  for(size_t i = 0; i < args.size(); i++){
-    delete [] argv_model[i];
-  }
-  delete [] argv_model;
 
   mecab_model_destroy(model);
 
@@ -344,25 +304,15 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   std::vector< std::vector < std::string > > results(text.size());
   List result;
 
-  std::vector<std::string> args;
-  args.push_back("mecab");
-  if (sys_dic != "") {
-    args.push_back("-d");
-    args.push_back(sys_dic);
-  }
-  if (user_dic != "") {
-    args.push_back("-u");
-    args.push_back(user_dic);
-  }
+  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
-  char** argv_model = new char*[args.size()];
-  for(size_t i = 0; i < args.size(); ++i) {
-    argv_model[i] = new char[args[i].size() + 1];
-    std::strcpy(argv_model[i], args[i].c_str());
-  }
+  std::vector<char*> argv;
+  for (const auto& arg : arguments)
+    argv.push_back((char*)arg.data());
+  argv.push_back(nullptr);
 
   // Create MeCab model
-  mecab_model_t* model = mecab_model_new(args.size(), argv_model);
+  mecab_model_t* model = mecab_model_new(argv.size() - 1, argv.data());
   if (!model) {
     Rcerr << "model is NULL" << std::endl;
     return R_NilValue;
@@ -372,11 +322,6 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
   // RcppParallel doesn't get CharacterVector as input and output
   TextParse func = TextParse(&text, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, text.size()), func);
-
-  for(size_t i = 0; i < args.size(); i++){
-    delete [] argv_model[i];
-  }
-  delete [] argv_model;
 
   mecab_model_destroy(model);
 
@@ -397,16 +342,6 @@ List posParallelRcpp( std::vector<std::string> text, std::string sys_dic, std::s
     resultString.names() = resultTag;
     result.push_back(resultString);
   }
-
-  StringVector result_name(text.size());
-
-  for (size_t h = 0; h < text.size(); ++h) {
-    String character_name = text[h];
-    character_name.set_encoding(CE_UTF8);
-    result_name[h] = character_name;
-  }
-
-  result.names() = result_name;
 
   return result;
 }

@@ -8,6 +8,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // posParallelJoinRcpp
 List posParallelJoinRcpp(std::vector<std::string> text, std::string sys_dic, std::string user_dic);
 static SEXP _RcppMeCab_posParallelJoinRcpp_try(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_dicSEXP) {
@@ -117,7 +122,7 @@ RcppExport SEXP _RcppMeCab_posParallelRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP
     return rcpp_result_gen;
 }
 // posRcpp
-List posRcpp(std::string text, std::string sys_dic, std::string user_dic);
+CharacterVector posRcpp(std::string text, std::string sys_dic, std::string user_dic);
 static SEXP _RcppMeCab_posRcpp_try(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_dicSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -153,7 +158,7 @@ RcppExport SEXP _RcppMeCab_posRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_di
     return rcpp_result_gen;
 }
 // posJoinRcpp
-List posJoinRcpp(std::string text, std::string sys_dic, std::string user_dic);
+StringVector posJoinRcpp(std::string text, std::string sys_dic, std::string user_dic);
 static SEXP _RcppMeCab_posJoinRcpp_try(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_dicSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -304,8 +309,8 @@ static int _RcppMeCab_RcppExport_validate(const char* sig) {
         signatures.insert("List(*posParallelJoinRcpp)(std::vector<std::string>,std::string,std::string)");
         signatures.insert("DataFrame(*posParallelDFRcpp)(StringVector,std::string,std::string)");
         signatures.insert("List(*posParallelRcpp)(std::vector<std::string>,std::string,std::string)");
-        signatures.insert("List(*posRcpp)(std::string,std::string,std::string)");
-        signatures.insert("List(*posJoinRcpp)(std::string,std::string,std::string)");
+        signatures.insert("CharacterVector(*posRcpp)(std::string,std::string,std::string)");
+        signatures.insert("StringVector(*posJoinRcpp)(std::string,std::string,std::string)");
         signatures.insert("List(*posLoopRcpp)(std::vector< std::string >,std::string,std::string)");
         signatures.insert("List(*posLoopJoinRcpp)(std::vector< std::string >,std::string,std::string)");
         signatures.insert("DataFrame(*posDFRcpp)(StringVector,std::string,std::string)");
