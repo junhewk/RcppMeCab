@@ -196,7 +196,7 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
   std::vector< std::vector < std::string > > results(text.size());
   std::vector< std::string > input = as<std::vector< std::string > >(text);
 
-  StringVector doc_id;
+  IntegerVector doc_id;
   IntegerVector sentence_id;
   IntegerVector token_id;
   StringVector token;
@@ -204,21 +204,14 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
   StringVector subtype;
   StringVector analytic;
 
-  String doc_id_t;
   String token_t;
   String pos_t;
   String subtype_t;
   String analytic_t;
 
-  int doc_number = 0;
+  int doc_number = 1;
   int sentence_number = 1;
   int token_number = 1;
-  StringVector text_names;
-  bool b = text.hasAttribute("name");
-
-  if (b == TRUE) {
-    text_names = text.names();
-  }
 
   std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
@@ -234,7 +227,7 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
     return R_NilValue;
   }
 
-  // parallel argorithm with Intell TBB
+  // parallel argorithm with Intel TBB
   // RcppParallel doesn't get CharacterVector as input and output
   TextParseDF func = TextParseDF(&input, results, model);
   tbb::parallel_for(tbb::blocked_range<size_t>(0, input.size()), func);
@@ -278,19 +271,16 @@ DataFrame posParallelDFRcpp( StringVector text, std::string sys_dic, std::string
       }
 
       // append doc_id
-      if (b == TRUE) {
-        doc_id_t = text_names[doc_number];
-        doc_id_t.set_encoding(CE_UTF8);
-        doc_id.push_back(doc_id_t);
-      } else {
-        doc_id.push_back(std::to_string(doc_number + 1));
-      }
-
+      doc_id.push_back(doc_number);
     }
     sentence_number = 1;
     token_number = 1;
     doc_number++;
   }
+
+  // doc_id to factor
+  doc_id.attr("class") = "factor";
+  doc_id.attr("levels") = text;
 
   return DataFrame::create(_["doc_id"]=doc_id, _["sentence_id"]=sentence_id, _["token_id"]=token_id, _["token"]=token, _["pos"]=pos, _["subtype"]=subtype, _["analytic"]=analytic);
 }

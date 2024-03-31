@@ -144,28 +144,22 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
   // lattice model
   StringVector::iterator it;
 
-  StringVector doc_id;
+  IntegerVector doc_id;
   IntegerVector sentence_id;
   IntegerVector token_id;
-  StringVector token;
-  StringVector pos;
-  StringVector subtype;
-  StringVector analytic;
+  CharacterVector token;
+  CharacterVector pos;
+  CharacterVector subtype;
+  CharacterVector analytic;
 
-  String doc_id_t;
   String token_t;
   String pos_t;
   String subtype_t;
   String analytic_t;
 
-  int doc_number = 0;
+  int doc_number = 1;
   int sentence_number = 1;
   int token_number = 1;
-  StringVector text_names;
-  bool b = text.hasAttribute("name");
-  if (b == TRUE) {
-    text_names = text.names();
-  }
 
   std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
 
@@ -239,14 +233,8 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
           token_number = 1;
         }
 
-        // append doc_id
-        if (b == TRUE) {
-          doc_id_t = text_names[doc_number];
-          doc_id_t.set_encoding(CE_UTF8);
-          doc_id.push_back(doc_id_t);
-        } else {
-          doc_id.push_back(std::to_string(doc_number + 1));
-        }
+        // append doc_id as int
+        doc_id.push_back(doc_number);
       }
     }
     sentence_number = 1;
@@ -254,10 +242,14 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
     doc_number++;
   }
 
+  // doc_id to factor
+  doc_id.attr("class") = "factor";
+  doc_id.attr("levels") = text;
+
   // gc
   delete lattice;
   delete tagger;
   delete model;
 
-  return DataFrame::create(_["doc_id"]=doc_id, _["sentence_id"]=sentence_id, _["token_id"]=token_id, _["token"]=token, _["pos"]=pos, _["subtype"]=subtype, _["analytic"]=analytic);
+  return DataFrame::create(Named("doc_id")=doc_id, Named("sentence_id")=sentence_id, Named("token_id")=token_id, Named("token")=token, Named("pos")=pos, Named("subtype")=subtype, Named("analytic")=analytic);
 }
