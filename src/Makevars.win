@@ -32,7 +32,7 @@ MECAB_DL_URL = https://github.com/junhewk/RcppMeCab/releases/download/0.0.1.0/$(
 ## Compiler / linker flags with RcppParallel library
 PKG_CPPFLAGS += -I../inst/include -DBOOST_NO_AUTO_PTR
 PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DDLL_IMPORT -DSTRICT_R_HEADERS -Wno-parentheses -Wno-nonnull
-PKG_LIBS += -L$(MECAB_LIBS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm -llibmecab
+PKG_LIBS += -L$(MECAB_LIBS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm -lmecab
 
 all: libmecab $(SHLIB)
 
