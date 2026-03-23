@@ -34,29 +34,27 @@ jobs:
         run: |
           sudo apt-get update -y -qq
           sudo apt-get install -y autoconf automake
-          cd mecab
-          wget -q "https://bitbucket.org/eunjeon/mecab-ko/downloads/mecab-0.996-ko-0.9.2.tar.gz"
-          tar xzf mecab-0.996-ko-0.9.2.tar.gz
+          MECAB_KO_BUILD=$(mktemp -d)
+          cd "$MECAB_KO_BUILD"
+          curl -fsSL "https://bitbucket.org/eunjeon/mecab-ko/downloads/mecab-0.996-ko-0.9.2.tar.gz" -o mecab-ko.tar.gz
+          tar xzf mecab-ko.tar.gz
           cd mecab-0.996-ko-0.9.2
           ./configure
           make
           sudo make install
           sudo ldconfig
-          cd ..
-          wget -q "https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/mecab-ko-dic-2.1.1-20180720.tar.gz"
-          tar xzf mecab-ko-dic-2.1.1-20180720.tar.gz
+          cd "$MECAB_KO_BUILD"
+          curl -fsSL "https://bitbucket.org/eunjeon/mecab-ko-dic/downloads/mecab-ko-dic-2.1.1-20180720.tar.gz" -o mecab-ko-dic.tar.gz
+          tar xzf mecab-ko-dic.tar.gz
           cd mecab-ko-dic-2.1.1-20180720
           ./autogen.sh
           ./configure
           make
           sudo make install
-          cd ../..
+          rm -rf "$MECAB_KO_BUILD"
       - name: Install MeCab (Japanese, macOS)
         if: ${{ matrix.platform == 'macos-latest' && matrix.mecab_lang == 'ja' }}
         run: brew install mecab mecab-ipadic
-      - name: Install MeCab (Korean, macOS)
-        if: ${{ matrix.platform == 'macos-latest' && matrix.mecab_lang == 'ko' }}
-        run: brew install mecab
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))
