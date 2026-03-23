@@ -44,4 +44,6 @@ libmecab:
 	tar xfz $(MECAB_CACHE_DIR)/$(MECAB_TARBALL)
 	if [ ! -d ../inst/libs$(R_ARCH) ]; then mkdir -p ../inst/libs$(R_ARCH); fi
 	cp libmecab$(SHLIB_EXT) ../inst/libs$(R_ARCH)
-	rm libmecab$(SHLIB_EXT)
+	gendef libmecab$(SHLIB_EXT)
+	dlltool -d libmecab.def -l ../inst/libs$(R_ARCH)/libmecab.dll.a -D libmecab$(SHLIB_EXT)
+	rm -f libmecab$(SHLIB_EXT) libmecab.def
