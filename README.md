@@ -4,120 +4,92 @@
 ![R](https://img.shields.io/github/r-package/v/junhewk/RcppMeCab)
 [![CRAN](http://www.r-pkg.org/badges/version/RcppMeCab)](https://cran.r-project.org/package=RcppMeCab)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RcppMeCab?color=brightgreen)](http://www.r-pkg.org/pkg/RcppMeCab)
+[![R-CMD-check](https://github.com/junhewk/RcppMeCab/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/junhewk/RcppMeCab/actions/workflows/R-CMD-check.yml)
 
 This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphological analyzer `MeCab`. It supports native utf-8 encoding in C++ code and CJK (Chinese, Japanese, and Korean) MeCab library. This package fully utilizes the power `Rcpp` brings `R` computation to analyze texts faster.
 
 __Please see [this](README_kr.md) for easy installation and usage examples in Korean.__
 
-## Changes in 0.0.1.3-3
-+ Single character vector input in `pos()` will return a character vector, not a list.
-+ `pos()` and `posParallel()` return lists, not named lists. We decided to remove original texts in results, since it does not fit to R way.
-+ Some typos in code and explanations are revised.
-
 ## Installation
 
-### Linux and Mac OSX
+### Linux, macOS, and Windows
 
-First, install `MeCab` of your language-of-choice.
+RcppMeCab automatically downloads and builds MeCab from source if it is not already installed on your system. No manual MeCab installation is required.
 
-+ Japanese: `MeCab` from [github](http://taku910.github.io/mecab/)
-+ Korean: `MeCab-Ko` from [Bitbucket repository](https://bitbucket.org/eunjeon/mecab-ko)
-+ Chinese: `MeCab` and `MeCab Chinese Dic` from [MeCab-Chinese](http://www.52nlp.cn/%E7%94%A8mecab%E6%89%93%E9%80%A0%E4%B8%80%E5%A5%97%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E7%B3%BB%E7%BB%9F%E4%B8%89%EF%BC%9Amecab-chinese)
+```r
+install.packages("RcppMeCab") # install from CRAN
 
-Second, you can install RcppMeCab from CRAN with:
-
-```
-install.packages("RcppMeCab") # build from source
+# or install the development version
 # install.packages("devtools")
-install_github("junhewk/RcppMeCab") # install developmental version
+devtools::install_github("junhewk/RcppMeCab")
 ```
 
-### Windows
+If you already have MeCab installed (e.g. via `brew install mecab` on macOS, or `apt install libmecab-dev` on Linux), RcppMeCab will use your system installation.
 
-You should set the language you want to use for the analysis with the environment variable `MECAB_LANG`. The default value is `ko` and if you want to analyze Japanese or Chinese, please set it as `ja` before install the package.
+### Language selection (Windows)
 
+On Windows, set `MECAB_LANG` before installation to choose the MeCab language variant. The default is `ko` (Korean).
+
+```r
+# Korean (default)
+install.packages("RcppMeCab", type = "source")
+
+# Japanese
+Sys.setenv(MECAB_LANG = "ja")
+install.packages("RcppMeCab", type = "source")
 ```
-install.packages("RcppMeCab") # for installing Korean version
 
-# or, install for Japanese
-Sys.setenv(MECAB_LANG = 'ja') # for installing Japanese developmental version
-install.packages("RcppMeCab", type="source") # build from source
+### Dictionary setup
 
-# install.packages("devtools")
-install_github("junhewk/RcppMeCab") # install developmental version
-```
+You need a MeCab dictionary for your target language:
 
-For analyzing, you also need MeCab binary and dictionary.
-
-For Korean:
-
-Install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) up to your 32-bit or 64-bit Windows version in `C:\mecab`. Provide directory location to `RcppMeCab` function.
-
-#### Version Information for Korean
-
-Current `mecab-ko-msvc` is not working in R. Please use `mecab-ko-msvc` 0.9.2 or lower.
-
-For Japanese:
-
-Install [mecab binary](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7WElGUGt6ejlpVXc). Provide directory location to `RcppMeCab` function. For example: `pos(sentence, sys_dic = "C:/PROGRA~2/mecab/dic/ipadic")`
++ **Japanese**: Install [MeCab](http://taku910.github.io/mecab/) and IPAdic, or on macOS: `brew install mecab mecab-ipadic`
++ **Korean**: Install [mecab-ko](https://bitbucket.org/eunjeon/mecab-ko) and [mecab-ko-dic](https://bitbucket.org/eunjeon/mecab-ko-dic). On Windows: install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) in `C:\mecab`
++ **Chinese**: Install MeCab with [MeCab Chinese Dic](http://www.52nlp.cn/%E7%94%A8mecab%E6%89%93%E9%80%A0%E4%B8%80%E5%A5%97%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E7%B3%BB%E7%BB%9F%E4%B8%89%EF%BC%9Amecab-chinese)
 
 ## Usage
 
-This package has `pos` and `posParallel` function.
+This package has `pos` and `posParallel` functions.
 
+```r
+pos(sentence)                        # returns a list
+pos(sentence, join = FALSE)          # morphemes only (tags as vector names)
+pos(sentence, format = "data.frame") # returns a data frame
+pos(sentence, user_dic = "path")     # with a compiled user dictionary
+posParallel(sentence)                # parallelized, faster for large inputs
 ```
-pos(sentence) # returns list, sentence will present on the names of the list
-pos(sentence, join = FALSE) # for yielding morphemes only (tags will be given on the vector names)
-pos(sentence, format = "data.frame") # the result will returned as a data frame format
-pos(sentence, user_dic) # gets a compiled user dictionary 
-posParallel(sentence, user_dic) # parallelized version uses more memory, but much faster than the loop in single threading
-```
 
-+ sentence: a text for being analyzed
-+ join: If it gets TRUE, output form is (morpheme/tag). If it gets FALSE, output form is (morpheme) + tag in attribute.
-+ format: The default is a list. If you set this as `"data.frame"`, the function will return the result in a data frame format.
-+ sys_dic: a directory in which `dicrc`, `model.bin`, and other files are located, default value is "" or you can set your default value using `options(mecabSysDic = "")` 
-+ user_dic: a user dictionary file compiled by `mecab_dict_index`, default value is also ""
+### Parameters
 
-### Notification for the dictionary
++ `sentence`: text to analyze
++ `join`: if `TRUE` (default), output is `morpheme/tag`; if `FALSE`, output is `morpheme` with tag as attribute
++ `format`: `"list"` (default) or `"data.frame"`
++ `sys_dic`: directory containing `dicrc`, `model.bin`, etc. Set a default with `options(mecabSysDic = "/path/to/dic")`
++ `user_dic`: path to a user dictionary compiled by `mecab-dict-index`
 
-You should not use simplified dictionary entry, e.g. tilde expression (~/). Please provide full path name in `sys_dic` and `user_dic`.
+Note: provide full paths for `sys_dic` and `user_dic` (no tilde `~/` expansion).
 
-## Compiling User Dictionary
+## Compiling a user dictionary
 
-MeCab API has `DictionaryCompiler`, but it contains `die()`. Hence, calling it in Rcpp crashes down entire R session. This will not be included in `RcppMeCab` functions.
+MeCab's `DictionaryCompiler` API calls `die()`, which would crash the R session, so it is not exposed through RcppMeCab. Use the `mecab-dict-index` command-line tool instead.
 
-Please refer to [Mecab](http://taku910.github.io/mecab/dic.html) for Japanese.
-
-### Unix and Mac OSX
-
-You should have `model_file` if you want the library to estimate cost automatically. 
+You need a `model_file` for automatic cost estimation:
 
 + Japanese: [model_file in ipadic](https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7bnc5aFZSTE9qNnM)
 + Korean: `model.bin` in [mecab-ko-dic](https://bitbucket.org/eunjeon/mecab-ko-dic)
 
-You need entire `mecab-ko-dic` source if you want to compile Korean user dictionary. User dictionary should also be prepared in CSV file. CSV structure is found in [Japanese](http://taku910.github.io/mecab/dic.html) and [Korean](https://bitbucket.org/eunjeon/mecab-ko-dic/src/e39e16059b8748c2663ab09195a08293c7063a28/final/user-dic/README.md?fileviewer=file-view-default).
+Prepare your entries as a CSV file ([Japanese format](http://taku910.github.io/mecab/dic.html), [Korean format](https://bitbucket.org/eunjeon/mecab-ko-dic/src/master/final/user-dic/README.md)), then compile:
 
-Compile:
-
+```sh
+/usr/local/libexec/mecab/mecab-dict-index \
+  -m /path/to/model.bin \
+  -d /path/to/mecab-dic \
+  -u userdic.dic \
+  -f utf8 -t utf8 \
+  entries.csv
 ```
-$ /usr/local/libexec/mecab/mecab-dict-index -m `model_file` -d `mecab_dic_location` -u `user_dictionary_file_name` -f `CSV file charset` -t `original dictionary charset` `target_csv
 
-# example
-
-$ /usr/local/libexec/mecab/mecab-dict-index -m /usr/local/lib/mecab/dic/mecab-ko-dic/model.bin -d ~/mecab-ko-dic-2.0.3-20170922 -u userdic.dic -f utf8 -t utf8 ~/person.csv
-```
-
-### Windows
-
-+ Korean: `mecab-ko-msvc` has `mecab-dict-index.exe`.
-+ Japanese: `MeCab` binary version has `mecab-dict-index.exe`.
-
-You can use it in the same way the Linux binary compiles the dictionary.
-
-## TODOs
-
-+ Provide multilanguage manuals for international support
+On Windows, use `mecab-dict-index.exe` bundled with [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) or the MeCab binary installer.
 
 ## Author
 
