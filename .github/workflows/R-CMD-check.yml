@@ -63,5 +63,9 @@ jobs:
       - name: Check
         env:
           MECAB_LANG: ${{ matrix.mecab_lang }}
-        run: rcmdcheck::rcmdcheck(args = c("--no-multiarch", "--no-manual", "--as-cran"), build_args = c("--no-manual", "--no-build-vignettes"), error_on = "error")
+        run: |
+          result <- rcmdcheck::rcmdcheck(args = c("--no-multiarch", "--no-manual", "--as-cran"), build_args = c("--no-manual", "--no-build-vignettes"), error_on = "never")
+          log <- file.path(result$checkdir, "00install.out")
+          if (file.exists(log)) cat("== 00install.out ==\n", readLines(log), sep="\n")
+          if (length(result$errors) > 0) stop("R CMD check found ERRORs")
         shell: Rscript {0}
