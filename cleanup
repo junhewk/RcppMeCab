@@ -1,2 +1,4 @@
 #!/bin/sh
 rm -f src/Makevars
+rm -rf src/mecab_build
+rm -rf src/mecab_local

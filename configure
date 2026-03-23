@@ -1,6 +1,6 @@
 #!/bin/sh
 # configure script for RcppMeCab
-# Detects MeCab installation and generates src/Makevars
+# Detects MeCab installation or builds from source
 
 # Find mecab-config
 MECAB_CONFIG=""
@@ -19,23 +19,128 @@ if [ -z "$MECAB_CONFIG" ]; then
   done
 fi
 
-if [ -z "$MECAB_CONFIG" ]; then
-  echo "-----------------------------------------------------"
-  echo "ERROR: mecab-config not found."
-  echo ""
-  echo "Please install MeCab before installing RcppMeCab:"
-  echo "  Debian/Ubuntu: sudo apt-get install libmecab-dev mecab"
-  echo "  Fedora/RHEL:   sudo dnf install mecab-devel mecab"
-  echo "  macOS:         brew install mecab"
-  echo "  macOS (ko):    brew install mecab-ko"
-  echo "-----------------------------------------------------"
-  exit 1
+if [ -n "$MECAB_CONFIG" ]; then
+  echo "Found mecab-config at: $MECAB_CONFIG"
+
+  MECAB_CFLAGS=$($MECAB_CONFIG --cflags)
+  MECAB_LIBS=$($MECAB_CONFIG --libs)
+else
+  echo "mecab-config not found. Building MeCab from source..."
+
+  PKG_DIR="$(pwd)"
+  MECAB_BUILD_DIR="${PKG_DIR}/src/mecab_build"
+  MECAB_INSTALL_DIR="${PKG_DIR}/src/mecab_local"
+  MECAB_SRC_URL="https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
+  MECAB_TARBALL="$MECAB_BUILD_DIR/mecab-source.tar.gz"
+
+  mkdir -p "$MECAB_BUILD_DIR"
+
+  echo "Downloading MeCab source..."
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$MECAB_SRC_URL" -o "$MECAB_TARBALL"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -q "$MECAB_SRC_URL" -O "$MECAB_TARBALL"
+  else
+    echo "ERROR: Neither curl nor wget found. Cannot download MeCab source."
+    exit 1
+  fi
+
+  if [ ! -f "$MECAB_TARBALL" ]; then
+    echo "ERROR: Failed to download MeCab source."
+    exit 1
+  fi
+
+  echo "Extracting MeCab source..."
+  tar xzf "$MECAB_TARBALL" -C "$MECAB_BUILD_DIR" --strip-components=1 || {
+    echo "ERROR: Failed to extract MeCab source."
+    exit 1
+  }
+
+  MECAB_SRC_DIR="$MECAB_BUILD_DIR/mecab"
+
+  if [ ! -f "$MECAB_SRC_DIR/configure" ]; then
+    echo "ERROR: MeCab configure script not found at $MECAB_SRC_DIR/configure"
+    exit 1
+  fi
+
+  # Patch MeCab source for R compatibility:
+  # Avoid exit(), stdout, stderr, printf, sprintf which R CMD check forbids.
+  echo "Patching MeCab source for R compatibility..."
+  SRCDIR="$MECAB_SRC_DIR/src"
+
+  # Create a compatibility header that redirects problematic calls
+  cat > "$SRCDIR/mecab_r_compat.h" << 'COMPAT_EOF'
+#ifndef MECAB_R_COMPAT_H_
+#define MECAB_R_COMPAT_H_
+#include <iostream>
+#include <cstdio>
+// Null output stream that inherits from std::ostream for full compatibility
+class MeCabNullBuf : public std::streambuf {
+protected:
+  int overflow(int c) { return c; }
+};
+static MeCabNullBuf mecab_null_buf_;
+static std::ostream mecab_null_os_(&mecab_null_buf_);
+#endif
+COMPAT_EOF
+
+  # Add compat header include, replace std::cerr/std::cout, and apply per-file fixes
+  for f in "$SRCDIR"/*.cpp "$SRCDIR"/*.h; do
+    case "$f" in */mecab_r_compat.h) continue;; esac
+    sed -i.bak '1i\
+#include "mecab_r_compat.h"
+s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
+  done
+
+  # Per-file patches (run once each, after the loop)
+  # common.h: remove exit() from die class destructor
+  # utils.h: sprintf -> snprintf
+  # utils.cpp: gut progress_bar body to avoid printf/stdout
+  # eval.cpp: sprintf -> snprintf
+  sed -i.bak '/^class die/,/^};/ { /exit(-1);/d; }' "$SRCDIR/common.h"
+  sed -i.bak 's/std::sprintf(s, "%-16f", val)/std::snprintf(s, sizeof(s), "%-16f", val)/' "$SRCDIR/utils.h"
+  sed -i.bak '/^int progress_bar/,/^}/ { /^int progress_bar/!{ /^}/!d; }; /^int progress_bar/a\
+  return 1;
+  }' "$SRCDIR/utils.cpp"
+  sed -i.bak 's/sprintf(buf\.get(),/snprintf(buf.get(), 256,/' "$SRCDIR/eval.cpp"
+  rm -f "$SRCDIR"/*.bak
+
+  echo "Configuring MeCab..."
+  cd "$MECAB_SRC_DIR"
+  # MeCab source uses 'register' keyword which is an error in C++17;
+  # force C++14 and suppress deprecation warnings for the MeCab build.
+  # Unset R's CXX/CXXFLAGS to prevent R's C++17 standard from leaking in.
+  CXX="c++" CXXFLAGS="-std=c++14 -Wno-deprecated-declarations -O2" \
+  ./configure --with-charset=utf8 --enable-utf8-only --prefix="$MECAB_INSTALL_DIR" --enable-static --disable-shared > mecab_configure.log 2>&1
+  if [ $? -ne 0 ]; then
+    echo "ERROR: MeCab configure failed. See $MECAB_SRC_DIR/mecab_configure.log"
+    exit 1
+  fi
+
+  echo "Building MeCab..."
+  make > mecab_make.log 2>&1
+  if [ $? -ne 0 ]; then
+    echo "ERROR: MeCab build failed. See $MECAB_SRC_DIR/mecab_make.log"
+    exit 1
+  fi
+
+  echo "Installing MeCab locally..."
+  make install > mecab_install.log 2>&1
+  if [ $? -ne 0 ]; then
+    echo "ERROR: MeCab install failed. See $MECAB_SRC_DIR/mecab_install.log"
+    exit 1
+  fi
+
+  cd "$PKG_DIR"
+
+  # Clean up build artifacts (only keep installed lib and headers)
+  rm -rf "$MECAB_BUILD_DIR"
+
+  MECAB_CFLAGS="-I${MECAB_INSTALL_DIR}/include"
+  MECAB_LIBS="-L${MECAB_INSTALL_DIR}/lib -lmecab"
+
+  echo "MeCab built successfully at: $MECAB_INSTALL_DIR"
 fi
-
-echo "Found mecab-config at: $MECAB_CONFIG"
-
-MECAB_CFLAGS=$($MECAB_CONFIG --cflags)
-MECAB_LIBS=$($MECAB_CONFIG --libs)
 
 echo "  MECAB_CFLAGS: $MECAB_CFLAGS"
 echo "  MECAB_LIBS:   $MECAB_LIBS"
