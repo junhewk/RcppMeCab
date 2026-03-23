@@ -25,20 +25,23 @@ else
 	MECAB_ARCH = 64
 endif
 
+MECAB_CACHE_DIR = ../mecab/win$(MECAB_ARCH)
+MECAB_TARBALL = mecab$(MECAB_ARCH)_$(MECAB_LANG).tar.gz
+MECAB_DL_URL = https://github.com/junhewk/RcppMeCab/releases/download/0.0.1.0/$(MECAB_TARBALL)
+
 ## Compiler / linker flags with RcppParallel library
 PKG_CPPFLAGS += -I../inst/include -DBOOST_NO_AUTO_PTR
-PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DDLL_IMPORT -DSTRICT_R_HEADERS
+PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DDLL_IMPORT -DSTRICT_R_HEADERS -Wno-parentheses -Wno-nonnull
 PKG_LIBS += -L$(MECAB_LIBS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm -llibmecab
 
 all: libmecab $(SHLIB)
 
-## target to ensure tar.gz files get unpacked
-## the opening '@' ensures operations are executed 'quietly'
-## in order to see commands as they happens add a 'v' to the tar and cp commands
 libmecab:
-	@if [ ! -d ../mecab/win$(MECAB_ARCH) ]; then mkdir -p ../mecab/win$(MECAB_ARCH); fi
-	@if [ ! -f ../mecab/win$(MECAB_ARCH)/mecab$(MECAB_ARCH)_$(MECAB_LANG).tar.gz ]; then `"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='https://github.com/junhewk/RcppMeCab/releases/download/0.0.1.0/mecab$(MECAB_ARCH)_$(MECAB_LANG).tar.gz', destfile='../mecab/win$(MECAB_ARCH)/mecab$(MECAB_ARCH)_$(MECAB_LANG).tar.gz', mode='wb', quiet=TRUE)"`; fi
-	@tar xfz ../mecab/win$(MECAB_ARCH)/mecab$(MECAB_ARCH)_$(MECAB_LANG).tar.gz
-	@if [ ! -d ../inst/libs$(R_ARCH) ]; then mkdir -p ../inst/libs$(R_ARCH); fi
-	@cp libmecab$(SHLIB_EXT) ../inst/libs$(R_ARCH)
-	@rm libmecab$(SHLIB_EXT)
+	if [ ! -d $(MECAB_CACHE_DIR) ]; then mkdir -p $(MECAB_CACHE_DIR); fi
+	if [ ! -f $(MECAB_CACHE_DIR)/$(MECAB_TARBALL) ]; then \
+		"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='$(MECAB_DL_URL)', destfile='$(MECAB_CACHE_DIR)/$(MECAB_TARBALL)', mode='wb', method='libcurl')"; \
+	fi
+	tar xfz $(MECAB_CACHE_DIR)/$(MECAB_TARBALL)
+	if [ ! -d ../inst/libs$(R_ARCH) ]; then mkdir -p ../inst/libs$(R_ARCH); fi
+	cp libmecab$(SHLIB_EXT) ../inst/libs$(R_ARCH)
+	rm libmecab$(SHLIB_EXT)
