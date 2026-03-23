@@ -44,7 +44,7 @@ install.packages("RcppMeCab", type = "source")
 You need a MeCab dictionary for your target language:
 
 + **Japanese**: Install [MeCab](http://taku910.github.io/mecab/) and IPAdic, or on macOS: `brew install mecab mecab-ipadic`
-+ **Korean**: Install [mecab-ko](https://bitbucket.org/eunjeon/mecab-ko) and [mecab-ko-dic](https://bitbucket.org/eunjeon/mecab-ko-dic). On Windows: install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) in `C:\mecab`
++ **Korean**: Install [mecab-ko](https://bitbucket.org/eunjeon/mecab-ko) and [mecab-ko-dic](https://bitbucket.org/eunjeon/mecab-ko-dic). Mirrors of these files are also available on the [RcppMeCab releases page](https://github.com/junhewk/RcppMeCab/releases/tag/0.0.1.0) in case Bitbucket is unavailable. On Windows: install [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) and [mecab-ko-dic-msvc](https://github.com/Pusnow/mecab-ko-dic-msvc) in `C:\mecab`
 + **Chinese**: Install MeCab with [MeCab Chinese Dic](http://www.52nlp.cn/%E7%94%A8mecab%E6%89%93%E9%80%A0%E4%B8%80%E5%A5%97%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E7%B3%BB%E7%BB%9F%E4%B8%89%EF%BC%9Amecab-chinese)
 
 ## Usage
