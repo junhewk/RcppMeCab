@@ -1,0 +1,54 @@
+#!/bin/sh
+# configure script for RcppMeCab
+# Detects MeCab installation and generates src/Makevars
+
+# Find mecab-config
+MECAB_CONFIG=""
+
+if command -v mecab-config >/dev/null 2>&1; then
+  MECAB_CONFIG="mecab-config"
+fi
+
+# Check Homebrew paths on macOS
+if [ -z "$MECAB_CONFIG" ]; then
+  for prefix in /opt/homebrew /usr/local; do
+    if [ -x "$prefix/bin/mecab-config" ]; then
+      MECAB_CONFIG="$prefix/bin/mecab-config"
+      break
+    fi
+  done
+fi
+
+if [ -z "$MECAB_CONFIG" ]; then
+  echo "-----------------------------------------------------"
+  echo "ERROR: mecab-config not found."
+  echo ""
+  echo "Please install MeCab before installing RcppMeCab:"
+  echo "  Debian/Ubuntu: sudo apt-get install libmecab-dev mecab"
+  echo "  Fedora/RHEL:   sudo dnf install mecab-devel mecab"
+  echo "  macOS:         brew install mecab"
+  echo "  macOS (ko):    brew install mecab-ko"
+  echo "-----------------------------------------------------"
+  exit 1
+fi
+
+echo "Found mecab-config at: $MECAB_CONFIG"
+
+MECAB_CFLAGS=$($MECAB_CONFIG --cflags)
+MECAB_LIBS=$($MECAB_CONFIG --libs)
+
+echo "  MECAB_CFLAGS: $MECAB_CFLAGS"
+echo "  MECAB_LIBS:   $MECAB_LIBS"
+
+# Get RcppParallel linker flags
+RCPPPARALLEL_LIBS=$("${R_HOME}/bin/Rscript" -e "cat(RcppParallel::RcppParallelLibs())")
+
+echo "  RCPPPARALLEL_LIBS: $RCPPPARALLEL_LIBS"
+
+# Generate src/Makevars from src/Makevars.in
+sed -e "s|@MECAB_CFLAGS@|${MECAB_CFLAGS}|" \
+    -e "s|@MECAB_LIBS@|${MECAB_LIBS}|" \
+    -e "s|@RCPPPARALLEL_LIBS@|${RCPPPARALLEL_LIBS}|" \
+    src/Makevars.in > src/Makevars
+
+echo "Configuration complete."
