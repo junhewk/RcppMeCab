@@ -5,45 +5,32 @@
 ##  Author: Junhewk Kim
 ##
 ##  This file is part of RcppMeCab
-##
-##  Based on Makefile.win of Rblpapi
-##  https://github.com/Rblp/Rblpapi/blob/master/src/Makevars.win
 
-ifeq "$(MECAB_LIBS)" ""
-	MECAB_LIBS = ../inst/libs$(R_ARCH)
-endif
+MECAB_SRC_DIR = mecab_build/mecab/src
 
-## Confirm there is a user definition of an environment variable MECAB_LANG
-ifneq "$(MECAB_LANG)" "ja"
-	MECAB_LANG = ko
-endif
+## MeCab library source files
+MECAB_SRCS = $(MECAB_SRC_DIR)/viterbi.cpp $(MECAB_SRC_DIR)/tagger.cpp \
+	$(MECAB_SRC_DIR)/utils.cpp $(MECAB_SRC_DIR)/eval.cpp \
+	$(MECAB_SRC_DIR)/iconv_utils.cpp $(MECAB_SRC_DIR)/dictionary_rewriter.cpp \
+	$(MECAB_SRC_DIR)/dictionary_generator.cpp $(MECAB_SRC_DIR)/dictionary_compiler.cpp \
+	$(MECAB_SRC_DIR)/context_id.cpp $(MECAB_SRC_DIR)/connector.cpp \
+	$(MECAB_SRC_DIR)/nbest_generator.cpp $(MECAB_SRC_DIR)/writer.cpp \
+	$(MECAB_SRC_DIR)/string_buffer.cpp $(MECAB_SRC_DIR)/param.cpp \
+	$(MECAB_SRC_DIR)/tokenizer.cpp $(MECAB_SRC_DIR)/char_property.cpp \
+	$(MECAB_SRC_DIR)/dictionary.cpp $(MECAB_SRC_DIR)/feature_index.cpp \
+	$(MECAB_SRC_DIR)/lbfgs.cpp $(MECAB_SRC_DIR)/learner_tagger.cpp \
+	$(MECAB_SRC_DIR)/learner.cpp $(MECAB_SRC_DIR)/libmecab.cpp
+MECAB_OBJS = $(MECAB_SRCS:.cpp=.o)
 
-## Determine architecture (32 or 64) from R_ARCH
-ifeq "$(R_ARCH)" "/i386"
-	MECAB_ARCH = 32
-else
-	MECAB_ARCH = 64
-endif
-
-MECAB_CACHE_DIR = ../mecab/win$(MECAB_ARCH)
-MECAB_TARBALL = mecab$(MECAB_ARCH)_$(MECAB_LANG).tar.gz
-MECAB_DL_URL = https://github.com/junhewk/RcppMeCab/releases/download/0.0.1.0/$(MECAB_TARBALL)
-
-## Compiler / linker flags with RcppParallel library
+## Compiler / linker flags
 PKG_CPPFLAGS += -I../inst/include -DBOOST_NO_AUTO_PTR
-PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DDLL_IMPORT -DSTRICT_R_HEADERS -Wno-parentheses -Wno-nonnull
-PKG_LIBS += -L$(MECAB_LIBS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm -lmecab
+PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DSTRICT_R_HEADERS -Wno-parentheses -Wno-nonnull
+PKG_LIBS += $(MECAB_OBJS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm
 
-all: libmecab $(SHLIB)
+all: mecab_source $(SHLIB)
 
-libmecab:
-	if [ ! -d $(MECAB_CACHE_DIR) ]; then mkdir -p $(MECAB_CACHE_DIR); fi
-	if [ ! -f $(MECAB_CACHE_DIR)/$(MECAB_TARBALL) ]; then \
-		"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "download.file(url='$(MECAB_DL_URL)', destfile='$(MECAB_CACHE_DIR)/$(MECAB_TARBALL)', mode='wb', method='libcurl')"; \
-	fi
-	tar xfz $(MECAB_CACHE_DIR)/$(MECAB_TARBALL)
-	if [ ! -d ../inst/libs$(R_ARCH) ]; then mkdir -p ../inst/libs$(R_ARCH); fi
-	cp libmecab$(SHLIB_EXT) ../inst/libs$(R_ARCH)
-	gendef libmecab$(SHLIB_EXT)
-	dlltool -d libmecab.def -l ../inst/libs$(R_ARCH)/libmecab.dll.a -D libmecab$(SHLIB_EXT)
-	rm -f libmecab$(SHLIB_EXT) libmecab.def
+mecab_source:
+	"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" --vanilla ../tools/winlibs.R
+
+$(MECAB_SRC_DIR)/%.o: $(MECAB_SRC_DIR)/%.cpp
+	$(CXX) $(ALL_CPPFLAGS) -I$(MECAB_SRC_DIR) -DHAVE_CONFIG_H -DDIC_VERSION=102 -DMECAB_USE_UTF8_ONLY -DMECAB_DEFAULT_RC=\"\" -std=c++14 -Wno-register -Wno-deprecated-declarations -O2 -c $< -o $@
