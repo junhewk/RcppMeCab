@@ -152,6 +152,52 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
 
   cd "$PKG_DIR"
 
+  # Download and install dictionary into inst/dic/
+  MECAB_DIC_DIR="${PKG_DIR}/inst/dic"
+  mkdir -p "$MECAB_DIC_DIR"
+
+  if [ "$MECAB_LANG" = "ja" ]; then
+    echo "Compiling IPAdic (Japanese) dictionary..."
+    # ipadic source is in the same taku910/mecab archive we already downloaded
+    # Re-download since we may have cleaned up; extract only mecab-ipadic/
+    DIC_BUILD_DIR="${PKG_DIR}/src/dic_build"
+    mkdir -p "$DIC_BUILD_DIR"
+    DIC_TARBALL="$DIC_BUILD_DIR/mecab-source.tar.gz"
+    curl -fsSL "$MECAB_SRC_URL" -o "$DIC_TARBALL" || wget -q "$MECAB_SRC_URL" -O "$DIC_TARBALL"
+    tar xzf "$DIC_TARBALL" -C "$DIC_BUILD_DIR" --strip-components=1
+    IPADIC_DIR="$DIC_BUILD_DIR/mecab-ipadic"
+
+    DICT_INDEX="$MECAB_INSTALL_DIR/libexec/mecab/mecab-dict-index"
+    if [ ! -x "$DICT_INDEX" ]; then
+      DICT_INDEX="$MECAB_INSTALL_DIR/bin/mecab-dict-index"
+    fi
+
+    "$DICT_INDEX" \
+      -d "$IPADIC_DIR" \
+      -o "$MECAB_DIC_DIR" \
+      -f euc-jp -t utf-8 > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      echo "WARNING: Failed to compile IPAdic dictionary. Package will work but needs manual dictionary setup."
+    else
+      # Copy dicrc and .def files needed at runtime
+      cp "$IPADIC_DIR/dicrc" "$MECAB_DIC_DIR/" 2>/dev/null
+      echo "IPAdic dictionary compiled to: $MECAB_DIC_DIR"
+    fi
+    rm -rf "$DIC_BUILD_DIR"
+  else
+    echo "Downloading pre-compiled mecab-ko-dic..."
+    DIC_URL="https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz"
+    DIC_TARBALL="/tmp/mecab-ko-dic-$$.tar.gz"
+    curl -fsSL "$DIC_URL" -o "$DIC_TARBALL" || wget -q "$DIC_URL" -O "$DIC_TARBALL"
+    if [ -f "$DIC_TARBALL" ]; then
+      tar xzf "$DIC_TARBALL" -C "$MECAB_DIC_DIR" --strip-components=1
+      rm -f "$DIC_TARBALL"
+      echo "mecab-ko-dic installed to: $MECAB_DIC_DIR"
+    else
+      echo "WARNING: Failed to download mecab-ko-dic. Package will work but needs manual dictionary setup."
+    fi
+  fi
+
   # Clean up build artifacts (only keep installed lib and headers)
   rm -rf "$MECAB_BUILD_DIR"
 

@@ -47,7 +47,7 @@ pos <- function(sentence, join = TRUE, format = c("list", "data.frame"), sys_dic
     }
   }
 
-  if (!is.null(getOption("mecabSysDic")) && !sys_dic == "") sys_dic = getOption("mecabSysDic")
+  if (!is.null(getOption("mecabSysDic")) && sys_dic == "") sys_dic = getOption("mecabSysDic")
 
   format = match.arg(format)
 

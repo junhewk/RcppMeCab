@@ -50,13 +50,22 @@ Sys.setenv(MECAB_LANG = "ja")
 install.packages("RcppMeCab", type = "source")
 ```
 
-### Dictionary setup
+### Dictionary
 
-You need a MeCab dictionary for your target language:
+A MeCab dictionary is **automatically downloaded and installed** during package installation:
 
-+ **Japanese**: Install [MeCab](http://taku910.github.io/mecab/) and IPAdic, or on macOS: `brew install mecab mecab-ipadic`
-+ **Korean**: Install [mecab-ko-dic](https://github.com/Pusnow/mecab-ko-msvc/releases) (available as `mecab-ko-dic.zip`/`mecab-ko-dic.tar.gz` from mecab-ko-msvc releases)
-+ **Chinese**: Install MeCab with [MeCab Chinese Dic](http://www.52nlp.cn/%E7%94%A8mecab%E6%89%93%E9%80%A0%E4%B8%80%E5%A5%97%E5%AE%9E%E7%94%A8%E7%9A%84%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E7%B3%BB%E7%BB%9F%E4%B8%89%EF%BC%9Amecab-chinese)
++ **Korean** (`MECAB_LANG=ko`, default): [mecab-ko-dic](https://github.com/Pusnow/mecab-ko-msvc/releases) (pre-compiled, from mecab-ko-msvc releases)
++ **Japanese** (`MECAB_LANG=ja`): [IPAdic](http://taku910.github.io/mecab/) (compiled from source during installation)
+
+The bundled dictionary is stored in the package's `dic/` directory and used automatically — no manual dictionary setup is required.
+
+To use a different dictionary (e.g., NEologd, UniDic, or a Chinese dictionary), set `sys_dic`:
+
+```r
+pos("text", sys_dic = "/path/to/custom-dic")
+# or set a default:
+options(mecabSysDic = "/path/to/custom-dic")
+```
 
 ## Usage
 

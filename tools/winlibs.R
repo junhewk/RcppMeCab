@@ -140,3 +140,45 @@ if (!dir.exists(BUILD_DIR)) {
 } else {
   cat("MeCab source already prepared.\n")
 }
+
+# Download and install dictionary into inst/dic/
+DIC_DIR <- file.path("..", "inst", "dic")
+if (!dir.exists(DIC_DIR)) {
+  dir.create(DIC_DIR, recursive = TRUE)
+
+  if (MECAB_LANG == "ja") {
+    cat("Compiling IPAdic (Japanese) dictionary...\n")
+    # ipadic source is in the same taku910/mecab archive
+    IPADIC_DIR <- file.path(BUILD_DIR, "mecab-ipadic")
+    if (!dir.exists(IPADIC_DIR)) {
+      # Re-download if needed
+      tarball <- file.path(BUILD_DIR, "mecab-source.tar.gz")
+      if (!file.exists(tarball)) {
+        download.file(MECAB_SRC_URL, tarball, mode = "wb", method = "libcurl")
+        untar(tarball, exdir = BUILD_DIR, extras = "--strip-components=1")
+      }
+    }
+    # Use mecab-dict-index from the built MeCab source to compile ipadic
+    # On Windows, we compile dictionary_compiler.cpp as part of the build,
+    # but mecab-dict-index is not a standalone binary. Instead, download
+    # pre-compiled ipadic from a known source.
+    # For now, copy the source .def files and compile after package install.
+    # Alternative: skip dictionary for ja on Windows if no pre-compiled available.
+    cat("WARNING: Japanese dictionary compilation on Windows not yet supported during install.\n")
+    cat("Please install ipadic manually.\n")
+  } else {
+    cat("Downloading pre-compiled mecab-ko-dic...\n")
+    DIC_URL <- "https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz"
+    dic_tarball <- file.path(BUILD_DIR, "mecab-ko-dic.tar.gz")
+    tryCatch({
+      download.file(DIC_URL, dic_tarball, mode = "wb", method = "libcurl")
+      untar(dic_tarball, exdir = DIC_DIR, extras = "--strip-components=1")
+      cat("mecab-ko-dic installed to:", DIC_DIR, "\n")
+    }, error = function(e) {
+      cat("WARNING: Failed to download mecab-ko-dic:", conditionMessage(e), "\n")
+      cat("Package will work but needs manual dictionary setup.\n")
+    })
+  }
+} else {
+  cat("Dictionary already installed.\n")
+}

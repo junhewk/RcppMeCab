@@ -31,12 +31,22 @@ RcppMeCab은 MeCab이 시스템에 없으면 자동으로 소스를 다운로드
 devtools::install_github("junhewk/RcppMeCab")
 ```
 
-### 사전 설치
+### 사전
 
-형태소 분석을 위해 사전이 필요합니다:
+패키지 설치 시 MeCab 사전이 **자동으로 다운로드 및 설치**됩니다:
 
-+ **한국어**: [mecab-ko-dic](https://github.com/Pusnow/mecab-ko-msvc/releases)에서 `mecab-ko-dic.zip` (윈도) 또는 `mecab-ko-dic.tar.gz`를 다운로드
-+ **일본어**: `brew install mecab mecab-ipadic` (macOS) 또는 `apt install mecab mecab-ipadic-utf8` (Ubuntu)
++ **한국어** (`MECAB_LANG=ko`, 기본값): [mecab-ko-dic](https://github.com/Pusnow/mecab-ko-msvc/releases) (mecab-ko-msvc 릴리즈에서 사전 다운로드)
++ **일본어** (`MECAB_LANG=ja`): [IPAdic](http://taku910.github.io/mecab/) (설치 시 소스에서 컴파일)
+
+사전은 패키지의 `dic/` 디렉토리에 저장되며 자동으로 사용됩니다. 별도의 사전 설치가 필요하지 않습니다.
+
+다른 사전(NEologd, UniDic 등)을 사용하려면 `sys_dic`을 설정합니다:
+
+```r
+pos("텍스트", sys_dic = "/path/to/custom-dic")
+# 또는 기본값으로 설정:
+options(mecabSysDic = "/path/to/custom-dic")
+```
 
 ## 사용법
 

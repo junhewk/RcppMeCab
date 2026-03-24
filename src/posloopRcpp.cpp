@@ -17,11 +17,16 @@ List posLoopRcpp(std::vector< std::string > text, std::string sys_dic, std::stri
   String parsed_tag;
   List result;
 
-  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
+  std::vector<std::string> arguments = {"mecab"};
+  if (!sys_dic.empty()) {
+    arguments.push_back("-r"); arguments.push_back(sys_dic + "/dicrc");
+    arguments.push_back("-d"); arguments.push_back(sys_dic);
+  }
+  if (!user_dic.empty()) { arguments.push_back("-u"); arguments.push_back(user_dic); }
 
   std::vector<char*> argv;
-  for (const auto& arg : arguments)
-    argv.push_back((char*)arg.data());
+  for (auto& arg : arguments)
+    argv.push_back(&arg[0]);
   argv.push_back(nullptr);
 
   // Create MeCab model
@@ -84,11 +89,16 @@ List posLoopJoinRcpp(std::vector< std::string > text, std::string sys_dic, std::
   String parsed_morph;
   List result;
 
-  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
+  std::vector<std::string> arguments = {"mecab"};
+  if (!sys_dic.empty()) {
+    arguments.push_back("-r"); arguments.push_back(sys_dic + "/dicrc");
+    arguments.push_back("-d"); arguments.push_back(sys_dic);
+  }
+  if (!user_dic.empty()) { arguments.push_back("-u"); arguments.push_back(user_dic); }
 
   std::vector<char*> argv;
-  for (const auto& arg : arguments)
-    argv.push_back((char*)arg.data());
+  for (auto& arg : arguments)
+    argv.push_back(&arg[0]);
   argv.push_back(nullptr);
 
   // Create MeCab model
@@ -161,11 +171,16 @@ DataFrame posDFRcpp(StringVector text, std::string sys_dic, std::string user_dic
   int sentence_number = 1;
   int token_number = 1;
 
-  std::vector<std::string> arguments = {"--dicdir", sys_dic, "--userdic", user_dic};
+  std::vector<std::string> arguments = {"mecab"};
+  if (!sys_dic.empty()) {
+    arguments.push_back("-r"); arguments.push_back(sys_dic + "/dicrc");
+    arguments.push_back("-d"); arguments.push_back(sys_dic);
+  }
+  if (!user_dic.empty()) { arguments.push_back("-u"); arguments.push_back(user_dic); }
 
   std::vector<char*> argv;
-  for (const auto& arg : arguments)
-    argv.push_back((char*)arg.data());
+  for (auto& arg : arguments)
+    argv.push_back(&arg[0]);
   argv.push_back(nullptr);
 
   // Create MeCab model
