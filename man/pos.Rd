@@ -8,6 +8,7 @@ pos(
   sentence,
   join = TRUE,
   format = c("list", "data.frame"),
+  lang = NULL,
   sys_dic = "",
   user_dic = ""
 )
@@ -18,6 +19,10 @@ pos(
 \item{join}{A bool to decide the output format. The default value is TRUE. If FALSE, the function will return morphemes only, and tags put in the attribute. if \code{format="data.frame"}, then this will be ignored.}
 
 \item{format}{A data type for the result. The default value is "list". You can set this to "data.frame" to get a result as data frame format.}
+
+\item{lang}{Optional language code (\code{"ja"} or \code{"ko"}) to select
+a dictionary installed via \code{\link{download_dic}}. When specified, this
+overrides \code{sys_dic}.}
 
 \item{sys_dic}{A location of system MeCab dictionary. The default value is "".}
 
@@ -53,9 +58,10 @@ sentence <- c(#some UTF-8 texts)
 pos(sentence)
 pos(sentence, join = FALSE)
 pos(sentence, format = "data.frame")
-pos(sentence, user_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/user-dic/user_dic.dic") # exact location should be provided (do not use tilde expression or other simplified notation)
-# System dictionary example: in case of using mecab-ipadic-NEologd
-pos(sentence, sys_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/")
+pos(sentence, lang = "ja")
+pos(sentence, lang = "ko")
+pos(sentence, sys_dic = "/path/to/custom/dic")
+pos(sentence, user_dic = "/path/to/user.dic")
 }
 
 }

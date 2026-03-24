@@ -129,8 +129,8 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
   # MeCab source uses 'register' keyword which is an error in C++17;
   # force C++14 and suppress deprecation warnings for the MeCab build.
   # Unset R's CXX/CXXFLAGS to prevent R's C++17 standard from leaking in.
-  CXX="c++" CXXFLAGS="-std=c++14 -Wno-deprecated-declarations -O2" \
-  ./configure --with-charset=utf8 --enable-utf8-only --prefix="$MECAB_INSTALL_DIR" --enable-static --disable-shared > mecab_configure.log 2>&1
+  CXX="c++" CXXFLAGS="-std=c++14 -Wno-deprecated-declarations -O2 -fPIC" \
+  ./configure --with-charset=utf8 --enable-utf8-only --prefix="$MECAB_INSTALL_DIR" --enable-static --disable-shared --with-pic > mecab_configure.log 2>&1
   if [ $? -ne 0 ]; then
     echo "ERROR: MeCab configure failed. See $MECAB_SRC_DIR/mecab_configure.log"
     exit 1

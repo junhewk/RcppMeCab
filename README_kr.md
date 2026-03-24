@@ -40,17 +40,30 @@ devtools::install_github("junhewk/RcppMeCab")
 
 사전은 패키지의 `dic/` 디렉토리에 저장되며 자동으로 사용됩니다. 별도의 사전 설치가 필요하지 않습니다.
 
-다른 사전(NEologd, UniDic 등)을 사용하려면 `sys_dic`을 설정합니다:
+### 추가 사전 다운로드
+
+설치 후 `download_dic()`으로 다른 언어의 사전을 다운로드할 수 있습니다. 시스템 수준의 MeCab 설치가 필요하지 않으며, 사전 컴파일은 R 내에서 처리됩니다.
 
 ```r
-pos("텍스트", sys_dic = "/path/to/custom-dic")
-# 또는 기본값으로 설정:
-options(mecabSysDic = "/path/to/custom-dic")
+download_dic("ja") # 일본어 IPAdic 다운로드 및 컴파일
+download_dic("ko") # 한국어 mecab-ko-dic 다운로드
+```
+
+사전은 사용자 데이터 디렉토리(`tools::R_user_dir("RcppMeCab", "data")`)에 저장되며 R 세션 간에 유지됩니다.
+
+`list_dic()`으로 설치된 사전 목록을 확인할 수 있습니다:
+
+```r
+list_dic()
+#>      lang         name                              path active
+#> 1 bundled      bundled /path/to/RcppMeCab/dic              TRUE
+#> 2      ja       ipadic ~/.local/share/R/RcppMeCab/ja      FALSE
+#> 3      ko mecab-ko-dic ~/.local/share/R/RcppMeCab/ko      FALSE
 ```
 
 ## 사용법
 
-`RcppMeCab` 패키지는 `pos`, `posParallel`, `dict_index` 함수를 제공합니다.
+`RcppMeCab` 패키지는 `pos`, `posParallel`, `dict_index`, `download_dic`, `set_dic`, `list_dic` 함수를 제공합니다.
 
 ```r
 pos("안녕하세요.")
@@ -59,10 +72,37 @@ pos("안녕하세요.", format = "data.frame") # 데이터프레임으로 출력
 posParallel(c("안녕하세요", "반갑습니다.", "많은 이용 부탁드립니다")) # 멀티스레딩
 ```
 
-함수 옵션:
+### 언어 전환
+
+`lang` 매개변수로 언어별 사전을 선택할 수 있습니다:
+
+```r
+pos("東京は日本の首都です。", lang = "ja")
+pos("안녕하세요", lang = "ko")
+```
+
+또는 `set_dic()`으로 기본 사전을 설정합니다:
+
+```r
+set_dic("ja")
+pos("東京は日本の首都です。") # 일본어 사전 사용
+set_dic("ko")
+pos("안녕하세요")              # 한국어 사전 사용
+set_dic("bundled")             # 빌드 시 포함된 사전으로 복원
+```
+
+직접 사전 경로를 지정할 수도 있습니다:
+
+```r
+pos("텍스트", sys_dic = "/path/to/custom-dic")
+options(mecabSysDic = "/path/to/custom-dic")
+```
+
+### 함수 옵션
 
 + `join`: `FALSE`로 설정하면 형태소만 출력, 품사는 attribute. 기본값 `TRUE`는 "형태소/품사" 형태.
 + `format`: `"list"` (기본) 또는 `"data.frame"`
++ `lang`: 언어 코드 (`"ja"` 또는 `"ko"`). `download_dic()`으로 설치한 사전을 선택합니다. 지정 시 `sys_dic`보다 우선합니다.
 + `sys_dic`: 시스템 사전 디렉토리 경로. `options(mecabSysDic = "경로")`로 기본값 설정 가능.
 + `user_dic`: `dict_index()`로 컴파일한 사용자 사전 경로.
 

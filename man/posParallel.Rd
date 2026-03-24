@@ -8,6 +8,7 @@ posParallel(
   sentence,
   join = TRUE,
   format = c("list", "data.frame"),
+  lang = NULL,
   sys_dic = "",
   user_dic = ""
 )
@@ -19,13 +20,17 @@ posParallel(
 
 \item{format}{A data type for the result. The default value is "list". You can set this to "data.frame" to get a result as data frame format.}
 
+\item{lang}{Optional language code (\code{"ja"} or \code{"ko"}) to select
+a dictionary installed via \code{\link{download_dic}}. When specified, this
+overrides \code{sys_dic}.}
+
 \item{sys_dic}{A location of system MeCab dictionary. The default value is "".}
 
 \item{user_dic}{A location of user-specific MeCab dictionary. The default value is "".}
 }
 \value{
 A string vector or a list of POS tagged morpheme will be returned in conjoined character
- vecter form.
+ vector form.
 }
 \description{
 \code{posParallel} returns part-of-speech (POS) tagged morpheme of the sentence.
@@ -58,9 +63,10 @@ sentence <- c(#some UTF-8 texts)
 posParallel(sentence)
 posParallel(sentence, join = FALSE)
 posParallel(sentence, format = "data.frame")
-pos(sentence, user_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/user-dic/user_dic.dic") # exact location should be provided (do not use tilde expression or other simplified notation)
-# System dictionary example: in case of using mecab-ipadic-NEologd
-pos(sentence, sys_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/")
+posParallel(sentence, lang = "ja")
+posParallel(sentence, lang = "ko")
+posParallel(sentence, sys_dic = "/path/to/custom/dic")
+posParallel(sentence, user_dic = "/path/to/user.dic")
 }
 
 }
