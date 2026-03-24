@@ -21,10 +21,10 @@ Sets the default system dictionary used by \code{\link{pos}} and
 \examples{
 \dontrun{
 set_dic("ja")
-pos("東京は日本の首都です。")
+pos("some Japanese text")
 
 set_dic("ko")
-pos("안녕하세요")
+pos("some Korean text")
 }
 
 }

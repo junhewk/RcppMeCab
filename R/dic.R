@@ -16,7 +16,7 @@
 #' \dontrun{
 #' download_dic("ja")
 #' download_dic("ko")
-#' pos("東京は日本の首都です。", lang = "ja")
+#' pos("some text", lang = "ja")
 #' }
 #'
 #' @export
@@ -102,10 +102,10 @@ list_dic <- function() {
 #' @examples
 #' \dontrun{
 #' set_dic("ja")
-#' pos("東京は日本の首都です。")
+#' pos("some Japanese text")
 #'
 #' set_dic("ko")
-#' pos("안녕하세요")
+#' pos("some Korean text")
 #' }
 #'
 #' @export

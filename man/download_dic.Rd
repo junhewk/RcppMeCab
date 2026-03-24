@@ -27,7 +27,7 @@ Dictionaries are stored in the user data directory
 \dontrun{
 download_dic("ja")
 download_dic("ko")
-pos("東京は日本の首都です。", lang = "ja")
+pos("some text", lang = "ja")
 }
 
 }
