@@ -77,6 +77,11 @@ else
     exit 1
   fi
 
+  # mecab-ko-msvc configure expects src/Makefile.msvc.in; create stub if missing
+  if [ ! -f "$MECAB_SRC_DIR/src/Makefile.msvc.in" ]; then
+    touch "$MECAB_SRC_DIR/src/Makefile.msvc.in"
+  fi
+
   # Patch MeCab source for R compatibility:
   # Avoid exit(), stdout, stderr, printf, sprintf which R CMD check forbids.
   echo "Patching MeCab source for R compatibility..."
