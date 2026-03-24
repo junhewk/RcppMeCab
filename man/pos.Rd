@@ -24,8 +24,8 @@ pos(
 \item{user_dic}{A location of user-specific MeCab dictionary. The default value is "".}
 }
 \value{
-A string vector of POS tagged morpheme will be returned in conjoined character
- vector form. Element name of the list are original phrases
+A string vector or a list of POS tagged morpheme will be returned in conjoined character
+ vector form.
 }
 \description{
 \code{pos} returns part-of-speech (POS) tagged morpheme of the sentence.
@@ -53,7 +53,7 @@ sentence <- c(#some UTF-8 texts)
 pos(sentence)
 pos(sentence, join = FALSE)
 pos(sentence, format = "data.frame")
-pos(sentence, user_dic = "~/user_dic.dic")
+pos(sentence, user_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/user-dic/user_dic.dic") # exact location should be provided (do not use tilde expression or other simplified notation)
 # System dictionary example: in case of using mecab-ipadic-NEologd
 pos(sentence, sys_dic = "/usr/local/lib/mecab/dic/mecab-ipadic-neologd/")
 }

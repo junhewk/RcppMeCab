@@ -13,6 +13,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// dictIndexRcpp
+int dictIndexRcpp(std::vector<std::string> args);
+RcppExport SEXP _RcppMeCab_dictIndexRcpp(SEXP argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type args(argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dictIndexRcpp(args));
+    return rcpp_result_gen;
+END_RCPP
+}
 // posParallelJoinRcpp
 List posParallelJoinRcpp(std::vector<std::string> text, std::string sys_dic, std::string user_dic);
 static SEXP _RcppMeCab_posParallelJoinRcpp_try(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_dicSEXP) {
@@ -44,7 +55,7 @@ RcppExport SEXP _RcppMeCab_posParallelJoinRcpp(SEXP textSEXP, SEXP sys_dicSEXP, 
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -80,7 +91,7 @@ RcppExport SEXP _RcppMeCab_posParallelDFRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SE
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -116,7 +127,7 @@ RcppExport SEXP _RcppMeCab_posParallelRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -152,7 +163,7 @@ RcppExport SEXP _RcppMeCab_posRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_di
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -188,7 +199,7 @@ RcppExport SEXP _RcppMeCab_posJoinRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP use
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -224,7 +235,7 @@ RcppExport SEXP _RcppMeCab_posLoopRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP use
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -260,7 +271,7 @@ RcppExport SEXP _RcppMeCab_posLoopJoinRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -296,7 +307,7 @@ RcppExport SEXP _RcppMeCab_posDFRcpp(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
         UNPROTECT(1);
-        Rf_error("%s", CHAR(rcpp_msgSEXP_gen));
+        (Rf_error)("%s", CHAR(rcpp_msgSEXP_gen));
     }
     UNPROTECT(1);
     return rcpp_result_gen;
@@ -333,6 +344,7 @@ RcppExport SEXP _RcppMeCab_RcppExport_registerCCallable() {
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_RcppMeCab_dictIndexRcpp", (DL_FUNC) &_RcppMeCab_dictIndexRcpp, 1},
     {"_RcppMeCab_posParallelJoinRcpp", (DL_FUNC) &_RcppMeCab_posParallelJoinRcpp, 3},
     {"_RcppMeCab_posParallelDFRcpp", (DL_FUNC) &_RcppMeCab_posParallelDFRcpp, 3},
     {"_RcppMeCab_posParallelRcpp", (DL_FUNC) &_RcppMeCab_posParallelRcpp, 3},

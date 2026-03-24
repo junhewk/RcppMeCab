@@ -30,7 +30,16 @@ else
   PKG_DIR="$(pwd)"
   MECAB_BUILD_DIR="${PKG_DIR}/src/mecab_build"
   MECAB_INSTALL_DIR="${PKG_DIR}/src/mecab_local"
-  MECAB_SRC_URL="https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
+
+  MECAB_LANG="${MECAB_LANG:-ko}"
+  if [ "$MECAB_LANG" = "ja" ]; then
+    MECAB_SRC_URL="https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
+    echo "Building MeCab (Japanese, taku910/mecab 0.996) from source..."
+  else
+    MECAB_SRC_URL="https://github.com/Pusnow/mecab-ko-msvc/archive/refs/tags/release-0.999.tar.gz"
+    echo "Building MeCab-Ko (Korean, mecab-ko 0.999) from source..."
+  fi
+
   MECAB_TARBALL="$MECAB_BUILD_DIR/mecab-source.tar.gz"
 
   mkdir -p "$MECAB_BUILD_DIR"
@@ -56,7 +65,12 @@ else
     exit 1
   }
 
-  MECAB_SRC_DIR="$MECAB_BUILD_DIR/mecab"
+  # taku910/mecab extracts to mecab_build/mecab/; mecab-ko-msvc extracts flat
+  if [ -d "$MECAB_BUILD_DIR/mecab" ] && [ -f "$MECAB_BUILD_DIR/mecab/configure" ]; then
+    MECAB_SRC_DIR="$MECAB_BUILD_DIR/mecab"
+  else
+    MECAB_SRC_DIR="$MECAB_BUILD_DIR"
+  fi
 
   if [ ! -f "$MECAB_SRC_DIR/configure" ]; then
     echo "ERROR: MeCab configure script not found at $MECAB_SRC_DIR/configure"

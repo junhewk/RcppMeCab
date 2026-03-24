@@ -2,8 +2,8 @@
 % Please edit documentation in R/RcppMeCab-package.r
 \docType{package}
 \name{RcppMeCab}
-\alias{RcppMeCab}
 \alias{RcppMeCab-package}
+\alias{RcppMeCab}
 \title{RcppMeCab: Rcpp Wrapper for MeCab Library}
 \description{
 R package based on \code{Rcpp} for \code{MeCab}: Yet Another Part-of-Speech and

@@ -29,6 +29,8 @@ PKG_LIBS += $(MECAB_OBJS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "R
 
 all: mecab_source $(SHLIB)
 
+$(SHLIB): $(MECAB_OBJS)
+
 mecab_source:
 	"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" --vanilla ../tools/winlibs.R
 
