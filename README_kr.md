@@ -47,6 +47,7 @@ devtools::install_github("junhewk/RcppMeCab")
 ```r
 download_dic("ja") # 일본어 IPAdic 다운로드 및 컴파일
 download_dic("ko") # 한국어 mecab-ko-dic 다운로드
+download_dic("zh") # 중국어 mecab-jieba 다운로드 및 컴파일
 ```
 
 사전은 사용자 데이터 디렉토리(`tools::R_user_dir("RcppMeCab", "data")`)에 저장되며 R 세션 간에 유지됩니다.
@@ -59,6 +60,7 @@ list_dic()
 #> 1 bundled      bundled /path/to/RcppMeCab/dic              TRUE
 #> 2      ja       ipadic ~/.local/share/R/RcppMeCab/ja      FALSE
 #> 3      ko mecab-ko-dic ~/.local/share/R/RcppMeCab/ko      FALSE
+#> 4      zh  mecab-jieba ~/.local/share/R/RcppMeCab/zh      FALSE
 ```
 
 ## 사용법
@@ -79,6 +81,7 @@ posParallel(c("안녕하세요", "반갑습니다.", "많은 이용 부탁드립
 ```r
 pos("東京は日本の首都です。", lang = "ja")
 pos("안녕하세요", lang = "ko")
+pos("我是中国人。", lang = "zh")
 ```
 
 또는 `set_dic()`으로 기본 사전을 설정합니다:
@@ -102,7 +105,7 @@ options(mecabSysDic = "/path/to/custom-dic")
 
 + `join`: `FALSE`로 설정하면 형태소만 출력, 품사는 attribute. 기본값 `TRUE`는 "형태소/품사" 형태.
 + `format`: `"list"` (기본) 또는 `"data.frame"`
-+ `lang`: 언어 코드 (`"ja"` 또는 `"ko"`). `download_dic()`으로 설치한 사전을 선택합니다. 지정 시 `sys_dic`보다 우선합니다.
++ `lang`: 언어 코드 (`"ja"`, `"ko"`, 또는 `"zh"`). `download_dic()`으로 설치한 사전을 선택합니다. 지정 시 `sys_dic`보다 우선합니다.
 + `sys_dic`: 시스템 사전 디렉토리 경로. `options(mecabSysDic = "경로")`로 기본값 설정 가능.
 + `user_dic`: `dict_index()`로 컴파일한 사용자 사전 경로.
 

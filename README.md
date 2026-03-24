@@ -66,6 +66,7 @@ You can download and install dictionaries for other languages after installation
 ```r
 download_dic("ja") # download and compile Japanese IPAdic
 download_dic("ko") # download Korean mecab-ko-dic
+download_dic("zh") # download and compile Chinese mecab-jieba
 ```
 
 Dictionaries are stored in the user data directory (`tools::R_user_dir("RcppMeCab", "data")`) and persist across R sessions.
@@ -78,6 +79,7 @@ list_dic()
 #> 1 bundled      bundled /path/to/RcppMeCab/dic              TRUE
 #> 2      ja       ipadic ~/.local/share/R/RcppMeCab/ja      FALSE
 #> 3      ko mecab-ko-dic ~/.local/share/R/RcppMeCab/ko      FALSE
+#> 4      zh  mecab-jieba ~/.local/share/R/RcppMeCab/zh      FALSE
 ```
 
 ## Usage
@@ -99,6 +101,7 @@ Use the `lang` parameter to select a dictionary by language:
 ```r
 pos("東京は日本の首都です。", lang = "ja")
 pos("안녕하세요", lang = "ko")
+pos("我是中国人。", lang = "zh")
 ```
 
 Or set a default with `set_dic()`:
@@ -123,7 +126,7 @@ options(mecabSysDic = "/path/to/custom-dic")
 + `sentence`: text to analyze
 + `join`: if `TRUE` (default), output is `morpheme/tag`; if `FALSE`, output is `morpheme` with tag as attribute
 + `format`: `"list"` (default) or `"data.frame"`
-+ `lang`: language code (`"ja"` or `"ko"`) to select a dictionary installed via `download_dic()`. Overrides `sys_dic` when specified.
++ `lang`: language code (`"ja"`, `"ko"`, or `"zh"`) to select a dictionary installed via `download_dic()`. Overrides `sys_dic` when specified.
 + `sys_dic`: directory containing `dicrc`, `sys.dic`, etc. Set a default with `options(mecabSysDic = "/path/to/dic")`
 + `user_dic`: path to a user dictionary compiled by `dict_index()`
 
