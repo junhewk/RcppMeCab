@@ -20,9 +20,9 @@ posParallel(
 
 \item{format}{A data type for the result. The default value is "list". You can set this to "data.frame" to get a result as data frame format.}
 
-\item{lang}{Optional language code (\code{"ja"} or \code{"ko"}) to select
-a dictionary installed via \code{\link{download_dic}}. When specified, this
-overrides \code{sys_dic}.}
+\item{lang}{Optional language code (\code{"ja"}, \code{"ko"}, or \code{"zh"})
+to select a dictionary installed via \code{\link{download_dic}}. When
+specified, this overrides \code{sys_dic}.}
 
 \item{sys_dic}{A location of system MeCab dictionary. The default value is "".}
 

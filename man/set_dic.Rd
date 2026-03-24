@@ -7,8 +7,9 @@
 set_dic(lang)
 }
 \arguments{
-\item{lang}{Character scalar. Language code (\code{"ja"} or \code{"ko"})
-or \code{"bundled"} to use the dictionary bundled with the package.}
+\item{lang}{Character scalar. Language code (\code{"ja"}, \code{"ko"}, or
+\code{"zh"}) or \code{"bundled"} to use the dictionary bundled with the
+package.}
 }
 \value{
 Invisible path to the activated dictionary directory.

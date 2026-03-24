@@ -1,7 +1,7 @@
 #' Download and install a MeCab dictionary
 #'
 #' Downloads and installs a MeCab system dictionary for the specified language.
-#' Japanese dictionaries are compiled from source using the built-in
+#' Japanese and Chinese dictionaries are compiled from source using the built-in
 #' \code{mecab-dict-index}; Korean dictionaries are downloaded pre-compiled.
 #' No system-level MeCab installation is required.
 #'
@@ -9,25 +9,29 @@
 #' (\code{tools::R_user_dir("RcppMeCab", "data")}).
 #'
 #' @param lang Character scalar. Language code: \code{"ja"} for Japanese
-#'   (IPAdic) or \code{"ko"} for Korean (mecab-ko-dic).
+#'   (IPAdic), \code{"ko"} for Korean (mecab-ko-dic), or \code{"zh"} for
+#'   Chinese (mecab-jieba).
 #' @return Invisible path to the installed dictionary directory.
 #'
 #' @examples
 #' \dontrun{
 #' download_dic("ja")
 #' download_dic("ko")
+#' download_dic("zh")
 #' pos("some text", lang = "ja")
 #' }
 #'
 #' @export
 download_dic <- function(lang) {
-  lang <- match.arg(lang, c("ja", "ko"))
+  lang <- match.arg(lang, c("ja", "ko", "zh"))
   dic_dir <- file.path(tools::R_user_dir("RcppMeCab", "data"), lang)
 
   if (lang == "ja") {
     .download_dic_ja(dic_dir)
-  } else {
+  } else if (lang == "ko") {
     .download_dic_ko(dic_dir)
+  } else {
+    .download_dic_zh(dic_dir)
   }
 
   message("Dictionary installed: ", dic_dir)
@@ -65,10 +69,11 @@ list_dic <- function() {
   }
 
   # User-installed dictionaries
-  for (lang in c("ja", "ko")) {
+  dic_names <- c(ja = "ipadic", ko = "mecab-ko-dic", zh = "mecab-jieba")
+  for (lang in c("ja", "ko", "zh")) {
     dic_path <- file.path(user_dir, lang)
     if (file.exists(file.path(dic_path, "sys.dic"))) {
-      name <- if (lang == "ja") "ipadic" else "mecab-ko-dic"
+      name <- dic_names[[lang]]
       rows <- c(rows, list(data.frame(
         lang = lang, name = name,
         path = dic_path, active = (active == dic_path),
@@ -95,8 +100,9 @@ list_dic <- function() {
 #' \code{\link{posParallel}}. This is equivalent to calling
 #' \code{options(mecabSysDic = path)} but allows selection by language code.
 #'
-#' @param lang Character scalar. Language code (\code{"ja"} or \code{"ko"})
-#'   or \code{"bundled"} to use the dictionary bundled with the package.
+#' @param lang Character scalar. Language code (\code{"ja"}, \code{"ko"}, or
+#'   \code{"zh"}) or \code{"bundled"} to use the dictionary bundled with the
+#'   package.
 #' @return Invisible path to the activated dictionary directory.
 #'
 #' @examples
@@ -110,7 +116,7 @@ list_dic <- function() {
 #'
 #' @export
 set_dic <- function(lang) {
-  lang <- match.arg(lang, c("ja", "ko", "bundled"))
+  lang <- match.arg(lang, c("ja", "ko", "zh", "bundled"))
   dic_path <- .resolve_dic(lang)
   options(mecabSysDic = dic_path)
   invisible(dic_path)
@@ -190,4 +196,39 @@ set_dic <- function(lang) {
     stop("Dictionary extraction failed: sys.dic not found")
 
   message("Korean (mecab-ko-dic) dictionary installed.")
+}
+
+#' Download and compile Chinese mecab-jieba
+#' @noRd
+.download_dic_zh <- function(dic_dir) {
+  src_url <- "https://github.com/lindera/mecab-jieba/archive/refs/tags/0.1.1.tar.gz"
+  tmp_dir <- tempfile("mecab_zh_")
+  dir.create(tmp_dir, recursive = TRUE)
+  on.exit(unlink(tmp_dir, recursive = TRUE), add = TRUE)
+
+  tarball <- file.path(tmp_dir, "mecab-jieba.tar.gz")
+  message("Downloading mecab-jieba source...")
+  utils::download.file(src_url, tarball, mode = "wb", quiet = TRUE)
+
+  message("Extracting...")
+  utils::untar(tarball, exdir = tmp_dir)
+  extracted <- list.dirs(tmp_dir, recursive = FALSE)
+  jieba_dir <- extracted[1]
+  if (!file.exists(file.path(jieba_dir, "jieba.csv")))
+    stop("Could not find jieba.csv in archive")
+
+  dir.create(dic_dir, recursive = TRUE, showWarnings = FALSE)
+
+  message("Compiling dictionary (this may take a moment)...")
+  args <- c("mecab-dict-index",
+            "-d", normalizePath(jieba_dir, mustWork = TRUE),
+            "-o", normalizePath(dic_dir, mustWork = TRUE),
+            "-f", "utf-8",
+            "-t", "utf-8")
+  result <- dictIndexRcpp(args)
+  if (result != 0)
+    stop("Dictionary compilation failed (return code: ", result, ")")
+
+  file.copy(file.path(jieba_dir, "dicrc"), dic_dir, overwrite = TRUE)
+  message("Chinese (mecab-jieba) dictionary installed.")
 }
