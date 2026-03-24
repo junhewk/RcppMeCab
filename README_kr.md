@@ -2,8 +2,8 @@
 
 [![License](https://img.shields.io/badge/license-GPL-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl.html)
 ![R](https://img.shields.io/github/r-package/v/junhewk/RcppMeCab)
-[![CRAN](http://www.r-pkg.org/badges/version/RcppMeCab)](https://cran.r-project.org/package=RcppMeCab)
-[![Downloads](http://cranlogs.r-pkg.org/badges/RcppMeCab?color=brightgreen)](http://www.r-pkg.org/pkg/RcppMeCab)
+[![CRAN](https://www.r-pkg.org/badges/version/RcppMeCab)](https://cran.r-project.org/package=RcppMeCab)
+[![Downloads](https://cranlogs.r-pkg.org/badges/RcppMeCab?color=brightgreen)](https://www.r-pkg.org/pkg/RcppMeCab)
 
 RcppMeCab은 형태소 분석기인 `MeCab`을 R 환경에서 매끄럽게 사용할 수 있도록 한 패키지입니다. `Rcpp` 패키지를 사용하여 C++에서 직접 연산을 수행하므로 현재 R에서 제공되는 어떤 형태소 분석기보다 빠르며, 현존하는 `Python`과 `R` 라이브러리 중 가장 빠르고 효율적으로 형태소 분석을 수행할 수 있도록 라이브러리를 구성하였습니다. 제공되는 분산 처리 함수를 활용하여 다중 스레드 처리 또한 제공하므로, 대량의 자료를 빠르게 분석하기 원하시는 경우 적합한 패키지입니다.
 

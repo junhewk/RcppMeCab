@@ -19,7 +19,7 @@ This package utilizes \code{MeCab} C API and \code{Rcpp} codes.
 \references{
 \itemize{
 \item{\href{http://taku910.github.io/mecab/}{MeCab}}
-\item{\href{http://www.rcpp.org}{Rcpp: Seamless R and C++ Integration}}
+\item{\href{https://www.rcpp.org/}{Rcpp: Seamless R and C++ Integration}}
 \item{\href{http://eunjeon.blogspot.com}{Eunjeon project}}
 }
 }

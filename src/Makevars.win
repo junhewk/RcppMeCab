@@ -24,7 +24,7 @@ MECAB_OBJS = $(MECAB_SRCS:.cpp=.o)
 
 ## Compiler / linker flags
 PKG_CPPFLAGS += -I../inst/include -DBOOST_NO_AUTO_PTR
-PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DSTRICT_R_HEADERS -Wno-parentheses -Wno-nonnull
+PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1 -DSTRICT_R_HEADERS
 PKG_LIBS += $(MECAB_OBJS) $(shell "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" -e "RcppParallel::RcppParallelLibs()") -lm
 
 all: mecab_source $(SHLIB)
@@ -35,4 +35,4 @@ mecab_source:
 	"$(R_HOME)/bin$(R_ARCH_BIN)/Rscript.exe" --vanilla ../tools/winlibs.R
 
 $(MECAB_SRC_DIR)/%.o: $(MECAB_SRC_DIR)/%.cpp
-	$(CXX) $(ALL_CPPFLAGS) -I$(MECAB_SRC_DIR) -DHAVE_CONFIG_H -DDIC_VERSION=102 -DMECAB_USE_UTF8_ONLY -DMECAB_DEFAULT_RC=\"\" -std=c++14 -Wno-register -Wno-deprecated-declarations -O2 -c $< -o $@
+	$(CXX) $(ALL_CPPFLAGS) -I$(MECAB_SRC_DIR) -DHAVE_CONFIG_H -DDIC_VERSION=102 -DMECAB_USE_UTF8_ONLY -DMECAB_DEFAULT_RC=\"\" -std=c++14 -w -O2 -c $< -o $@
