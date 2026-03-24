@@ -146,10 +146,10 @@ dict_index(
 pos("some text", user_dic = "userdic.dic")
 ```
 
-## Author
+## Authors
 
-Junhewk Kim (junhewk.kim@gmail.com)
+Junhewk Kim (junhewk.kim@gmail.com), Taku Kudo
 
-## Contributor
+## Contributors
 
-Kato Akiru
+Akiru Kato, Patrick Schratz
