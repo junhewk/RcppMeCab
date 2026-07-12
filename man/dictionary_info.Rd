@@ -23,5 +23,7 @@ dictionaries. This is useful for diagnosing which dictionary a package or
 R session is actually using.
 }
 \examples{
+\dontrun{
 dictionary_info()
+}
 }

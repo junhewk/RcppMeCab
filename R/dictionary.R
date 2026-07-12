@@ -11,7 +11,9 @@
 #'   `filename`, `charset`, `type`, `size`, `left_size`, `right_size`, and
 #'   `version`.
 #' @examples
+#' \dontrun{
 #' dictionary_info()
+#' }
 #' @export
 dictionary_info <- function(sys_dic = "", user_dic = "") {
   if (!is.character(sys_dic) || length(sys_dic) != 1L || is.na(sys_dic)) {
