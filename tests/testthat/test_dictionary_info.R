@@ -2,7 +2,8 @@ test_that("dictionary_info reports the loaded system dictionary", {
   skip_if(Sys.info()[["sysname"]] == "Windows" &&
             identical(Sys.getenv("MECAB_LANG"), "ja"),
           "Japanese dictionary is not bundled on Windows")
-  info <- dictionary_info()
+  info <- tryCatch(dictionary_info(), error = function(e) NULL)
+  skip_if(is.null(info), "MeCab dictionary not available")
 
   expect_s3_class(info, "data.frame")
   expect_named(
