@@ -65,13 +65,15 @@ list_dic()
 
 ## 사용법
 
-`RcppMeCab` 패키지는 `pos`, `posParallel`, `dict_index`, `download_dic`, `set_dic`, `list_dic` 함수를 제공합니다.
+`RcppMeCab` 패키지는 `pos`, `posParallel`, `dict_index`,
+`dictionary_info`, `download_dic`, `set_dic`, `list_dic` 함수를 제공합니다.
 
 ```r
 pos("안녕하세요.")
 pos("안녕하세요.", join = FALSE)          # 형태소만 출력 (품사는 attribute)
 pos("안녕하세요.", format = "data.frame") # 데이터프레임으로 출력
 posParallel(c("안녕하세요", "반갑습니다.", "많은 이용 부탁드립니다")) # 멀티스레딩
+dictionary_info() # 현재 사용 중인 사전 정보
 ```
 
 ### 언어 전환

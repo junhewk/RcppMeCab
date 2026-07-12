@@ -5,6 +5,10 @@ dictIndexRcpp <- function(args) {
     .Call(`_RcppMeCab_dictIndexRcpp`, args)
 }
 
+dictionaryInfoRcpp <- function(sys_dic, user_dic) {
+    .Call(`_RcppMeCab_dictionaryInfoRcpp`, sys_dic, user_dic)
+}
+
 posParallelJoinRcpp <- function(text, sys_dic, user_dic) {
     .Call(`_RcppMeCab_posParallelJoinRcpp`, text, sys_dic, user_dic)
 }

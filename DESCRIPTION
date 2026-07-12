@@ -1,6 +1,6 @@
 Package: RcppMeCab
 Title: 'rcpp' Wrapper for 'mecab' Library
-Version: 0.0.1.5
+Version: 0.0.1.6
 Authors@R: c(person("Junhewk", "Kim", role = c("aut", "cre"),
                     email = "junhewk.kim@gmail.com"),
              person("Taku", "Kudo", role = c("aut"),
@@ -17,6 +17,7 @@ Encoding: UTF-8
 BugReports: https://github.com/junhewk/RcppMeCab/issues
 RoxygenNote: 7.3.3
 Language: en-US
+Config/roxygen2/version: 8.0.0
 LinkingTo:
     Rcpp,
     RcppParallel,

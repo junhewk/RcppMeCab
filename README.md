@@ -92,6 +92,7 @@ pos(sentence, join = FALSE)          # morphemes only (tags as vector names)
 pos(sentence, format = "data.frame") # returns a data frame
 pos(sentence, user_dic = "path")     # with a compiled user dictionary
 posParallel(sentence)                # parallelized, faster for large inputs
+dictionary_info()                    # active dictionary metadata
 ```
 
 ### Switching languages
@@ -120,6 +121,11 @@ You can also specify a custom dictionary path directly:
 pos("text", sys_dic = "/path/to/custom-dic")
 options(mecabSysDic = "/path/to/custom-dic")
 ```
+
+`dictionary_info()` reports the filename, charset, type, size, context sizes,
+and version of every dictionary loaded by MeCab. Higher-level
+language-specific packages can use this to diagnose an unexpected active
+dictionary.
 
 ### Parameters
 

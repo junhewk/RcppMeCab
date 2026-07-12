@@ -1,3 +1,8 @@
+# RcppMeCab 0.0.1.6
+
++ Add `dictionary_info()` to report metadata for the dictionaries loaded by
+  MeCab.
+
 # RcppMeCab 0.0.1.3
 
 + Add analytic forms of conjugated morphemes when format == "data.frame"

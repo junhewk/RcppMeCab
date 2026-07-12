@@ -24,6 +24,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dictionaryInfoRcpp
+DataFrame dictionaryInfoRcpp(std::string sys_dic, std::string user_dic);
+RcppExport SEXP _RcppMeCab_dictionaryInfoRcpp(SEXP sys_dicSEXP, SEXP user_dicSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type sys_dic(sys_dicSEXP);
+    Rcpp::traits::input_parameter< std::string >::type user_dic(user_dicSEXP);
+    rcpp_result_gen = Rcpp::wrap(dictionaryInfoRcpp(sys_dic, user_dic));
+    return rcpp_result_gen;
+END_RCPP
+}
 // posParallelJoinRcpp
 List posParallelJoinRcpp(std::vector<std::string> text, std::string sys_dic, std::string user_dic);
 static SEXP _RcppMeCab_posParallelJoinRcpp_try(SEXP textSEXP, SEXP sys_dicSEXP, SEXP user_dicSEXP) {
@@ -345,6 +357,7 @@ RcppExport SEXP _RcppMeCab_RcppExport_registerCCallable() {
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RcppMeCab_dictIndexRcpp", (DL_FUNC) &_RcppMeCab_dictIndexRcpp, 1},
+    {"_RcppMeCab_dictionaryInfoRcpp", (DL_FUNC) &_RcppMeCab_dictionaryInfoRcpp, 2},
     {"_RcppMeCab_posParallelJoinRcpp", (DL_FUNC) &_RcppMeCab_posParallelJoinRcpp, 3},
     {"_RcppMeCab_posParallelDFRcpp", (DL_FUNC) &_RcppMeCab_posParallelDFRcpp, 3},
     {"_RcppMeCab_posParallelRcpp", (DL_FUNC) &_RcppMeCab_posParallelRcpp, 3},
