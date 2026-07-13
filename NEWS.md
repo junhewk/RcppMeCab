@@ -1,9 +1,11 @@
-# RcppMeCab 0.0.1.6
+# RcppMeCab 0.0.1.7
 
 + Add `dictionary_info()` to report metadata for the dictionaries loaded by
   MeCab.
 + Add `MECAB_LANG=zh` as a first-class installation profile using standard
   MeCab 0.996 and the mecab-jieba 0.1.1 Mandarin dictionary.
++ Clarify that `lang` and `set_dic()` select dictionaries rather than MeCab
+  engines, and document language-specific dictionary feature layouts.
 
 # RcppMeCab 0.0.1.3
 

@@ -7,7 +7,7 @@
 download_dic(lang)
 }
 \arguments{
-\item{lang}{Character scalar. Language code: \code{"ja"} for Japanese
+\item{lang}{Character scalar. Dictionary code: \code{"ja"} for Japanese
 (IPAdic), \code{"ko"} for Korean (mecab-ko-dic), or \code{"zh"} for
 Chinese (mecab-jieba).}
 }
@@ -19,6 +19,10 @@ Downloads and installs a MeCab system dictionary for the specified language.
 Japanese and Chinese dictionaries are compiled from source using the built-in
 \code{mecab-dict-index}; Korean dictionaries are downloaded pre-compiled.
 No system-level MeCab installation is required.
+
+Installing a dictionary does not change the MeCab engine linked into
+RcppMeCab. Japanese and Chinese dictionaries use standard MeCab. Supported
+Korean behavior requires the mecab-ko engine selected at package installation.
 }
 \details{
 Dictionaries are stored in the user data directory

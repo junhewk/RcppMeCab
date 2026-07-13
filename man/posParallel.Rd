@@ -20,9 +20,10 @@ posParallel(
 
 \item{format}{A data type for the result. The default value is "list". You can set this to "data.frame" to get a result as data frame format.}
 
-\item{lang}{Optional language code (\code{"ja"}, \code{"ko"}, or \code{"zh"})
-to select a dictionary installed via \code{\link{download_dic}}. When
-specified, this overrides \code{sys_dic}.}
+\item{lang}{Optional dictionary code (\code{"ja"}, \code{"ko"}, or
+\code{"zh"}) selecting a dictionary installed via
+\code{\link{download_dic}}. This does not switch the MeCab engine. When
+specified, it overrides \code{sys_dic}.}
 
 \item{sys_dic}{A location of system MeCab dictionary. The default value is "".}
 
@@ -54,6 +55,13 @@ dictionaries (for example, using both IPA and Juman dictionary at the same time 
 in \code{sys_dic}. Using \code{options(mecabSysDic=)}, you can set your
 preferred system dictionary to the R terminal.
 
+The \code{lang} argument selects a dictionary; it does not switch the MeCab
+engine chosen when RcppMeCab was installed. Japanese and Chinese dictionaries
+use standard MeCab. Supported Korean behavior, including mecab-ko whitespace
+handling, requires the mecab-ko engine. Dictionary feature layouts are
+language-specific, and the historical data-frame columns do not expose all
+mecab-jieba metadata.
+
 If you want to get a morpheme only, use \code{join = False} to put tag names on the attribute.
 Basically, the function will return a list of character vectors with (morpheme)/(tag) elements.
 }
@@ -64,7 +72,7 @@ posParallel(sentence)
 posParallel(sentence, join = FALSE)
 posParallel(sentence, format = "data.frame")
 posParallel(sentence, lang = "ja")
-posParallel(sentence, lang = "ko")
+posParallel(sentence, lang = "zh")
 posParallel(sentence, sys_dic = "/path/to/custom/dic")
 posParallel(sentence, user_dic = "/path/to/user.dic")
 }

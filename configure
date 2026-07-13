@@ -13,7 +13,6 @@ esac
 
 MECAB_JA_SRC_URL="https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
 MECAB_ZH_DIC_URL="https://github.com/lindera/mecab-jieba/archive/refs/tags/0.1.1.tar.gz"
-MECAB_USED_SYSTEM=0
 
 download_file() {
   url="$1"
@@ -83,12 +82,19 @@ if [ -z "$MECAB_CONFIG" ]; then
   done
 fi
 
+# The Chinese profile pins both engine and dictionary. System dictionary
+# compilers can differ in charset and build options, so do not mix one with the
+# pinned mecab-jieba source.
+if [ "$MECAB_LANG" = "zh" ] && [ -n "$MECAB_CONFIG" ]; then
+  echo "Ignoring system MeCab for the pinned Chinese profile."
+  MECAB_CONFIG=""
+fi
+
 if [ -n "$MECAB_CONFIG" ]; then
   echo "Found mecab-config at: $MECAB_CONFIG"
 
   MECAB_CFLAGS=$($MECAB_CONFIG --cflags)
   MECAB_LIBS=$($MECAB_CONFIG --libs)
-  MECAB_USED_SYSTEM=1
 else
   echo "mecab-config not found. Building MeCab from source..."
 
@@ -274,23 +280,6 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
   MECAB_LIBS="-L${MECAB_INSTALL_DIR}/lib -lmecab"
 
   echo "MeCab built successfully at: $MECAB_INSTALL_DIR"
-fi
-
-# A system MeCab installation bypasses the source-build dictionary step above.
-# For an explicitly selected Chinese profile, compile and bundle mecab-jieba
-# with the system dictionary compiler so that installation is self-contained.
-if [ "$MECAB_USED_SYSTEM" -eq 1 ] && [ "$MECAB_LANG" = "zh" ]; then
-  PKG_DIR="$(pwd)"
-  MECAB_DIC_DIR="${PKG_DIR}/inst/dic"
-  MECAB_LIBEXECDIR=$($MECAB_CONFIG --libexecdir 2>/dev/null)
-  DICT_INDEX="${MECAB_LIBEXECDIR}/mecab-dict-index"
-  if [ ! -x "$DICT_INDEX" ]; then
-    DICT_INDEX=$(command -v mecab-dict-index 2>/dev/null || true)
-  fi
-  install_zh_dictionary "$DICT_INDEX" "$MECAB_DIC_DIR" "${PKG_DIR}/src/dic_build_zh" || {
-    echo "ERROR: MECAB_LANG=zh requires a working mecab-dict-index."
-    exit 1
-  }
 fi
 
 echo "  MECAB_CFLAGS: $MECAB_CFLAGS"

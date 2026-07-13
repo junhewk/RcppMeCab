@@ -2,12 +2,12 @@
 % Please edit documentation in R/dic.R
 \name{set_dic}
 \alias{set_dic}
-\title{Set the active MeCab dictionary by language}
+\title{Set the active MeCab dictionary}
 \usage{
 set_dic(lang)
 }
 \arguments{
-\item{lang}{Character scalar. Language code (\code{"ja"}, \code{"ko"}, or
+\item{lang}{Character scalar. Dictionary code (\code{"ja"}, \code{"ko"}, or
 \code{"zh"}) or \code{"bundled"} to use the dictionary bundled with the
 package.}
 }
@@ -17,15 +17,18 @@ Invisible path to the activated dictionary directory.
 \description{
 Sets the default system dictionary used by \code{\link{pos}} and
 \code{\link{posParallel}}. This is equivalent to calling
-\code{options(mecabSysDic = path)} but allows selection by language code.
+\code{options(mecabSysDic = path)} but allows selection by dictionary code.
+It does not switch the MeCab engine linked into RcppMeCab. Japanese and
+Chinese dictionaries use standard MeCab; supported Korean behavior requires
+the mecab-ko engine selected at package installation.
 }
 \examples{
 \dontrun{
 set_dic("ja")
 pos("some Japanese text")
 
-set_dic("ko")
-pos("some Korean text")
+set_dic("zh")
+pos("some Chinese text")
 }
 
 }

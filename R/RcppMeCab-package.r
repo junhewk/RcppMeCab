@@ -1,9 +1,10 @@
 #' RcppMeCab: Rcpp Wrapper for MeCab Library
 #'
 #' R package based on \code{Rcpp} for \code{MeCab}: Yet Another Part-of-Speech and
-#' Morphological Analyzer (\url{http://taku910.github.io/mecab/}). The purpose of
-#' this package is providing a seamless developing and analyzing environment for
-#' CJK texts. This package utilizes parallel programming for providing
+#' Morphological Analyzer (\url{http://taku910.github.io/mecab/}). It provides
+#' install-time engine profiles and dictionaries for Japanese, Korean, and
+#' Mandarin Chinese text. Runtime dictionary selection does not change the
+#' installed engine. This package utilizes parallel programming for providing
 #' highly efficient text preprocessing \code{posParallel()} function.
 #' For installation, please refer to README.md file.
 #'

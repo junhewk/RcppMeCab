@@ -5,10 +5,14 @@
 #' \code{mecab-dict-index}; Korean dictionaries are downloaded pre-compiled.
 #' No system-level MeCab installation is required.
 #'
+#' Installing a dictionary does not change the MeCab engine linked into
+#' RcppMeCab. Japanese and Chinese dictionaries use standard MeCab. Supported
+#' Korean behavior requires the mecab-ko engine selected at package installation.
+#'
 #' Dictionaries are stored in the user data directory
 #' (\code{tools::R_user_dir("RcppMeCab", "data")}).
 #'
-#' @param lang Character scalar. Language code: \code{"ja"} for Japanese
+#' @param lang Character scalar. Dictionary code: \code{"ja"} for Japanese
 #'   (IPAdic), \code{"ko"} for Korean (mecab-ko-dic), or \code{"zh"} for
 #'   Chinese (mecab-jieba).
 #' @return Invisible path to the installed dictionary directory.
@@ -94,13 +98,16 @@ list_dic <- function() {
   do.call(rbind, rows)
 }
 
-#' Set the active MeCab dictionary by language
+#' Set the active MeCab dictionary
 #'
 #' Sets the default system dictionary used by \code{\link{pos}} and
 #' \code{\link{posParallel}}. This is equivalent to calling
-#' \code{options(mecabSysDic = path)} but allows selection by language code.
+#' \code{options(mecabSysDic = path)} but allows selection by dictionary code.
+#' It does not switch the MeCab engine linked into RcppMeCab. Japanese and
+#' Chinese dictionaries use standard MeCab; supported Korean behavior requires
+#' the mecab-ko engine selected at package installation.
 #'
-#' @param lang Character scalar. Language code (\code{"ja"}, \code{"ko"}, or
+#' @param lang Character scalar. Dictionary code (\code{"ja"}, \code{"ko"}, or
 #'   \code{"zh"}) or \code{"bundled"} to use the dictionary bundled with the
 #'   package.
 #' @return Invisible path to the activated dictionary directory.
@@ -110,8 +117,8 @@ list_dic <- function() {
 #' set_dic("ja")
 #' pos("some Japanese text")
 #'
-#' set_dic("ko")
-#' pos("some Korean text")
+#' set_dic("zh")
+#' pos("some Chinese text")
 #' }
 #'
 #' @export
@@ -124,7 +131,7 @@ set_dic <- function(lang) {
 
 # ---- internal helpers --------------------------------------------------------
 
-#' Resolve a language code to a dictionary path
+#' Resolve a dictionary code to a dictionary path
 #' @noRd
 .resolve_dic <- function(lang) {
   if (lang == "bundled") {

@@ -39,9 +39,10 @@ This is a major update from the last CRAN version (0.0.1.2):
   (Linux, macOS, Windows). No system-level MeCab installation required.
 * Dictionaries are automatically downloaded and bundled during install.
 * New `download_dic()` / `set_dic()` / `list_dic()` functions for
-  managing multiple language dictionaries entirely within R.
+  managing multiple MeCab dictionaries entirely within R.
 * New `lang` parameter on `pos()` and `posParallel()` for per-call
-  language selection (e.g. `pos("text", lang = "ja")`).
+  dictionary selection (e.g. `pos("text", lang = "ja")`). This does not
+  switch the install-time MeCab engine.
 * New `dict_index()` function to compile user dictionaries from R.
 * New `dictionary_info()` function reporting metadata for loaded dictionaries.
 * mecab-ko 0.999 support (Korean).
