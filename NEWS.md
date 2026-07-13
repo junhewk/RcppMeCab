@@ -1,3 +1,11 @@
+# RcppMeCab 0.0.1.8
+
++ Do not reuse a standard MeCab 0.996 installation for the Korean build
+  profile. Korean installations now require a compatible mecab-ko 0.999
+  engine and always provision the matching bundled dictionary.
++ Make Korean backend tests fail when the engine or dictionary is unavailable
+  instead of silently skipping the integration coverage.
+
 # RcppMeCab 0.0.1.7
 
 + Add `dictionary_info()` to report metadata for the dictionaries loaded by

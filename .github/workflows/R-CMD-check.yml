@@ -34,15 +34,11 @@ jobs:
         run: |
           sudo apt-get install -y mecab libmecab-dev mecab-ipadic-utf8
           sudo ldconfig
-      - name: Install MeCab-Ko (Korean, Ubuntu)
+      - name: Install standard MeCab to exercise Korean fallback (Ubuntu)
         if: ${{ matrix.platform == 'ubuntu-latest' && matrix.mecab_lang == 'ko' }}
         run: |
-          curl -fsSL "https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-linux-x86_64.tar.gz" -o mecab-ko.tar.gz
-          sudo tar xzf mecab-ko.tar.gz -C /usr/local --strip-components=1
+          sudo apt-get install -y --no-install-recommends mecab libmecab-dev
           sudo ldconfig
-          curl -fsSL "https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz" -o mecab-ko-dic.tar.gz
-          sudo mkdir -p /usr/local/lib/mecab/dic
-          sudo tar xzf mecab-ko-dic.tar.gz -C /usr/local/lib/mecab/dic
       - name: Install MeCab (Japanese, macOS)
         if: ${{ matrix.platform == 'macos-latest' && matrix.mecab_lang == 'ja' }}
         run: brew install mecab mecab-ipadic

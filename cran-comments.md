@@ -8,35 +8,33 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 5 notes
+0 errors | 1 warning | 1 note
 
-### NOTEs
+### Local-only findings
 
-* **CRAN incoming feasibility**: Two URLs redirect from http to https
-  (www.r-pkg.org and www.rcpp.org). Both respond with 200.
+* **Top-level files warning**: A complete local check needs the
+  `checkbashisms` script, which is not installed on this macOS machine.
 
-* **Installed package size (330 Mb)**: The package bundles a MeCab
-  dictionary (~325 Mb) at install time so that users do not need to
-  install MeCab or dictionaries separately. The dictionary is required
-  for the package to function.
+* **CRAN incoming feasibility note**: The previous CRAN update was one day
+  earlier. Version 0.0.1.8 is a necessary backend correction for RmecabKo.
 
-* **Future file timestamps**: "unable to verify current time" — local
-  environment issue, not package-related.
+The installed package size is reported as 326 Mb (INFO). The package bundles
+the required mecab-ko-dic system dictionary so users do not need a separate
+dictionary installation.
 
-* **DESCRIPTION meta-information**: Author field differs from Authors@R
-  because Authors@R includes a contributor (Akiru Kato) not listed in
-  the plain Author field. Will be harmonised in a future release.
+## Resubmission context
 
-* **Non-portable compilation flag** (`-mno-omit-leaf-frame-pointer`):
-  This flag comes from the system R installation (Ubuntu 24.04), not
-  from the package itself. The package does not set this flag.
+Version 0.0.1.8 fixes the Korean build profile exposed by RmecabKo's Debian
+incoming check. A system MeCab 0.996 installation is no longer treated as a
+compatible Korean engine. The package instead builds the pinned mecab-ko 0.999
+engine and always provisions mecab-ko-dic. The Korean integration tests now
+fail if the engine or dictionary is unavailable rather than silently skipping.
 
 ## Changes since last CRAN release
 
 This is a major update from the last CRAN version (0.0.1.2):
 
-* MeCab is now built from source at install time on all platforms
-  (Linux, macOS, Windows). No system-level MeCab installation required.
+* MeCab is built from source when a compatible system engine is unavailable.
 * Dictionaries are automatically downloaded and bundled during install.
 * New `download_dic()` / `set_dic()` / `list_dic()` functions for
   managing multiple MeCab dictionaries entirely within R.

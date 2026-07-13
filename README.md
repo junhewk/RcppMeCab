@@ -31,11 +31,13 @@ MeCab is dictionary-driven, so Chinese uses the standard MeCab engine with a
 Mandarin dictionary rather than a separate Chinese engine. The Chinese profile
 supports simplified and traditional UTF-8 text.
 
-For the `ja` and `ko` profiles on Linux and macOS, an existing system MeCab
-installation (detected via `mecab-config`) takes precedence. The `zh` profile
-always builds the pinned standard MeCab engine so its compiler and
-mecab-jieba dictionary remain compatible. `MECAB_LANG` is an installation
-setting; it does not switch engines in a running R session.
+For the `ja` profile on Linux and macOS, an existing system MeCab installation
+(detected via `mecab-config`) takes precedence. The `ko` profile reuses only a
+compatible mecab-ko 0.999 installation; standard MeCab 0.996 is ignored because
+it does not provide Korean-specific whitespace behavior. The `zh` profile
+always builds the pinned standard MeCab engine so its compiler and mecab-jieba
+dictionary remain compatible. `MECAB_LANG` is an installation setting; it does
+not switch engines in a running R session.
 
 ## Installation
 
@@ -56,8 +58,9 @@ If you already have MeCab installed (e.g. via `brew install mecab` on macOS, or 
 ### Installation profile
 
 Set `MECAB_LANG` before installation to choose the engine and bundled
-dictionary profile. Existing system engines take precedence for `ja` and `ko`
-as described above; `zh` always uses the pinned source build.
+dictionary profile. Existing system engines take precedence for `ja` and for
+`ko` only when mecab-ko 0.999 is detected; `zh` always uses the pinned source
+build.
 
 ```r
 # Korean (default)
@@ -74,17 +77,18 @@ install.packages("RcppMeCab", type = "source")
 
 ### Dictionary
 
-When RcppMeCab builds its own engine, the matching dictionary is
-**automatically downloaded and installed** during package installation:
+The matching dictionary is **automatically downloaded and installed** during
+package installation when required:
 
 + **Korean** (`MECAB_LANG=ko`, default): [mecab-ko-dic](https://github.com/Pusnow/mecab-ko-msvc/releases) (pre-compiled, from mecab-ko-msvc releases)
 + **Japanese** (`MECAB_LANG=ja`): [IPAdic](http://taku910.github.io/mecab/) (compiled from source during installation)
 + **Chinese** (`MECAB_LANG=zh`): [mecab-jieba](https://github.com/lindera/mecab-jieba) (compiled from source during installation)
 
 The bundled dictionary is stored in the package's `dic/` directory and used
-automatically. The `ja` and `ko` profiles use a system-configured dictionary
-when they reuse a system MeCab installation. The `zh` profile always compiles
-and bundles mecab-jieba with its pinned engine.
+automatically. The Korean profile always bundles mecab-ko-dic, including when
+it reuses a compatible system mecab-ko engine. The Japanese profile uses its
+system-configured dictionary when it reuses a system installation. The `zh`
+profile always compiles and bundles mecab-jieba with its pinned engine.
 
 ### Downloading additional dictionaries
 

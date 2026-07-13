@@ -12,7 +12,9 @@ case "$MECAB_LANG" in
 esac
 
 MECAB_JA_SRC_URL="https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
+MECAB_KO_DIC_URL="https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz"
 MECAB_ZH_DIC_URL="https://github.com/lindera/mecab-jieba/archive/refs/tags/0.1.1.tar.gz"
+PKG_DIR="$(pwd)"
 
 download_file() {
   url="$1"
@@ -65,6 +67,25 @@ install_zh_dictionary() {
   echo "mecab-jieba compiled to: $dic_dir"
 }
 
+install_ko_dictionary() {
+  dic_dir="$1"
+  build_dir="$2"
+
+  rm -rf "$build_dir"
+  mkdir -p "$build_dir" "$dic_dir" || return 1
+  tarball="$build_dir/mecab-ko-dic.tar.gz"
+
+  echo "Downloading pre-compiled mecab-ko-dic..."
+  download_file "$MECAB_KO_DIC_URL" "$tarball" || return 1
+  tar xzf "$tarball" -C "$dic_dir" --strip-components=1 || return 1
+  if [ ! -f "$dic_dir/sys.dic" ] || [ ! -f "$dic_dir/dicrc" ]; then
+    echo "ERROR: Korean dictionary installation did not produce sys.dic and dicrc."
+    return 1
+  fi
+  rm -rf "$build_dir"
+  echo "mecab-ko-dic installed to: $dic_dir"
+}
+
 # Find mecab-config
 MECAB_CONFIG=""
 
@@ -82,12 +103,25 @@ if [ -z "$MECAB_CONFIG" ]; then
   done
 fi
 
-# The Chinese profile pins both engine and dictionary. System dictionary
-# compilers can differ in charset and build options, so do not mix one with the
-# pinned mecab-jieba source.
-if [ "$MECAB_LANG" = "zh" ] && [ -n "$MECAB_CONFIG" ]; then
-  echo "Ignoring system MeCab for the pinned Chinese profile."
-  MECAB_CONFIG=""
+# The Chinese profile pins both engine and dictionary. The Korean profile may
+# reuse only mecab-ko 0.999; standard MeCab 0.996 does not provide Korean's
+# whitespace behavior even when loaded with mecab-ko-dic.
+if [ -n "$MECAB_CONFIG" ]; then
+  if [ "$MECAB_LANG" = "zh" ]; then
+    echo "Ignoring system MeCab for the pinned Chinese profile."
+    MECAB_CONFIG=""
+  elif [ "$MECAB_LANG" = "ko" ]; then
+    MECAB_SYSTEM_VERSION=$($MECAB_CONFIG --version 2>/dev/null)
+    case "$MECAB_SYSTEM_VERSION" in
+      0.999*)
+        echo "Using compatible system mecab-ko $MECAB_SYSTEM_VERSION."
+        ;;
+      *)
+        echo "Ignoring system MeCab ${MECAB_SYSTEM_VERSION:-unknown} for the Korean profile; mecab-ko 0.999 is required."
+        MECAB_CONFIG=""
+        ;;
+    esac
+  fi
 fi
 
 if [ -n "$MECAB_CONFIG" ]; then
@@ -96,9 +130,8 @@ if [ -n "$MECAB_CONFIG" ]; then
   MECAB_CFLAGS=$($MECAB_CONFIG --cflags)
   MECAB_LIBS=$($MECAB_CONFIG --libs)
 else
-  echo "mecab-config not found. Building MeCab from source..."
+  echo "No compatible system MeCab selected. Building MeCab from source..."
 
-  PKG_DIR="$(pwd)"
   MECAB_BUILD_DIR="${PKG_DIR}/src/mecab_build"
   MECAB_INSTALL_DIR="${PKG_DIR}/src/mecab_local"
 
@@ -259,18 +292,6 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
       echo "ERROR: Failed to install the selected Chinese dictionary."
       exit 1
     }
-  else
-    echo "Downloading pre-compiled mecab-ko-dic..."
-    DIC_URL="https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz"
-    DIC_TARBALL="/tmp/mecab-ko-dic-$$.tar.gz"
-    curl -fsSL "$DIC_URL" -o "$DIC_TARBALL" || wget -q "$DIC_URL" -O "$DIC_TARBALL"
-    if [ -f "$DIC_TARBALL" ]; then
-      tar xzf "$DIC_TARBALL" -C "$MECAB_DIC_DIR" --strip-components=1
-      rm -f "$DIC_TARBALL"
-      echo "mecab-ko-dic installed to: $MECAB_DIC_DIR"
-    else
-      echo "WARNING: Failed to download mecab-ko-dic. Package will work but needs manual dictionary setup."
-    fi
   fi
 
   # Clean up build artifacts (only keep installed lib and headers)
@@ -280,6 +301,19 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
   MECAB_LIBS="-L${MECAB_INSTALL_DIR}/lib -lmecab"
 
   echo "MeCab built successfully at: $MECAB_INSTALL_DIR"
+fi
+
+# A Korean install always carries its matching dictionary. This also covers a
+# compatible system mecab-ko engine whose system dictionary is absent or
+# configured outside the package library.
+if [ "$MECAB_LANG" = "ko" ]; then
+  MECAB_DIC_DIR="${PKG_DIR}/inst/dic"
+  if [ ! -f "$MECAB_DIC_DIR/sys.dic" ] || [ ! -f "$MECAB_DIC_DIR/dicrc" ]; then
+    install_ko_dictionary "$MECAB_DIC_DIR" "${PKG_DIR}/src/dic_build_ko" || {
+      echo "ERROR: Failed to install the selected Korean dictionary."
+      exit 1
+    }
+  fi
 fi
 
 echo "  MECAB_CFLAGS: $MECAB_CFLAGS"
