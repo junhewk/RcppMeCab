@@ -1,10 +1,11 @@
 # RcppMeCab
 
-[![License](https://img.shields.io/badge/license-GPL-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl.html)
-![R](https://img.shields.io/github/r-package/v/junhewk/RcppMeCab)
-[![CRAN](https://www.r-pkg.org/badges/version/RcppMeCab)](https://cran.r-project.org/package=RcppMeCab)
-[![Downloads](https://cranlogs.r-pkg.org/badges/RcppMeCab?color=brightgreen)](https://www.r-pkg.org/pkg/RcppMeCab)
-[![R-CMD-check](https://github.com/junhewk/RcppMeCab/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/junhewk/RcppMeCab/actions/workflows/R-CMD-check.yml)
+[![R-CMD-check](https://github.com/junhewk/RcppMeCab/actions/workflows/R-CMD-check.yml/badge.svg?branch=master)](https://github.com/junhewk/RcppMeCab/actions/workflows/R-CMD-check.yml)
+[![CRAN status](https://www.r-pkg.org/badges/version/RcppMeCab)](https://CRAN.R-project.org/package=RcppMeCab)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/RcppMeCab)](https://CRAN.R-project.org/package=RcppMeCab)
+[![CRAN total downloads](https://cranlogs.r-pkg.org/badges/grand-total/RcppMeCab)](https://CRAN.R-project.org/package=RcppMeCab)
+[![R version](https://img.shields.io/badge/R-%E2%89%A5%203.4.0-276DC3.svg)](https://www.r-project.org/)
+[![License: GPL](https://img.shields.io/badge/license-GPL-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphological analyzer `MeCab`. It supports native utf-8 encoding in C++ code and CJK (Chinese, Japanese, and Korean) MeCab library. This package fully utilizes the power `Rcpp` brings `R` computation to analyze texts faster.
 
