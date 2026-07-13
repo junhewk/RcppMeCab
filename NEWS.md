@@ -2,6 +2,8 @@
 
 + Add `dictionary_info()` to report metadata for the dictionaries loaded by
   MeCab.
++ Add `MECAB_LANG=zh` as a first-class installation profile using standard
+  MeCab 0.996 and the mecab-jieba 0.1.1 Mandarin dictionary.
 
 # RcppMeCab 0.0.1.3
 

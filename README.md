@@ -11,14 +11,19 @@ This package, RcppMeCab, is a `Rcpp` wrapper for the part-of-speech morphologica
 
 __Please see [this](https://github.com/junhewk/RcppMeCab/blob/master/README_kr.md) for easy installation and usage examples in Korean.__
 
-## MeCab backends
+## Build profiles and MeCab engines
 
-RcppMeCab builds MeCab from source at install time. The MeCab variant is selected by the `MECAB_LANG` environment variable:
+RcppMeCab builds MeCab from source at install time. The engine and bundled dictionary are selected by the `MECAB_LANG` environment variable:
 
-| `MECAB_LANG` | Backend | Version | Source |
+| `MECAB_LANG` | Engine | Version | Bundled dictionary |
 |---|---|---|---|
-| `ko` (default) | [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) | 0.999 | Pusnow/mecab-ko-msvc |
-| `ja` | [MeCab](http://taku910.github.io/mecab/) | 0.996 | taku910/mecab |
+| `ko` (default) | [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) | 0.999 | mecab-ko-dic |
+| `ja` | [MeCab](https://taku910.github.io/mecab/) | 0.996 | IPAdic |
+| `zh` | [MeCab](https://taku910.github.io/mecab/) | 0.996 | [mecab-jieba 0.1.1](https://github.com/lindera/mecab-jieba) |
+
+MeCab is dictionary-driven, so Chinese uses the standard MeCab engine with a
+Mandarin dictionary rather than a separate Chinese engine. The Chinese profile
+supports simplified and traditional UTF-8 text.
 
 On Linux and macOS, if MeCab is already installed system-wide (detected via `mecab-config`), RcppMeCab uses the system installation regardless of `MECAB_LANG`.
 
@@ -49,6 +54,10 @@ install.packages("RcppMeCab", type = "source")
 # Japanese
 Sys.setenv(MECAB_LANG = "ja")
 install.packages("RcppMeCab", type = "source")
+
+# Chinese (Mandarin; simplified and traditional text)
+Sys.setenv(MECAB_LANG = "zh")
+install.packages("RcppMeCab", type = "source")
 ```
 
 ### Dictionary
@@ -57,6 +66,7 @@ A MeCab dictionary is **automatically downloaded and installed** during package 
 
 + **Korean** (`MECAB_LANG=ko`, default): [mecab-ko-dic](https://github.com/Pusnow/mecab-ko-msvc/releases) (pre-compiled, from mecab-ko-msvc releases)
 + **Japanese** (`MECAB_LANG=ja`): [IPAdic](http://taku910.github.io/mecab/) (compiled from source during installation)
++ **Chinese** (`MECAB_LANG=zh`): [mecab-jieba](https://github.com/lindera/mecab-jieba) (compiled from source during installation)
 
 The bundled dictionary is stored in the package's `dic/` directory and used automatically — no manual dictionary setup is required.
 

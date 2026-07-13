@@ -1,10 +1,14 @@
 # Download and patch MeCab source for Windows build
-# Selects taku910/mecab for Japanese or Pusnow/mecab-ko-msvc for Korean
+# Selects taku910/mecab for Japanese/Chinese or Pusnow/mecab-ko-msvc for Korean
 # based on the MECAB_LANG environment variable (default: "ko").
 
 MECAB_LANG <- Sys.getenv("MECAB_LANG", "ko")
+if (!MECAB_LANG %in% c("ja", "ko", "zh")) {
+  stop("Unsupported MECAB_LANG='", MECAB_LANG,
+       "'. Expected one of: ja, ko, zh.")
+}
 
-if (MECAB_LANG == "ja") {
+if (MECAB_LANG %in% c("ja", "zh")) {
   MECAB_SRC_URL <- "https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
   MECAB_VERSION <- "0.996"
 } else {
@@ -24,7 +28,7 @@ if (!dir.exists(BUILD_DIR)) {
   untar(tarball, exdir = BUILD_DIR, extras = "--strip-components=1")
 
   # For mecab-ko-msvc, source is in src/ directly (not mecab/src/)
-  if (MECAB_LANG != "ja" && !dir.exists(SRC_DIR)) {
+  if (MECAB_LANG == "ko" && !dir.exists(SRC_DIR)) {
     dir.create(file.path(BUILD_DIR, "mecab"), recursive = TRUE)
     file.rename(file.path(BUILD_DIR, "src"), SRC_DIR)
   }
@@ -143,7 +147,7 @@ if (!dir.exists(BUILD_DIR)) {
 
 # Download and install dictionary into inst/dic/
 DIC_DIR <- file.path("..", "inst", "dic")
-if (!dir.exists(DIC_DIR)) {
+if (!file.exists(file.path(DIC_DIR, "sys.dic"))) {
   dir.create(DIC_DIR, recursive = TRUE)
 
   if (MECAB_LANG == "ja") {
@@ -166,6 +170,20 @@ if (!dir.exists(DIC_DIR)) {
     # Alternative: skip dictionary for ja on Windows if no pre-compiled available.
     cat("WARNING: Japanese dictionary compilation on Windows not yet supported during install.\n")
     cat("Please install ipadic manually.\n")
+  } else if (MECAB_LANG == "zh") {
+    # The Makevars.win zh target compiles this source after the MeCab objects
+    # are available, using a temporary mecab-dict-index executable.
+    JIEBA_URL <- "https://github.com/lindera/mecab-jieba/archive/refs/tags/0.1.1.tar.gz"
+    JIEBA_DIR <- file.path(BUILD_DIR, "mecab-jieba-src")
+    jieba_tarball <- file.path(BUILD_DIR, "mecab-jieba.tar.gz")
+    cat("Downloading mecab-jieba 0.1.1 source...\n")
+    download.file(JIEBA_URL, jieba_tarball, mode = "wb", method = "libcurl")
+    dir.create(JIEBA_DIR, recursive = TRUE)
+    untar(jieba_tarball, exdir = JIEBA_DIR, extras = "--strip-components=1")
+    if (!file.exists(file.path(JIEBA_DIR, "jieba.csv"))) {
+      stop("Could not find jieba.csv in mecab-jieba archive")
+    }
+    cat("Chinese dictionary source staged at:", JIEBA_DIR, "\n")
   } else {
     cat("Downloading pre-compiled mecab-ko-dic...\n")
     DIC_URL <- "https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz"

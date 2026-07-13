@@ -29,5 +29,7 @@ Suggests:
     testthat,
     spelling
 SystemRequirements:
-    MeCab 0.996 or higher for Japanese (libmecab-dev (deb), mecab-devel (rpm)),
-    mecab-ko 0.999 (https://github.com/Pusnow/mecab-ko-msvc) for Korean
+    MeCab 0.996 or higher for Japanese and Chinese (libmecab-dev (deb),
+    mecab-devel (rpm)), mecab-jieba 0.1.1 for Mandarin Chinese
+    (https://github.com/lindera/mecab-jieba), mecab-ko 0.999
+    (https://github.com/Pusnow/mecab-ko-msvc) for Korean

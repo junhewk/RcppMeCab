@@ -7,14 +7,17 @@
 
 RcppMeCab은 형태소 분석기인 `MeCab`을 R 환경에서 매끄럽게 사용할 수 있도록 한 패키지입니다. `Rcpp` 패키지를 사용하여 C++에서 직접 연산을 수행하므로 현재 R에서 제공되는 어떤 형태소 분석기보다 빠르며, 현존하는 `Python`과 `R` 라이브러리 중 가장 빠르고 효율적으로 형태소 분석을 수행할 수 있도록 라이브러리를 구성하였습니다. 제공되는 분산 처리 함수를 활용하여 다중 스레드 처리 또한 제공하므로, 대량의 자료를 빠르게 분석하기 원하시는 경우 적합한 패키지입니다.
 
-## MeCab 백엔드
+## 빌드 프로필과 MeCab 엔진
 
-RcppMeCab은 설치 시 MeCab을 소스에서 빌드합니다. `MECAB_LANG` 환경 변수로 MeCab 변형을 선택합니다:
+RcppMeCab은 설치 시 MeCab을 소스에서 빌드합니다. `MECAB_LANG` 환경 변수로 엔진과 번들 사전을 선택합니다:
 
-| `MECAB_LANG` | 백엔드 | 버전 | 소스 |
+| `MECAB_LANG` | 엔진 | 버전 | 번들 사전 |
 |---|---|---|---|
-| `ko` (기본값) | [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) | 0.999 | Pusnow/mecab-ko-msvc |
-| `ja` | [MeCab](http://taku910.github.io/mecab/) | 0.996 | taku910/mecab |
+| `ko` (기본값) | [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) | 0.999 | mecab-ko-dic |
+| `ja` | [MeCab](https://taku910.github.io/mecab/) | 0.996 | IPAdic |
+| `zh` | [MeCab](https://taku910.github.io/mecab/) | 0.996 | [mecab-jieba 0.1.1](https://github.com/lindera/mecab-jieba) |
+
+MeCab은 사전 기반이므로 중국어는 별도의 중국어 엔진 대신 표준 MeCab과 중국어 사전을 사용합니다. 중국어 프로필은 UTF-8 간체와 번체 텍스트를 지원합니다.
 
 한국어 사용 시 [mecab-ko-msvc](https://github.com/Pusnow/mecab-ko-msvc) 0.999 버전을 사용합니다. 기존 mecab-ko 0.9.2 대비 한국어 띄어쓰기 처리가 개선되었습니다.
 
@@ -37,6 +40,7 @@ devtools::install_github("junhewk/RcppMeCab")
 
 + **한국어** (`MECAB_LANG=ko`, 기본값): [mecab-ko-dic](https://github.com/Pusnow/mecab-ko-msvc/releases) (mecab-ko-msvc 릴리즈에서 사전 다운로드)
 + **일본어** (`MECAB_LANG=ja`): [IPAdic](http://taku910.github.io/mecab/) (설치 시 소스에서 컴파일)
++ **중국어** (`MECAB_LANG=zh`): [mecab-jieba](https://github.com/lindera/mecab-jieba) (설치 시 소스에서 컴파일)
 
 사전은 패키지의 `dic/` 디렉토리에 저장되며 자동으로 사용됩니다. 별도의 사전 설치가 필요하지 않습니다.
 

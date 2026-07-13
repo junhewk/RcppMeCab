@@ -3,7 +3,8 @@
 * local macOS 15.7.7 (arm64), R 4.6.1
 * Ubuntu 24.04 LTS (local), R 4.3.3
 * GitHub Actions: Ubuntu (latest), macOS (latest), Windows (latest), R release
-* Tested with both Japanese (IPAdic) and Korean (mecab-ko-dic) dictionaries
+* Tested with Japanese (IPAdic), Korean (mecab-ko-dic), and Chinese
+  (mecab-jieba) dictionaries
 
 ## R CMD check results
 
@@ -44,6 +45,7 @@ This is a major update from the last CRAN version (0.0.1.2):
 * New `dict_index()` function to compile user dictionaries from R.
 * New `dictionary_info()` function reporting metadata for loaded dictionaries.
 * mecab-ko 0.999 support (Korean).
+* First-class Mandarin Chinese build profile using mecab-jieba 0.1.1.
 * Windows build now compiles MeCab from source instead of using
   pre-built DLLs.
 

@@ -2,6 +2,70 @@
 # configure script for RcppMeCab
 # Detects MeCab installation or builds from source
 
+MECAB_LANG="${MECAB_LANG:-ko}"
+case "$MECAB_LANG" in
+  ja|ko|zh) ;;
+  *)
+    echo "ERROR: Unsupported MECAB_LANG='$MECAB_LANG'. Expected one of: ja, ko, zh."
+    exit 1
+    ;;
+esac
+
+MECAB_JA_SRC_URL="https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
+MECAB_ZH_DIC_URL="https://github.com/lindera/mecab-jieba/archive/refs/tags/0.1.1.tar.gz"
+MECAB_USED_SYSTEM=0
+
+download_file() {
+  url="$1"
+  output="$2"
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$url" -o "$output"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -q "$url" -O "$output"
+  else
+    echo "ERROR: Neither curl nor wget found. Cannot download $url."
+    return 1
+  fi
+}
+
+install_zh_dictionary() {
+  dict_index="$1"
+  dic_dir="$2"
+  build_dir="$3"
+
+  if [ ! -x "$dict_index" ]; then
+    echo "ERROR: mecab-dict-index not found at $dict_index."
+    return 1
+  fi
+
+  rm -rf "$build_dir"
+  mkdir -p "$build_dir" "$dic_dir" || return 1
+  tarball="$build_dir/mecab-jieba.tar.gz"
+
+  echo "Downloading mecab-jieba 0.1.1..."
+  download_file "$MECAB_ZH_DIC_URL" "$tarball" || return 1
+  tar xzf "$tarball" -C "$build_dir" || return 1
+  jieba_dir=$(find "$build_dir" -mindepth 1 -maxdepth 1 -type d | head -n 1)
+  if [ -z "$jieba_dir" ] || [ ! -f "$jieba_dir/jieba.csv" ]; then
+    echo "ERROR: Could not find jieba.csv in mecab-jieba archive."
+    return 1
+  fi
+
+  echo "Compiling mecab-jieba (Chinese) dictionary..."
+  build_log="$build_dir/mecab-jieba-build.log"
+  if ! "$dict_index" -d "$jieba_dir" -o "$dic_dir" -f utf-8 -t utf-8 >"$build_log" 2>&1; then
+    echo "ERROR: mecab-jieba compilation failed. See $build_log."
+    return 1
+  fi
+  cp "$jieba_dir/dicrc" "$dic_dir/" || return 1
+  if [ ! -f "$dic_dir/sys.dic" ]; then
+    echo "ERROR: Chinese dictionary compilation did not produce sys.dic."
+    return 1
+  fi
+  rm -rf "$build_dir"
+  echo "mecab-jieba compiled to: $dic_dir"
+}
+
 # Find mecab-config
 MECAB_CONFIG=""
 
@@ -24,6 +88,7 @@ if [ -n "$MECAB_CONFIG" ]; then
 
   MECAB_CFLAGS=$($MECAB_CONFIG --cflags)
   MECAB_LIBS=$($MECAB_CONFIG --libs)
+  MECAB_USED_SYSTEM=1
 else
   echo "mecab-config not found. Building MeCab from source..."
 
@@ -31,10 +96,9 @@ else
   MECAB_BUILD_DIR="${PKG_DIR}/src/mecab_build"
   MECAB_INSTALL_DIR="${PKG_DIR}/src/mecab_local"
 
-  MECAB_LANG="${MECAB_LANG:-ko}"
-  if [ "$MECAB_LANG" = "ja" ]; then
-    MECAB_SRC_URL="https://github.com/taku910/mecab/archive/61b90ba6e669dc2d7d533d4a80d206f3b31d52b1.tar.gz"
-    echo "Building MeCab (Japanese, taku910/mecab 0.996) from source..."
+  if [ "$MECAB_LANG" = "ja" ] || [ "$MECAB_LANG" = "zh" ]; then
+    MECAB_SRC_URL="$MECAB_JA_SRC_URL"
+    echo "Building MeCab (standard, taku910/mecab 0.996) from source for $MECAB_LANG..."
   else
     MECAB_SRC_URL="https://github.com/Pusnow/mecab-ko-msvc/archive/refs/tags/release-0.999.tar.gz"
     echo "Building MeCab-Ko (Korean, mecab-ko 0.999) from source..."
@@ -45,14 +109,7 @@ else
   mkdir -p "$MECAB_BUILD_DIR"
 
   echo "Downloading MeCab source..."
-  if command -v curl >/dev/null 2>&1; then
-    curl -fsSL "$MECAB_SRC_URL" -o "$MECAB_TARBALL"
-  elif command -v wget >/dev/null 2>&1; then
-    wget -q "$MECAB_SRC_URL" -O "$MECAB_TARBALL"
-  else
-    echo "ERROR: Neither curl nor wget found. Cannot download MeCab source."
-    exit 1
-  fi
+  download_file "$MECAB_SRC_URL" "$MECAB_TARBALL" || exit 1
 
   if [ ! -f "$MECAB_TARBALL" ]; then
     echo "ERROR: Failed to download MeCab source."
@@ -128,11 +185,14 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
   cd "$MECAB_SRC_DIR"
   # MeCab source uses 'register' keyword which is an error in C++17;
   # force C++14 and suppress deprecation warnings for the MeCab build.
-  # Unset R's CXX/CXXFLAGS to prevent R's C++17 standard from leaking in.
+  # Isolate the legacy MeCab configure checks from R's injected language
+  # standards (for example CC="clang -std=gnu23" on current R releases).
+  CC="cc" CFLAGS="-O2 -fPIC" \
   CXX="c++" CXXFLAGS="-std=c++14 -Wno-deprecated-declarations -O2 -fPIC" \
   ./configure --with-charset=utf8 --enable-utf8-only --prefix="$MECAB_INSTALL_DIR" --enable-static --disable-shared --with-pic > mecab_configure.log 2>&1
   if [ $? -ne 0 ]; then
     echo "ERROR: MeCab configure failed. See $MECAB_SRC_DIR/mecab_configure.log"
+    tail -n 50 mecab_configure.log
     exit 1
   fi
 
@@ -163,7 +223,7 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
     DIC_BUILD_DIR="${PKG_DIR}/src/dic_build"
     mkdir -p "$DIC_BUILD_DIR"
     DIC_TARBALL="$DIC_BUILD_DIR/mecab-source.tar.gz"
-    curl -fsSL "$MECAB_SRC_URL" -o "$DIC_TARBALL" || wget -q "$MECAB_SRC_URL" -O "$DIC_TARBALL"
+    download_file "$MECAB_SRC_URL" "$DIC_TARBALL" || exit 1
     tar xzf "$DIC_TARBALL" -C "$DIC_BUILD_DIR" --strip-components=1
     IPADIC_DIR="$DIC_BUILD_DIR/mecab-ipadic"
 
@@ -184,6 +244,15 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
       echo "IPAdic dictionary compiled to: $MECAB_DIC_DIR"
     fi
     rm -rf "$DIC_BUILD_DIR"
+  elif [ "$MECAB_LANG" = "zh" ]; then
+    DICT_INDEX="$MECAB_INSTALL_DIR/libexec/mecab/mecab-dict-index"
+    if [ ! -x "$DICT_INDEX" ]; then
+      DICT_INDEX="$MECAB_INSTALL_DIR/bin/mecab-dict-index"
+    fi
+    install_zh_dictionary "$DICT_INDEX" "$MECAB_DIC_DIR" "${PKG_DIR}/src/dic_build_zh" || {
+      echo "ERROR: Failed to install the selected Chinese dictionary."
+      exit 1
+    }
   else
     echo "Downloading pre-compiled mecab-ko-dic..."
     DIC_URL="https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz"
@@ -205,6 +274,23 @@ s/std::cerr/mecab_null_os_/g; s/std::cout/mecab_null_os_/g' "$f"
   MECAB_LIBS="-L${MECAB_INSTALL_DIR}/lib -lmecab"
 
   echo "MeCab built successfully at: $MECAB_INSTALL_DIR"
+fi
+
+# A system MeCab installation bypasses the source-build dictionary step above.
+# For an explicitly selected Chinese profile, compile and bundle mecab-jieba
+# with the system dictionary compiler so that installation is self-contained.
+if [ "$MECAB_USED_SYSTEM" -eq 1 ] && [ "$MECAB_LANG" = "zh" ]; then
+  PKG_DIR="$(pwd)"
+  MECAB_DIC_DIR="${PKG_DIR}/inst/dic"
+  MECAB_LIBEXECDIR=$($MECAB_CONFIG --libexecdir 2>/dev/null)
+  DICT_INDEX="${MECAB_LIBEXECDIR}/mecab-dict-index"
+  if [ ! -x "$DICT_INDEX" ]; then
+    DICT_INDEX=$(command -v mecab-dict-index 2>/dev/null || true)
+  fi
+  install_zh_dictionary "$DICT_INDEX" "$MECAB_DIC_DIR" "${PKG_DIR}/src/dic_build_zh" || {
+    echo "ERROR: MECAB_LANG=zh requires a working mecab-dict-index."
+    exit 1
+  }
 fi
 
 echo "  MECAB_CFLAGS: $MECAB_CFLAGS"

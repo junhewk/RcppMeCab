@@ -1,0 +1,22 @@
+RcppMeCab can download and compile mecab-jieba as its bundled Mandarin
+Chinese dictionary when MECAB_LANG=zh.
+
+mecab-jieba dictionary build files:
+  Copyright the lindera/mecab-jieba contributors
+  License: MIT
+  Source: https://github.com/lindera/mecab-jieba
+
+The mecab-jieba lexicon incorporates data derived from Jieba and CC-CEDICT:
+
+Jieba:
+  Copyright the Jieba contributors
+  License: MIT
+  Source: https://github.com/fxsjy/jieba
+
+CC-CEDICT:
+  Copyright the CC-CEDICT contributors
+  License: Creative Commons Attribution-ShareAlike 4.0 International
+  Source: https://cc-cedict.org/editor/editor.php?handler=Download
+
+These notices apply to the dictionary data under their respective terms and
+do not replace the GPL license for the RcppMeCab package code.

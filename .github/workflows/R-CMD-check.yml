@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        mecab_lang: ['ja', 'ko']
+        mecab_lang: ['ja', 'ko', 'zh']
         platform: [ubuntu-latest, windows-latest, macos-latest]
         r-version: ['release']
     runs-on: ${{ matrix.platform }}
@@ -42,6 +42,9 @@ jobs:
           curl -fsSL "https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz" -o mecab-ko-dic.tar.gz
           sudo mkdir -p /usr/local/lib/mecab/dic
           sudo tar xzf mecab-ko-dic.tar.gz -C /usr/local/lib/mecab/dic
+      - name: Install MeCab (Chinese profile, Ubuntu)
+        if: ${{ matrix.platform == 'ubuntu-latest' && matrix.mecab_lang == 'zh' }}
+        run: sudo apt-get install -y mecab libmecab-dev
       - name: Install MeCab (Japanese, macOS)
         if: ${{ matrix.platform == 'macos-latest' && matrix.mecab_lang == 'ja' }}
         run: brew install mecab mecab-ipadic
@@ -59,6 +62,9 @@ jobs:
           curl -fsSL "https://github.com/Pusnow/mecab-ko-msvc/releases/download/release-0.999/mecab-ko-dic.tar.gz" -o mecab-ko-dic.tar.gz
           sudo mkdir -p /usr/local/lib/mecab/dic
           sudo tar xzf mecab-ko-dic.tar.gz -C /usr/local/lib/mecab/dic
+      - name: Install MeCab (Chinese profile, macOS)
+        if: ${{ matrix.platform == 'macos-latest' && matrix.mecab_lang == 'zh' }}
+        run: brew install mecab
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))
