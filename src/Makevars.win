@@ -46,7 +46,7 @@ mecab_source:
 
 ifeq ($(MECAB_LANG),zh)
 $(ZH_DICT_INDEX): $(MECAB_OBJS)
-	$(CXX) $(ALL_CPPFLAGS) -I$(MECAB_SRC_DIR) -DHAVE_CONFIG_H -DDIC_VERSION=102 -DMECAB_USE_UTF8_ONLY -DMECAB_DEFAULT_RC=\"\" -std=c++14 -w -O2 $(MECAB_SRC_DIR)/mecab-dict-index.cpp $(MECAB_OBJS) -o $@ -lm
+	$(CXX) $(ALL_CPPFLAGS) -I$(MECAB_SRC_DIR) -DHAVE_CONFIG_H -DDIC_VERSION=102 -DMECAB_USE_UTF8_ONLY -DMECAB_DEFAULT_RC=\"\" -std=c++14 -w -O2 ../tools/mecab-dict-index-main.cpp $(MECAB_OBJS) -o $@ -lm
 
 $(ZH_DIC_STAMP): $(ZH_DICT_INDEX)
 	$(ZH_DICT_INDEX) -d $(ZH_DIC_SRC_DIR) -o ../inst/dic -f utf-8 -t utf-8
